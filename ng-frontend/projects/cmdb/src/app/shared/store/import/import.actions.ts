@@ -1,9 +1,6 @@
 import { createAction, props } from '@ngrx/store';
+import { ImportSettings } from '../../objects/import-settings.model';
 
-export const setImportItemType = createAction('[Import] Set item type for Import',
-    props<{ itemTypeId: string }>()
-);
-
-export const setElements = createAction('[Import] Set elements to import',
-    props<{ elements: string[] }>()
+export const setState = createAction('[Import] Set options for import',
+    props<ImportSettings>()
 );

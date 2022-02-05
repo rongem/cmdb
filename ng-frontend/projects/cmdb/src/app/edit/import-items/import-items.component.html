@@ -1,5 +1,4 @@
 <app-busy *ngIf="busy" i18n="analyzing">Analysiere...</app-busy>
-<app-item-menu></app-item-menu>
 <div class="box">
     <div class="box-top">
         <h3 i18n="import configuration items">Configuration Items importieren</h3>
@@ -9,44 +8,54 @@
             <div class="box-top__sub" i18n="common settings">Allgemeine Einstellungen</div>
             <div class="box-body__sub">
                 <div>
-                    <mat-form-field>
-                        <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
-                        <mat-select name="type" formControlName="itemType"
-                            (selectionChange)="onChangeItemType($event.value)">
-                            <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id"
-                                [style.background]="itemType.backColor">
-                                <span class="text-on-background">{{itemType.name}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <label for="itemType" i18n="item type to import">Typ der zu importierenden Items: </label>
+                    <select name="type" id="itemType" formControlName="itemType">
+                        <option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id">
+                            {{itemType.name}}
+                        </option>
+                    </select>
                 </div>
                 <div>
-                    <mat-form-field>
-                        <mat-label i18n="additional elements to import">Welche weiteren Elemente sollen importiert werden?</mat-label>
-                        <mat-select matInput name="elements" formControlName="elements" multiple
-                            (selectionChange)="onChangeElements($event.value)">
-                            <mat-option value="attributes" i18n="attributes">Attribute</mat-option>
-                            <mat-option value="connToLower" i18n="connections to lower">Verbindungen nach unten</mat-option>
-                            <mat-option value="connToUpper" i18n="connections to upper">Verbindungen nach oben</mat-option>
-                            <mat-option value="links" i18n="hyperlinks">Hyperlinks</mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <p i18n="additional elements to import">Welche weiteren Elemente sollen importiert werden?</p>
+                    <div>
+                        <input type="checkbox" id="attributes" name="attributes" formControlName="attributes">
+                        <label for="attributes" i18n="attributes">Attribute</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="connectionsToLower" name="connectionsToLower" formControlName="connectionsToLower">
+                        <label for="connectionsToLower" i18n="downward connections">Verbindungen nach unten</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="connectionsToUpper" name="connectionsToUpper" formControlName="connectionsToUpper">
+                        <label for="connectionsToUpper" i18n="downward connections">Verbindungen nach oben</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="links" name="links" formControlName="links">
+                        <label for="links" i18n="links">Hyperlinks</label>
+                    </div>
                 </div>
                 <div class="margin">
-                    <mat-slide-toggle formControlName="ignoreExisting"
-                        i18n="ignore item names that already exist"
-                        i18n-matTooltip="only CIs are created, if the name does not exist. if it does, nothing will be changed"
-                        matTooltip="Es werden nur neue CIs angelegt, vorhanden werden nicht ver&auml;ndert, wenn diese Option gew&auml;hlt ist.">
-                        CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden.
-                    </mat-slide-toggle>
+                    <input type="checkbox" id="ignoreExisting" formControlName="ignoreExisting">
+                    <label for="ignoreExisting">
+                        <ng-container i18n="ignore item names that already exist">
+                            CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden.
+                        </ng-container>
+                        <span class="visually-hidden" i18n="only CIs are created, if the name does not exist. if it does, nothing will be changed">
+                            Es werden nur neue CIs angelegt, vorhandene werden nicht ver&auml;ndert, wenn diese Option gew&auml;hlt ist.
+                        </span>
+                    </label>
                 </div>
                 <div class="margin">
-                    <mat-slide-toggle formControlName="headlines"
-                        i18n="the first line of the file contains column headers"
-                        i18n-matTooltip="the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file"
-                        matTooltip="Die Spalten&uuml;berschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei &Uuml;bereinstimmung zugeordnet. So kann eine exportierte Datei schnell wieder importiert werden.">
-                        Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
-                    </mat-slide-toggle>
+                    <input type="checkbox" id="headlines" formControlName="headlines">
+                    <label for="headlines">
+                        <ng-container i18n="the first line of the file contains column headers">
+                            Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
+                        </ng-container>
+                        <span class="visually-hidden" i18n="the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file">
+                            Die Spalten&uuml;berschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei &Uuml;bereinstimmung zugeordnet.
+                            So kann eine exportierte Datei schnell wieder importiert werden.
+                        </span>
+                    </label>
                 </div>
                 <div class="margin" *ngIf="form.get('itemType').valid">
                     <input class="inputfile" type="file" id="file" #file formControlName="file"

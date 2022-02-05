@@ -8,6 +8,7 @@ import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFuncti
 
 import { ImportSelectors, ImportActions } from '../../shared/store/store.api';
 import { Column } from '../objects/column.model';
+import { ImportSettings } from '../../shared/objects/import-settings.model';
 
 @Component({
   selector: 'app-import-items',
@@ -59,27 +60,23 @@ export class ImportItemsComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      itemType: ['', [Validators.required]],
-      elements: new Array(['attributes']),
-      ignoreExisting: false,
-      headlines: true,
-      file: ['', [Validators.required, this.validateFile]],
+      itemType: this.fb.control('', [Validators.required]),
+      attributes: this.fb.control(true),
+      connectionsToLower: this.fb.control(false),
+      connectionsToUpper: this.fb.control(false),
+      links: this.fb.control(false),
+      ignoreExisting: this.fb.control(false),
+      headlines: this.fb.control(true),
+      file: this.fb.control('', [Validators.required, this.validateFile]),
       columns: this.fb.array([], this.validateColumns),
     });
-    this.onChangeElements(this.form.get('elements').value);
+    this.form.valueChanges.subscribe((value: ImportSettings) => {
+      this.store.dispatch(ImportActions.setState(value));
+    });
   }
 
   getPreviewCells(line: string[]) {
     return line.slice(0, 5);
-  }
-
-  onChangeItemType(itemTypeId: string) {
-    this.store.dispatch(ImportActions.setImportItemType({itemTypeId}));
-    this.getExistingItemsList();
-  }
-
-  onChangeElements(elements: string[]) {
-    this.store.dispatch(ImportActions.setElements({elements}));
   }
 
   onSubmit() {

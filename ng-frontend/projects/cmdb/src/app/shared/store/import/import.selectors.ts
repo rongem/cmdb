@@ -8,7 +8,6 @@ export const getImportState =  createFeatureSelector<State>(IMPORT);
 
 export const itemTypeId = createSelector(getImportState, state => state.itemTypeId);
 export const itemType = createSelector(MetaDataSelectors.selectItemTypes, itemTypeId, (itemTypes, id) => itemTypes.find(t => t.id === id));
-const elements = createSelector(getImportState, state => state.elements);
 
 const attributeGroupIdsForItemTypeId = createSelector(itemType, t => t?.attributeGroups?.map(ag => ag.id) ?? []);
 
@@ -25,26 +24,26 @@ const selectConnectionRulesForLowerItemType = createSelector(MetaDataSelectors.s
 );
 
 // Get Column names for import
-export const selectTargetColumns = createSelector(elements, selectAttributeTypesForItemType, MetaDataSelectors.selectConnectionTypes,
+export const selectTargetColumns = createSelector(getImportState, selectAttributeTypesForItemType, MetaDataSelectors.selectConnectionTypes,
     MetaDataSelectors.selectItemTypes, selectConnectionRulesForUpperItemType, selectConnectionRulesForLowerItemType,
-    (el, attributeTypes, connectionTypes, itemTypes, connectionRulesToLower, connectionRulesToUpper) => {
+    (state, attributeTypes, connectionTypes, itemTypes, connectionRulesToLower, connectionRulesToUpper) => {
         const array: KeyValue<string, string>[] = [];
         array.push({key: '<ignore>', value: '<ignore>'});
         array.push({key: 'name', value: 'Name'});
-        if (el.includes('attributes')) {
+        if (state.attributes) {
             attributeTypes.forEach(at => array.push({key: 'a:' + at.id, value: at.name}));
         }
-        if (el.includes('connToLower')) {
+        if (state.connectionsToLower) {
             connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.id, value:
                 connectionTypes.find(c => c.id === cr.connectionTypeId).name + ' ' +
                 itemTypes.find(i => i.id === cr.lowerItemTypeId).name}));
         }
-        if (el.includes('connToUpper')) {
+        if (state.connectionsToUpper) {
             connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.id, value:
                 connectionTypes.find(c => c.id === cr.connectionTypeId).reverseName + ' ' +
                 itemTypes.find(i => i.id === cr.upperItemTypeId).name}));
         }
-        if (el.includes('links')) {
+        if (state.links) {
             array.push({key: 'linkaddress', value: 'Link'});
             array.push({key: 'linkdescription', value: 'Link description'});
         }
