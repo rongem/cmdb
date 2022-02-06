@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -32,6 +32,8 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   working = false;
   error = false;
   errorMessage: string;
+  private updatingForm = false;
+  private formSubscription: Subscription;
   private errorSubscription: Subscription;
   private itemId: string;
   private attributeTypes: AttributeType[];
@@ -42,6 +44,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
               private router: Router,
               private store: Store,
               private actions$: Actions,
+              private fb: FormBuilder,
               private validator: ValidatorService,
               private http: HttpClient) { }
 
@@ -76,7 +79,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
       take(1),
       map(value => value.configurationItem.id),
     ).subscribe(id => {
-      this.router.navigate(['display', 'configuration-item', id, 'edit']);
+      this.router.navigate(['edit', 'configuration-item', id]);
     });
     // error handling if item creation fails
     this.errorSubscription = this.actions$.pipe(
@@ -89,11 +92,8 @@ export class CopyItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.errorSubscription.unsubscribe();
-  }
-
-  getControl(name: string, element: string | number) {
-    return (this.itemForm.controls[name] as FormArray).controls[element];
+    this.errorSubscription?.unsubscribe();
+    this.formSubscription?.unsubscribe();
   }
 
   // cache items that are free to connect
@@ -132,61 +132,95 @@ export class CopyItemComponent implements OnInit, OnDestroy {
     return this.store.select(MetaDataSelectors.selectSingleAttributeType(typeId));
   }
 
-  toggleFormArray(formArray: AbstractControl, value: boolean) {
-    if (formArray) {
-      if (value === true) {
-        formArray.enable();
-      } else {
-        formArray.disable();
-      }
-    }
-  }
-
-  toggleFormControl(formControl: FormControl, value: boolean) {
-    if (formControl) {
-      if (value === true) {
-        formControl.enable();
-      } else {
-        formControl.disable();
-      }
-    }
-  }
-
   onSubmit() {
     this.working = true;
-    const item = this.itemForm.value as FullConfigurationItem;
+    const item = FullConfigurationItem.copyItem(this.itemForm.value as FullConfigurationItem);
     this.store.dispatch(EditActions.createFullConfigurationItem({item}));
   }
 
   private createForm(item: FullConfigurationItem) {
-    const attr: FormGroup[] = [];
-    item.attributes.forEach(att => attr.push(new FormGroup({
-      id: new FormControl(''),
-      typeId: new FormControl(att.typeId),
-      value: new FormControl(att.value, Validators.required),
-    }, this.validateAttributeValue)));
-    const conn: FormGroup[] = [];
-    item.connectionsToLower.forEach(c => conn.push(new FormGroup({
-      id: new FormControl(''),
-      typeId: new FormControl(c.typeId),
-      targetId: new FormControl(c.targetId),
-      ruleId: new FormControl(c.ruleId),
-      description: new FormControl(c.description),
-    }, [Validators.required, this.validateConnectionDescription], [this.validateConnectableItem])));
-    const link: FormGroup[] = [];
-    item.links.forEach(l => link.push(new FormGroup({
-      id: new FormControl(''),
-      uri: new FormControl(l.uri, Validators.required),
-      description: new FormControl(l.description, Validators.required),
-    })));
-    this.itemForm = new FormGroup({
-      id: new FormControl(''),
-      typeId: new FormControl(item.typeId),
-      name: new FormControl('', Validators.required),
-      attributes: new FormArray(attr),
-      connectionsToLower: new FormArray(conn),
-      links: new FormArray(link),
-    }, null, this.validator.validateNameAndType);
+    this.itemForm = this.fb.group({
+      id: this.fb.control(''),
+      typeId: this.fb.control(item.typeId),
+      name: this.fb.control('', Validators.required),
+      attributesEnabled: this.fb.control(!!item.attributes?.length),
+      attributes: this.fb.array(item.attributes.map(a => this.fb.group({
+        enabled: this.fb.control(true),
+        typeId: this.fb.control(a.typeId),
+        value: this.fb.control(a.value, Validators.required),
+      }))),
+      connectionsToLowerEnabled: this.fb.control(!!item.connectionsToLower?.length),
+      connectionsToLower: this.fb.array(item.connectionsToLower.map(c => this.fb.group({
+        enabled: this.fb.control(true),
+        typeId: this.fb.control(c.typeId),
+        targetId: this.fb.control(c.targetId),
+        ruleId: this.fb.control(c.ruleId),
+        description: this.fb.control(c.description),
+      }))),
+      linksEnabled: this.fb.control(!!item.links?.length),
+      links: this.fb.array(item.links.map(l => this.fb.group({
+        enabled: this.fb.control(true),
+        uri: this.fb.control(l.uri, Validators.required),
+        description: this.fb.control(l.description, Validators.required),
+      }))),
+    }, {
+      asyncValidators: [this.validator.validateNameAndType]
+    });
+    this.formSubscription = this.itemForm.valueChanges.subscribe(value => {
+      if (this.updatingForm) {
+        return;
+      }
+      this.updatingForm = true;
+      const attributes = this.itemForm.get('attributes') as FormArray;
+      if (value.attributesEnabled && attributes.disabled) {
+        attributes.enable();
+      } else if (!value.attributesEnabled && attributes.enabled) {
+        attributes.disable();
+      } else {
+        attributes.controls.forEach(c => {
+          const v = c.get('value');
+          if (c.value.enabled && v.disabled) {
+            c.enable();
+          } else if (!c.value.enabled && v.enabled) {
+            c.disable();
+            c.get('enabled').enable();
+          }
+        });
+      }
+      const connectionsToLower = this.itemForm.get('connectionsToLower') as FormArray;
+      if (value.connectionsToLowerEnabled && connectionsToLower.disabled) {
+        connectionsToLower.enable();
+      } else if (!value.connectionsToLowerEnabled && connectionsToLower.enabled) {
+        connectionsToLower.disable();
+      } else {
+        connectionsToLower.controls.forEach(c => {
+          const d = c.get('description');
+          if (c.value.enabled && d.disabled) {
+            c.enable();
+          } else if (!c.value.enabled && d.enabled) {
+            c.disable();
+            c.get('enabled').enable();
+          }
+        });
+      }
+      const links = this.itemForm.get('links') as FormArray;
+      if (value.linksEnabled && links.disabled) {
+        links.enable();
+      } else if (!value.linksEnabled && links.disabled) {
+        links.disable();
+      } else {
+        links.controls.forEach(c => {
+          const u = c.get('uri');
+          if (c.value.enabled && u.disabled) {
+            c.enable();
+          } else if (!c.value.enabled && u.enabled) {
+            c.disable();
+            c.get('enabled').enable();
+          }
+        });
+      }
+      this.updatingForm = false;
+    });
     this.formReady = true;
   }
 }

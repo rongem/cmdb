@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { EffectsModule } from '@ngrx/effects';
 import { EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
@@ -36,7 +35,6 @@ import { ImportItemsComponent } from './import-items/import-items.component';
         ItemSharedModule,
         EffectsModule.forFeature([EditEffects, MultiEditEffects]),
         MatSelectModule,
-        MatSlideToggleModule,
         MatTableModule,
         ValidatorModule,
     ],

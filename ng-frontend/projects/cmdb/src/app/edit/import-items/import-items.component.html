@@ -77,13 +77,11 @@
             <ng-container *ngIf="!sheet">
                 <div class="box-top__sub" i18n="select sheet">Tabellenblatt ausw&auml;hlen</div>
                 <div class="box-body__sub">
-                    <mat-form-field>
-                        <mat-label i18n="sheet">Tabellenblatt</mat-label>
-                        <select matNativeControl name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
-                            <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
-                        </select>
-                    </mat-form-field>
-                    <button type="button" mat-button (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
+                    <label for="sheetIndex" i18n="sheet">Tabellenblatt</label>
+                    <select id="sheetIndex" name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
+                        <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
+                    </select>
+                    <button type="button" (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
                 </div>
                 <div class="box-top__sub" i18n="data preview">Vorschau auf die Daten</div>
                 <table class="box-body__sub" *ngIf="fileContent.sheets[sheetIndex]" style="width: 100%;">
@@ -99,18 +97,16 @@
                 <div class="box-top__sub" i18n="column mappings">Spaltenzuordnungen</div>
                 <div class="box-body__sub" formArrayName="columns">
                     <div *ngFor="let name of columnNames; let i = index">
-                        <mat-form-field>
-                            <mat-label>({{i}}) {{name}}</mat-label>
-                            <select matNativeControl [formControlName]="i">
-                                <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
-                                    {{keyvalue.value}}
-                                </option>
-                            </select>
-                        </mat-form-field>
+                        <label [for]="i">({{i}}) {{name}}</label>
+                        <select [id]="i" [formControlName]="i">
+                            <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
+                                {{keyvalue.value}}
+                            </option>
+                        </select>
                     </div>
                     <div>
-                        <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
-                        <button mat-button type="button" i18n="continue" [disabled]="form.invalid" class="selectable"
+                        <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                        <button type="button" i18n="continue" [disabled]="form.invalid" class="selectable"
                             (click)="onContinue()">
                             Weiter
                         </button>
@@ -184,8 +180,8 @@
                     Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
                 </div>
                 <div class="margin">
-                    <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
-                    <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
+                    <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                    <button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
                         Items importieren
                     </button>
                 </div>
@@ -294,6 +290,6 @@
             <tr mat-header-row *matHeaderRowDef="['index', 'subject', 'severity', 'message', 'details']"></tr>
             <tr mat-row *matRowDef="let row; columns: ['index', 'subject', 'severity', 'message', 'details']"></tr>
         </table>
-        <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
+        <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
     </div>
 </div>

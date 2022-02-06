@@ -1,9 +1,5 @@
 @import "projects/cmdb/src/_variables.scss";
 
-mat-form-field {
-    width: 100%;
-}
-
 .margin {
     margin-top: 1rem;
 }
@@ -21,9 +17,3 @@ mat-form-field {
 	cursor: pointer;
 }
 
-// .inputfile:focus + label,
-// .inputfile + label:hover {
-//     background-color: darken($element);
-// 	outline: 1px dotted #000;
-// 	outline: -webkit-focus-ring-color auto 5px;
-// }
