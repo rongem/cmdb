@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { EffectsModule } from '@ngrx/effects';
 import { EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
@@ -34,7 +33,6 @@ import { ImportItemsComponent } from './import-items/import-items.component';
         CoreModule,
         ItemSharedModule,
         EffectsModule.forFeature([EditEffects, MultiEditEffects]),
-        MatSelectModule,
         MatTableModule,
         ValidatorModule,
     ],
