@@ -1,25 +1,106 @@
-<div class="box">
-    <div class="box-top">
-        <h3 i18n="create configuration item">Configuration Item erstellen</h3>
-    </div>
-    <form [formGroup]="itemForm" (submit)="onSubmit()" class="box-body">
-        <mat-form-field>
-            <input matInput type="text" name="name" formControlName="name" autofocus
-                placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label i18n="item type">Typ des neuen Items</mat-label>
-            <mat-select name="type" formControlName="typeId" required>
-                <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id"
-                    [style.background]="itemType.backColor">
-                    <span class="text-on-background">{{itemType.name}}</span>
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <p>
-            <button mat-button type="submit" i18n="create item" [disabled]="itemForm.invalid" class="selectable">
-                Neues Item erstellen
-            </button>
-        </p>
-    </form>
-</div>
+<app-busy *ngIf="(metaDataReady | async) === false" i18n="loading data...">
+    Lade Daten...
+</app-busy>
+<form *ngIf="(metaDataReady | async)" (ngSubmit)="onSubmit()">
+    <table class="table" [formGroup]="form">
+        <thead>
+            <tr>
+                <th i18n="property">Eigenschaft</th>
+                <th i18n="value">Wert</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td i18n="item-type">Item-Typ</td>
+                <td>
+                    <ng-container *ngIf="!itemTypeId">
+                        <select formControlName="typeId">
+                            <option *ngFor="let type of (itemTypes | async)" [value]="type.id">
+                                {{type.name}}
+                            </option>
+                        </select>
+                    </ng-container>
+                    <ng-container *ngIf="itemTypeId">
+                        {{(itemType | async).name}}
+                        <span [style.border]="'1px dotted black'" [style.background]="(itemType | async).backColor">
+                            &nbsp;&nbsp;
+                        </span>
+                    </ng-container>
+                </td>
+            </tr>
+            <tr *ngIf="!itemTypeId">
+                <td colspan="2">
+                    <button type="button" (click)="setItemType()" i18n="choose item type">
+                        Item-Typ ausw&auml;hlen
+                    </button>
+                </td>
+            </tr>
+            <ng-container *ngIf="itemTypeId">
+                <tr>
+                    <td>
+                        <label for="name" i18n="name">Name</label>
+                    </td>
+                    <td colspan="2">
+                        <input type="text" id="name" formControlName="name">
+                    </td>
+                </tr>
+                <ng-container *ngIf="(attributeTypes | async).length > 0" formArrayName="attributes">
+                    <tr>
+                        <th colspan="2" i18n="attributes">
+                            Attribute
+                        </th>
+                    </tr>
+                    <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
+                        <td>
+                            <label [for]="attributeType.name">
+                                {{attributeType.name}} ({{attributeType.validationExpression}})
+                            </label>
+                        </td>
+                        <td colspan="2">
+                            <input type="text" [id]="attributeType.name" formControlName="value">
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-container formArrayName="links">
+                    <tr>
+                        <th i18n="links">Links</th>
+                        <td>
+                            <button type="button" class="selectable" (click)="onAddLink()" i18n="add link">
+                                Link hinzuf&uuml;gen
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
+                        <td>
+                            {{i + 1}})
+                        </td>
+                        <td>
+                            <div>
+                                <label [for]="'linkdescription'" i18n="link description">
+                                     Beschreibung: 
+                                </label>
+                                <input type="text" [id]="'linkdescription'" formControlName="description">
+                            </div>
+                            <div>
+                                <label [for]="'linkuri'" i18n="link uri">
+                                    URL: 
+                                </label>
+                                <input type="url" [id]="'linkuri'" formControlName="uri">
+                            </div>
+                            <div>
+                                <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="delete link">
+                                    Link l&ouml;schen
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+        </tbody>
+    </table>
+    <p *ngIf="itemTypeId">
+        <button type="submit" i18n="create item" [disabled]="form.invalid" class="selectable">
+            Neues Item erstellen
+        </button>
+    </p>
+</form>

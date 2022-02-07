@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { map, skipWhile, take } from 'rxjs';
+import { map, skipWhile, Subscription, take, withLatestFrom } from 'rxjs';
 import { ConfigurationItem, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
 
 @Component({
@@ -11,8 +11,11 @@ import { ConfigurationItem, EditActions, MetaDataSelectors, ReadActions, Validat
   templateUrl: './create-item.component.html',
   styleUrls: ['./create-item.component.scss']
 })
-export class CreateItemComponent implements OnInit {
-  itemForm: FormGroup;
+export class CreateItemComponent implements OnInit, OnDestroy {
+  form: FormGroup;
+  formReady = false;
+  itemTypeId: string;
+  private subscription: Subscription;
 
   constructor(private router: Router,
               private actions$: Actions,
@@ -24,18 +27,37 @@ export class CreateItemComponent implements OnInit {
     return this.store.select(MetaDataSelectors.selectItemTypes);
   }
 
-  ngOnInit() {
-    this.itemForm = this.fb.group({
-        typeId: '',
-        name: '',
-      }, { asyncValidators: [this.validator.validateNameAndType]}
-    );
-    this.store.select(MetaDataSelectors.selectState).pipe(
-      skipWhile(meta => !meta.validData),
+  get itemType() {
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.itemTypeId));
+  }
+
+  get metaDataReady() {
+    return this.store.select(MetaDataSelectors.selectDataValid);
+  }
+
+  get attributeTypes() {
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.itemTypeId));
+  }
+
+  get attributes() {
+    return this.form.get('attributes') as FormArray;
+  }
+
+  get links() {
+    return this.form.get('links') as FormArray;
+  }
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      typeId: this.fb.control('', Validators.required),
+    });
+    this.store.select(MetaDataSelectors.selectItemTypes).pipe(
+      withLatestFrom(this.store.select(MetaDataSelectors.selectDataValid)),
+      skipWhile(([, valid]) => !valid),
       take(1),
-    ).subscribe(meta => {
-      if (meta.itemTypes && meta.itemTypes.length > 0) {
-        this.itemForm.get('typeId').setValue(meta.itemTypes[0].id);
+    ).subscribe(([itemTypes, ]) => {
+      if (itemTypes.length === 0) {
+        this.router.navigate(['display']);
       }
     });
     this.store.dispatch(ReadActions.clearConfigurationItem({ success: true }));
@@ -43,11 +65,46 @@ export class CreateItemComponent implements OnInit {
       ofType(ReadActions.setConfigurationItem),
       take(1),
       map(action => action.configurationItem.id)
-    ).subscribe(id => this.router.navigate(['display', 'configuration-item', id, 'edit']));
+    ).subscribe(id => this.router.navigate(['edit', 'configuration-item', id]));
+  }
+
+  ngOnDestroy(): void {
+      this.subscription?.unsubscribe();
+  }
+
+  setItemType() {
+    this.itemTypeId = this.form.value.typeId;
+    this.attributeTypes.pipe(take(1)).subscribe(attributeTypes => {
+      this.form = this.fb.group({
+        name: this.fb.control('', [Validators.required, this.validator.validateTrimmed]),
+        typeId: this.fb.control(this.itemTypeId),
+        attributes: this.fb.array(attributeTypes.map(at => this.fb.group({
+          typeId: this.fb.control(at.id),
+          value: this.fb.control('', [this.validator.validateTrimmed, this.validator.validateMatchesRegex(at.validationExpression)]),
+        }))),
+        links: this.fb.array([]),
+      }, { asyncValidators: [this.validator.validateNameAndType] });
+    });
+  }
+
+  onAddLink() {
+    this.links.push(this.fb.group({
+      uri: this.fb.control('https://', [Validators.required, this.validator.validateTrimmed, this.validator.validatUrl]),
+      description: this.fb.control('', [Validators.required, this.validator.validateTrimmed]),
+    }));
+  }
+
+  onDeleteLink(index: number) {
+    this.links.removeAt(index);
   }
 
   onSubmit() {
-    this.store.dispatch(EditActions.createConfigurationItem({configurationItem: this.itemForm.value as ConfigurationItem}));
+    this.attributes.controls.forEach(c => {
+      if (!c.value.value) {
+        c.disable();
+      }
+    });
+    this.store.dispatch(EditActions.createConfigurationItem({configurationItem: this.form.value as ConfigurationItem}));
   }
 
 }

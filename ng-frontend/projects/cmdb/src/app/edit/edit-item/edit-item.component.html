@@ -68,7 +68,7 @@
                 <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
                     <td>
                         <label [for]="attributeType.name">
-                            {{attributeType.name}}
+                            {{attributeType.name}} ({{attributeType.validationExpression}})
                         </label>
                     </td>
                     <td colspan="2">
@@ -87,17 +87,16 @@
                 </tr>
                 <tr *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
                     <td>
-                        {{i + 1}}:
+                        <label [for]="'linkdescription'" i18n="link description">
+                            {{i + 1}}) Beschreibung: 
+                        </label>
+                        <input type="text" [id]="'linkdescription'" formControlName="description" [readonly]="(configurationItem | async).userIsResponsible === false">
                     </td>
                     <td>
                         <label [for]="'linkuri'" i18n="link uri">
                             URL: 
                         </label>
                         <input type="url" [id]="'linkuri'" formControlName="uri" [readonly]="(configurationItem | async).userIsResponsible === false">
-                        <label [for]="'linkdescription'" i18n="link description">
-                            Beschreibung: 
-                        </label>
-                        <input type="text" [id]="'linkdescription'" formControlName="description" [readonly]="(configurationItem | async).userIsResponsible === false">
                     </td>
                     <td>
                         <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="delete link"
@@ -114,12 +113,9 @@
             </tr>
             <tr *ngFor="let person of (configurationItem | async).responsibleUsers; let i = index">
                 <td>
-                    {{i + 1}}:
+                    {{i + 1}}) {{person}}
                 </td>
-                <td>
-                    {{person}}
-                </td>
-                <td>
+                <td colspan="2">
                     <button type="button" *ngIf="person === (userName | async)" (click)="onAbandonResponsibility()" class="red-button selectable" i18n="abandon responsibility">
                         Verantwortung f&uuml;r das Configuration Item aufgeben
                     </button>

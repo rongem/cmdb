@@ -1,9 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, skipWhile, Subscription, withLatestFrom } from 'rxjs';
-import { AppConfigService, ConfigurationItem, EditActions, FullConfigurationItem, MetaDataSelectors, ReadActions } from 'backend-access';
+import {
+  ConfigurationItem,
+  EditActions,
+  FullConfigurationItem,
+  MetaDataSelectors,
+  ReadActions,
+  ValidatorService,
+} from 'backend-access';
 
 import { ItemSelectors } from '../../shared/store/store.api';
 import { Actions, ofType } from '@ngrx/effects';
@@ -19,7 +26,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   private item: FullConfigurationItem;
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store, private fb: FormBuilder, private router: Router, private actions$: Actions) { }
+  constructor(private store: Store, private fb: FormBuilder, private router: Router, private actions$: Actions, private val: ValidatorService) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
@@ -66,18 +73,21 @@ export class EditItemComponent implements OnInit, OnDestroy {
       }
       this.item = item;
       this.form = this.fb.group({
-        name: this.fb.control(item.name, [Validators.required, this.trimValidator]),
+        name: this.fb.control(item.name, [Validators.required, this.val.validateTrimmed]),
         attributes: this.fb.array(attributeTypes.map(attributeType => this.fb.group({
           typeId: this.fb.control(attributeType.id),
-          value: this.fb.control(item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '', [this.trimValidator]),
+          value: this.fb.control(
+            item.attributes.find(a => a.typeId === attributeType.id)?.value ?? '',
+            [this.val.validateTrimmed, this.val.validateMatchesRegex(attributeType.validationExpression)]
+          ),
         }))),
         links: this.fb.array(item.links.map(link => this.fb.group({
-          uri: this.fb.control(link.uri, [this.trimValidator]),
-          description: this.fb.control(link.description, this.trimValidator),
+          uri: this.fb.control(link.uri, [Validators.required, this.val.validateTrimmed, this.val.validatUrl]),
+          description: this.fb.control(link.description, [Validators.required, this.val.validateTrimmed]),
         })))
       });
     }));
-    this.subscriptions.push(this.actions$.pipe(ofType(ReadActions.clearConfigurationItem)).subscribe(action => this.navigateAway()));
+    this.subscriptions.push(this.actions$.pipe(ofType(ReadActions.clearConfigurationItem)).subscribe(() => this.navigateAway()));
   }
 
   ngOnDestroy(): void {
@@ -135,28 +145,14 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
   onAddLink() {
     this.links.push(this.fb.group({
-      uri: this.fb.control('https://', [Validators.required, this.urlValidator]),
-      description: this.fb.control('', Validators.required),
+      uri: this.fb.control('https://', [Validators.required, this.val.validateTrimmed, this.val.validatUrl]),
+      description: this.fb.control('', [Validators.required, this.val.validateTrimmed]),
     }));
   }
 
   onAbandonResponsibility() {
     this.store.dispatch(EditActions.abandonResponsibility({itemId: this.item.id}));
   }
-
-  private urlValidator: ValidatorFn = (control: AbstractControl) => {
-    if (typeof control.value === 'string' && AppConfigService.validURL(control.value)) {
-      return null;
-    }
-    return {notAValidUrl: true};
-  };
-
-  private trimValidator: ValidatorFn = (control: AbstractControl) => {
-    if (typeof control.value === 'string' && control.value !== control.value.trim()) {
-      return {noTrailingOrLeadingSpacesAllowedError: true};
-    }
-    return null;
-  };
 
   private navigateAway() {
     this.router.navigate(['display']);
