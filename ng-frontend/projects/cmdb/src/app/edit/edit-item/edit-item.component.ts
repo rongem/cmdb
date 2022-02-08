@@ -66,7 +66,10 @@ export class EditItemComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.configurationItem.pipe(
       withLatestFrom(this.itemReady, this.attributeTypes),
       skipWhile(([, ready, ]) => !ready),
-    ).subscribe(([item, , attributeTypes]) => {
+    ).subscribe(([item, ready, attributeTypes]) => {
+      if (!ready) {
+        return;
+      }
       if (!item) {
         this.navigateAway();
         return;
