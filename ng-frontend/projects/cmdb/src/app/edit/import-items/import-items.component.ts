@@ -2,9 +2,17 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { catchError, map, Observable, of, take, withLatestFrom } from 'rxjs';
-import { TransferTable, LineMessage, MetaDataSelectors, ErrorActions, EditFunctions, ReadFunctions,
-  ImportResult, ImportSheet } from 'backend-access';
+import { catchError, map, Observable, of, take } from 'rxjs';
+import {
+  TransferTable,
+  LineMessage,
+  MetaDataSelectors,
+  ErrorActions,
+  EditFunctions,
+  ReadFunctions,
+  ImportResult,
+  ImportSheet,
+} from 'backend-access';
 
 import { ImportSelectors, ImportActions } from '../../shared/store/store.api';
 import { Column } from '../objects/column.model';
@@ -30,9 +38,7 @@ export class ImportItemsComponent implements OnInit {
   resultList: LineMessage[];
   busy = false;
 
-  constructor(private store: Store,
-              private http: HttpClient,
-              private fb: FormBuilder) { }
+  constructor(private store: Store, private http: HttpClient, private fb: FormBuilder) { }
 
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
@@ -60,7 +66,7 @@ export class ImportItemsComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      itemType: this.fb.control('', [Validators.required]),
+      itemTypeId: this.fb.control('', [Validators.required]),
       attributes: this.fb.control(true),
       connectionsToLower: this.fb.control(false),
       connectionsToUpper: this.fb.control(false),
@@ -81,13 +87,13 @@ export class ImportItemsComponent implements OnInit {
 
   onSubmit() {
     this.busy = true;
-    EditFunctions.importDataTable(this.http, this.form.get('itemType').value, this.dataTable).subscribe(messages => {
-      this.resultList = messages;
-      this.busy = false;
-    }, (error) => {
-      this.store.dispatch(ErrorActions.error({error, fatal: false}));
-      this.onBackToFirst();
-      this.busy = false;
+    EditFunctions.importDataTable(this.http, this.form.get('itemTypeId').value, this.dataTable).subscribe({
+      next: messages => this.resultList = messages,
+      error: (error) => {
+        this.store.dispatch(ErrorActions.error({error, fatal: false}));
+        this.onBackToFirst();
+      },
+      complete: () => this.busy = false,
     });
   }
 
@@ -95,18 +101,18 @@ export class ImportItemsComponent implements OnInit {
     const files = (target as HTMLInputElement).files;
     if (this.form.get('file').valid) {
       this.busy = true;
-      this.postFile(files[0]).pipe(
-        withLatestFrom(this.targetColumns),
-      ).subscribe(([data, columns]) => {
-        this.fileContent = data;
-        if (this.fileContent.sheets.length === 1) {
-          this.onSelectSheet(0);
-        }
-        this.busy = false;
-      }, (error) => {
-        this.store.dispatch(ErrorActions.error({error, fatal: false}));
-        this.fileContent = undefined;
-        this.busy = false;
+      this.postFile(files[0]).subscribe({
+        next: data => {
+          this.fileContent = data;
+          if (this.fileContent.sheets.length === 1) {
+            this.onSelectSheet(0);
+          }
+        },
+        error: error => {
+          this.store.dispatch(ErrorActions.error({error, fatal: false}));
+          this.fileContent = undefined;
+        },
+        complete: () => this.busy = false
       });
     }
   }
@@ -155,13 +161,14 @@ export class ImportItemsComponent implements OnInit {
         });
         return activeColumns;
       }),
-    ).subscribe(activeColumns => {
-      this.getTable(activeColumns);
-      this.busy = false;
-    }, (error) => {
-      this.store.dispatch(ErrorActions.error({error, fatal: false}));
-      this.dataTable = undefined;
-      this.busy = false;
+      take(1),
+    ).subscribe({
+      next: activeColumns => this.getTable(activeColumns),
+      error: (error) => {
+        this.store.dispatch(ErrorActions.error({error, fatal: false}));
+        this.dataTable = undefined;
+      },
+      complete: () => this.busy = false,
     });
   }
 
@@ -174,46 +181,19 @@ export class ImportItemsComponent implements OnInit {
     (this.form.get('columns') as FormArray).clear();
   }
 
-  validateFile = (c: FormControl) => {
-    if (this.file && this.file.nativeElement) {
-      const file = this.file.nativeElement as HTMLInputElement;
-      if (file && file.files && file.files.length > 0 && (file.files[0].type === 'text/csv' ||
-        file.files[0].type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-        (file.files[0].type === 'application/vnd.ms-excel' && file.files[0].name.endsWith('.csv')))) {
-          return null;
-      }
-    }
-    return {invalidFileTypeError: true};
-  };
-
-  validateColumns: ValidatorFn = (a: AbstractControl) => {
-    const t1 = a.value.filter((v: string) => v !== '<ignore>');
-    const t2 = [...new Set(t1)];
-    if (t1.length !== t2.length) {
-      return {duplicateValuesError: true};
-    }
-    if (!t2.includes('name')) {
-      return {noNameColumnError: true};
-    }
-    if (t2.includes('linkdescription') && !t2.includes('linkaddress')) {
-      return {descriptionButNoLinkAddressError: true};
-    }
-    return null;
-  };
-
-  postFile(file: File): Observable<ImportResult> {
+  private postFile(file: File): Observable<ImportResult> {
     return EditFunctions.uploadAndConvertFileToTable(this.http, file).pipe(
       catchError((e) => of(null)),
     );
   }
 
-  getExistingItemsList() {
-    ReadFunctions.configurationItemsByTypes(this.http, [this.form.get('itemType').value]).subscribe(items => {
+  private getExistingItemsList() {
+    ReadFunctions.configurationItemsByTypes(this.http, [this.form.get('itemTypeId').value]).subscribe(items => {
       this.existingItemNames = items.map(item => item.name);
     });
   }
 
-  getTable(columns: Column[]) {
+  private getTable(columns: Column[]) {
     const columnIds = columns.map(c => c.orderNumber);
     const nameColumn = columns.findIndex(c => c.targetType === 'name');
     const rows: string[][] = [];
@@ -241,5 +221,32 @@ export class ImportItemsComponent implements OnInit {
     this.columns = columns;
     this.dataTable = { columns: columns.map(c => c.columnMap), rows };
   }
+
+  private validateFile = (c: FormControl) => {
+    if (this.file && this.file.nativeElement) {
+      const file = this.file.nativeElement as HTMLInputElement;
+      if (file && file.files && file.files.length > 0 && (file.files[0].type === 'text/csv' ||
+        file.files[0].type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        (file.files[0].type === 'application/vnd.ms-excel' && file.files[0].name.endsWith('.csv')))) {
+          return null;
+      }
+    }
+    return {invalidFileTypeError: true};
+  };
+
+  private validateColumns: ValidatorFn = (a: AbstractControl) => {
+    const t1 = a.value.filter((v: string) => v !== '<ignore>');
+    const t2 = [...new Set(t1)];
+    if (t1.length !== t2.length) {
+      return {duplicateValuesError: true};
+    }
+    if (!t2.includes('name')) {
+      return {noNameColumnError: true};
+    }
+    if (t2.includes('linkdescription') && !t2.includes('linkaddress')) {
+      return {descriptionButNoLinkAddressError: true};
+    }
+    return null;
+  };
 
 }
