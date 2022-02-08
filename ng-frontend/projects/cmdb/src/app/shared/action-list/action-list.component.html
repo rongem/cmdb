@@ -39,7 +39,7 @@
                 Neues Item hinzuf&uuml;gen
             </button>
         </li>
-        <li class="menu-item" *ngIf="itemId && (userRole | async) > 0">
+        <li class="menu-item" *ngIf="itemId && (userRole | async) > 0 && pathExt !== 'edit'">
             <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId]" i18n="edit item">
                 Bearbeiten
             </button>

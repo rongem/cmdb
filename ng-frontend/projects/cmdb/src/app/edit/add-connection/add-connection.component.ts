@@ -1,6 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSelectors, ReadFunctions } from 'backend-access';
 import { ItemSelectors } from '../../shared/store/store.api';
@@ -11,25 +10,44 @@ import { ItemSelectors } from '../../shared/store/store.api';
   styleUrls: ['./add-connection.component.scss']
 })
 export class AddConnectionComponent implements OnInit {
+  @Input() rule: ConnectionRule;
+  @Input() itemId: string;
+  @Output() connectionSaved = new EventEmitter<Connection>();
   connection = new Connection();
   configurationItems: ConfigurationItem[] = [];
   loading = false;
   error = false;
   noResult = false;
 
-  constructor(public dialogRef: MatDialogRef<AddConnectionComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: { rule: ConnectionRule; itemId: string},
-              public dialog: MatDialog,
-              private http: HttpClient,
-              private store: Store) { }
+  constructor(private http: HttpClient,  private store: Store) { }
+
+  get configurationItem() {
+    return this.store.select(ItemSelectors.configurationItem);
+  }
+
+  get connectionType() {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(this.rule.connectionTypeId));
+  }
+
+  get connectionRule() {
+    return this.rule;
+  }
+
+  get targetItemType() {
+    return this.store.select(MetaDataSelectors.selectSingleItemType(this.rule.lowerItemTypeId));
+  }
+
+  get isDescriptionValid() {
+    return new RegExp(this.connectionRule.validationExpression).test(this.connection.description);
+  }
 
   ngOnInit() {
     this.loading = true;
-    this.connection.ruleId = this.data.rule.id;
-    this.connection.typeId = this.data.rule.connectionTypeId;
-    this.connection.upperItemId = this.data.itemId;
+    this.connection.ruleId = this.rule.id;
+    this.connection.typeId = this.rule.connectionTypeId;
+    this.connection.upperItemId = this.itemId;
     this.connection.description = '';
-    ReadFunctions.connectableItemsForItem(this.http, this.data.itemId, this.data.rule.id).subscribe((configurationItems) => {
+    ReadFunctions.connectableItemsForItem(this.http, this.itemId, this.rule.id).subscribe((configurationItems) => {
         this.configurationItems = configurationItems;
         this.loading = false;
         this.noResult = configurationItems.length === 0;
@@ -46,28 +64,12 @@ export class AddConnectionComponent implements OnInit {
       });
   }
 
-  get configurationItem() {
-    return this.store.select(ItemSelectors.configurationItem);
-  }
-
-  get connectionType() {
-    return this.store.select(MetaDataSelectors.selectSingleConnectionType(this.data.rule.connectionTypeId));
-  }
-
-  get connectionRule() {
-    return this.data.rule;
-  }
-
-  get targetItemType() {
-    return this.store.select(MetaDataSelectors.selectSingleItemType(this.data.rule.lowerItemTypeId));
-  }
-
-  get isDescriptionValid() {
-    return new RegExp(this.connectionRule.validationExpression).test(this.connection.description);
-  }
-
   onSave() {
-    this.dialogRef.close(this.connection);
+    this.connectionSaved.emit(this.connection);
+  }
+
+  onCancel() {
+    this.connectionSaved.emit(undefined);
   }
 
 }

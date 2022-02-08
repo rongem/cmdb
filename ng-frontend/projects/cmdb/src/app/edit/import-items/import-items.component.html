@@ -1,208 +1,264 @@
 <app-busy *ngIf="busy" i18n="analyzing">Analysiere...</app-busy>
-<app-item-menu></app-item-menu>
-<div class="box">
-    <div class="box-top">
-        <h3 i18n="import configuration items">Configuration Items importieren</h3>
-    </div>
-    <form [formGroup]="form" (submit)="onSubmit()" class="box-body" *ngIf="!resultList">
-        <ng-container *ngIf="!fileContent">
-            <div class="box-top__sub" i18n="common settings">Allgemeine Einstellungen</div>
-            <div class="box-body__sub">
-                <div>
-                    <mat-form-field>
-                        <mat-label i18n="item type to import">Typ der zu importierenden Items</mat-label>
-                        <mat-select name="type" formControlName="itemType"
-                            (selectionChange)="onChangeItemType($event.value)">
-                            <mat-option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id"
-                                [style.background]="itemType.backColor">
-                                <span class="text-on-background">{{itemType.name}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-form-field>
-                        <mat-label i18n="additional elements to import">Welche weiteren Elemente sollen importiert werden?</mat-label>
-                        <mat-select matInput name="elements" formControlName="elements" multiple
-                            (selectionChange)="onChangeElements($event.value)">
-                            <mat-option value="attributes" i18n="attributes">Attribute</mat-option>
-                            <mat-option value="connToLower" i18n="connections to lower">Verbindungen nach unten</mat-option>
-                            <mat-option value="connToUpper" i18n="connections to upper">Verbindungen nach oben</mat-option>
-                            <mat-option value="links" i18n="hyperlinks">Hyperlinks</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="margin">
-                    <mat-slide-toggle formControlName="ignoreExisting"
-                        i18n="ignore item names that already exist"
-                        i18n-matTooltip="only CIs are created, if the name does not exist. if it does, nothing will be changed"
-                        matTooltip="Es werden nur neue CIs angelegt, vorhanden werden nicht ver&auml;ndert, wenn diese Option gew&auml;hlt ist.">
-                        CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden.
-                    </mat-slide-toggle>
-                </div>
-                <div class="margin">
-                    <mat-slide-toggle formControlName="headlines"
-                        i18n="the first line of the file contains column headers"
-                        i18n-matTooltip="the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file"
-                        matTooltip="Die Spalten&uuml;berschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei &Uuml;bereinstimmung zugeordnet. So kann eine exportierte Datei schnell wieder importiert werden.">
-                        Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
-                    </mat-slide-toggle>
-                </div>
-                <div class="margin" *ngIf="form.get('itemType').valid">
-                    <input class="inputfile" type="file" id="file" #file formControlName="file"
-                        (change)="handleFileInput($event.target)" class="selectable">
+<h3 i18n="import configuration items">Configuration Items importieren</h3>
+<form [formGroup]="form" (submit)="onSubmit()" *ngIf="!resultList">
+    <table class="table" *ngIf="!fileContent">
+        <thead>
+            <tr>
+                <th colspan="2" i18n="common settings">Allgemeine Einstellungen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <label for="itemType" i18n="item type to import">Typ der zu importierenden Items: </label>
+                </td>
+                <td>
+                    <select name="type" id="itemType" formControlName="itemTypeId">
+                        <option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id">
+                            {{itemType.name}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2" i18n="additional elements to import">Welche weiteren Elemente sollen importiert werden?</th>
+            </tr>
+            <tr>
+                <td>
+                    <label for="attributes" i18n="attributes">Attribute</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="attributes" name="attributes" formControlName="attributes">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="connectionsToLower" i18n="downward connections">Verbindungen nach unten</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="connectionsToLower" name="connectionsToLower" formControlName="connectionsToLower">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="connectionsToUpper" i18n="downward connections">Verbindungen nach oben</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="connectionsToUpper" name="connectionsToUpper" formControlName="connectionsToUpper">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="links" i18n="links">Hyperlinks</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="links" name="links" formControlName="links">
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2" i18n="more settings">Weitere Einstellungen</th>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ignoreExisting">
+                        <ng-container i18n="ignore item names that already exist">
+                            CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden.
+                        </ng-container>
+                        <span class="visually-hidden" i18n="only CIs are created, if the name does not exist. if it does, nothing will be changed">
+                            Es werden nur neue CIs angelegt, vorhandene werden nicht ver&auml;ndert, wenn diese Option gew&auml;hlt ist.
+                        </span>
+                    </label>
+                </td>
+                <td>
+                    <input type="checkbox" id="ignoreExisting" formControlName="ignoreExisting">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="headlines">
+                        <ng-container i18n="the first line of the file contains column headers">
+                            Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
+                        </ng-container>
+                        <span class="visually-hidden" i18n="the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file">
+                            Die Spalten&uuml;berschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei &Uuml;bereinstimmung zugeordnet.
+                            So kann eine exportierte Datei schnell wieder importiert werden.
+                        </span>
+                    </label>
+                </td>
+                <td>
+                    <input type="checkbox" id="headlines" formControlName="headlines">
+                </td>
+            </tr>
+            <tr *ngIf="form.get('itemTypeId').valid">
+                <td>
                     <label class="mat-button" for="file">
                         <ng-container i18n="choose file">
                             Datei ausw&auml;hlen
                         </ng-container>
                         <div class="mat-button-focus-overlay"></div>
                     </label>
-                </div>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="fileContent">
-            <ng-container>
-                <div class="box-top__sub" i18n="item type">Item-Typ</div>
-                <div class="box-body__sub">{{(selectedItemType | async).name}}</div>
-            </ng-container>
-            <ng-container *ngIf="!sheet">
-                <div class="box-top__sub" i18n="select sheet">Tabellenblatt ausw&auml;hlen</div>
-                <div class="box-body__sub">
-                    <mat-form-field>
-                        <mat-label i18n="sheet">Tabellenblatt</mat-label>
-                        <select matNativeControl name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
-                            <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
-                        </select>
-                    </mat-form-field>
-                    <button type="button" mat-button (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
-                </div>
-                <div class="box-top__sub" i18n="data preview">Vorschau auf die Daten</div>
-                <table class="box-body__sub" *ngIf="fileContent.sheets[sheetIndex]" style="width: 100%;">
-                    <tr *ngFor="let line of previewLines; let i = index">
-                        <td>{{i}}</td>
-                        <td *ngFor="let cell of getPreviewCells(line)">{{cell}}</td>
-                        <td *ngIf="line.length > 5">...</td>
-                    </tr>
-                    <tr *ngIf="fileContent.sheets[sheetIndex].lines.length > 5"><td>....</td></tr>
-                </table>
-            </ng-container>
-            <ng-container *ngIf="sheet && !dataTable">
-                <div class="box-top__sub" i18n="column mappings">Spaltenzuordnungen</div>
-                <div class="box-body__sub" formArrayName="columns">
-                    <div *ngFor="let name of columnNames; let i = index">
-                        <mat-form-field>
-                            <mat-label>({{i}}) {{name}}</mat-label>
-                            <select matNativeControl [formControlName]="i">
-                                <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
-                                    {{keyvalue.value}}
-                                </option>
-                            </select>
-                        </mat-form-field>
-                    </div>
-                    <div>
-                        <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
-                        <button mat-button type="button" i18n="continue" [disabled]="form.invalid" class="selectable"
-                            (click)="onContinue()">
-                            Weiter
-                        </button>
-                    </div>
-                </div>
-            </ng-container>
-            <div *ngIf="dataTable">
-                <ng-container *ngIf="dataTable.rows.length > 0">
-                    <div class="box-top__sub" i18n="elements that can be imported">
-                        Zu importierende Elemente
-                    </div>
-                    <div class="box-body__sub">
-                        <table mat-table [dataSource]="dataTable.rows" class="mat-elevation-z8">
-                            <ng-container *ngFor="let column of columns; let i = index">
-                                <ng-container [matColumnDef]="column.name">
-                                    <th mat-header-cell *matHeaderCellDef>
-                                        {{column.caption}}
-                                    </th>
-                                    <td mat-cell *matCellDef="let line">
-                                        {{line[i]}}
-                                    </td>
-                                </ng-container>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-                        </table>
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="errorList.length > 0">
-                    <div class="box-top__sub" i18n="problems found">
-                        Erkannte Probleme
-                    </div>
-                    <div class="box-body__sub">
-                        <table mat-table [dataSource]="errorList" class="mat-elevation-z8">
-                            <ng-container matColumnDef="index">
-                                <th mat-header-cell *matHeaderCellDef i18n="line">
-                                    Zeile
-                                </th>
-                                <td mat-cell *matCellDef="let entry">
-                                    {{entry.index + 1}}
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="message">
-                                <th mat-header-cell *matHeaderCellDef i18n="error message">
-                                    Fehlermeldung
-                                </th>
-                                <td mat-cell *matCellDef="let entry">
-                                    <ng-container [ngSwitch]="entry.message">
-                                        <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
-                                            Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
-                                        </span>
-                                        <span *ngSwitchCase="'Ignoring line with empty name.'" i18n="ignoring line with empty name">
-                                            Der Name des Items darf nicht leer sein. Die Zeile wird ignoriert.
-                                        </span>
-                                        <span *ngSwitchCase="'Ignoring line with duplicate name.'" i18n="ignoring line with duplicate name">
-                                            Der Name des Items ist mehrfach vorhanden. Die Zeile wird ignoriert.
-                                        </span>
-                                        <span *ngSwitchCase="'No item matches this name and type.'" i18n="no item matches this name and type">
-                                            Ein Item mit diesem Namen wurde nicht gefunden.
-                                        </span>
-                                    </ng-container>
-                                </td>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="['index', 'message']"></tr>
-                            <tr mat-row *matRowDef="let row; columns: ['index', 'message']"></tr>
-                        </table>
-                    </div>
-                </ng-container>
-                <div *ngIf="dataTable.rows.length === 0" class="red"
-                    i18n="There are no lines to import. Please retry with another file or other settings.">
-                    Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
-                </div>
-                <div class="margin">
-                    <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
-                    <button mat-button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
-                        Items importieren
+                </td>
+                <td>
+                    <input class="inputfile" type="file" id="file" #file formControlName="file"
+                        (change)="handleFileInput($event.target)" class="selectable">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table" *ngIf="fileContent && !dataTable">
+        <thead>
+            <tr>
+                <th i18n="item type">Item-Typ</th>
+                <th>{{(selectedItemType | async).name}}</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="!sheet">
+            <tr>
+                <th colspan="2" i18n="select sheet">Tabellenblatt ausw&auml;hlen</th>
+            </tr>
+            <tr>
+                <td>
+                    <label for="sheetIndex" i18n="sheet">Tabellenblatt</label>
+                </td>
+                <td>
+                    <select id="sheetIndex" name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
+                        <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
+                    </select>
+                    <button type="button" (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2" i18n="data preview">Vorschau auf die Daten</th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table class="box-body__sub" *ngIf="fileContent.sheets[sheetIndex]" style="width: 100%;">
+                        <tr *ngFor="let line of previewLines; let i = index">
+                            <td>{{i}}</td>
+                            <td *ngFor="let cell of getPreviewCells(line)">{{cell}}</td>
+                            <td *ngIf="line.length > 5">...</td>
+                        </tr>
+                        <tr *ngIf="fileContent.sheets[sheetIndex].lines.length > 5"><td>....</td></tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+        <tbody *ngIf="sheet && !dataTable">
+            <tr>
+                <th colspan="2" i18n="column mappings">Spaltenzuordnungen</th>
+            </tr>
+            <tr formArrayName="columns" *ngFor="let name of columnNames; let i = index">
+                <td>
+                    <label [for]="i">({{i}}) {{name}}: </label>
+                </td>
+                <td>
+                    <select [id]="i" [formControlName]="i">
+                        <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
+                            {{keyvalue.value}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                </td>
+                <td>
+                    <button type="button" i18n="continue" [disabled]="form.invalid" class="selectable"
+                        (click)="onContinue()">
+                        Weiter
                     </button>
-                </div>
-            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table" *ngIf="dataTable && dataTable.rows.length > 0">
+        <tr>
+            <th [colSpan]="dataTable.columns.length" i18n="elements that can be imported">Zu importierende Elemente</th>
+        </tr>
+        <tr>
+            <th *ngFor="let column of columns">
+                {{column.caption}}
+            </th>
+        </tr>
+        <tr *ngFor="let row of dataTable.rows">
+            <td *ngFor="let column of columns; let i = index">
+                {{row[i]}}
+            </td>
+        </tr>
+    </table>
+    <div *ngIf="dataTable">
+        <ng-container *ngIf="errorList.length > 0">
+            <h3 i18n="problems found">
+                Erkannte Probleme
+            </h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th i18n="line">Zeile</th>
+                        <th i18n="error message">Fehlermeldung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let entry of errorList">
+                        <td>
+                            {{entry.index + 1}}
+                        </td>
+                        <td>
+                            <ng-container [ngSwitch]="entry.message">
+                                <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
+                                    Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
+                                </span>
+                                <span *ngSwitchCase="'Ignoring line with empty name.'" i18n="ignoring line with empty name">
+                                    Der Name des Items darf nicht leer sein. Die Zeile wird ignoriert.
+                                </span>
+                                <span *ngSwitchCase="'Ignoring line with duplicate name.'" i18n="ignoring line with duplicate name">
+                                    Der Name des Items ist mehrfach vorhanden. Die Zeile wird ignoriert.
+                                </span>
+                                <span *ngSwitchCase="'No item matches this name and type.'" i18n="no item matches this name and type">
+                                    Ein Item mit diesem Namen wurde nicht gefunden.
+                                </span>
+                            </ng-container>
+                        </td>
+                    </tr>                    
+                </tbody>
+            </table>
         </ng-container>
-    </form>
-    <div *ngIf="resultList">
-        <div *ngIf="errorsInResults" class="red" i18n="errors encountered. Please check log">
-            Es sind Fehler aufgetreten. Bitte pr&uuml;fen Sie das Protokoll.
+        <div *ngIf="dataTable.rows.length === 0" class="red"
+            i18n="There are no lines to import. Please retry with another file or other settings.">
+            Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
         </div>
-        <table mat-table [dataSource]="resultList" class="mat-elevation-z8">
-            <ng-container matColumnDef="index">
-                <th mat-header-cell *matHeaderCellDef i18n="line">
-                    Zeile
-                </th>
-                <td mat-cell *matCellDef="let entry">
+        <div class="margin">
+            <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+            <button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
+                Items importieren
+            </button>
+        </div>
+    </div>
+</form>
+<div *ngIf="resultList">
+    <div *ngIf="errorsInResults" class="red" i18n="errors encountered. Please check log">
+        Es sind Fehler aufgetreten. Bitte pr&uuml;fen Sie das Protokoll.
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th i18n="line">Zeile</th>
+                <th i18n="subject">Betroffenes Item</th>
+                <th i18n="severity">Kategorie</th>
+                <th i18n="message">Meldung</th>
+                <th i18n="details">Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let entry of resultList">
+                <td>
                     {{entry.index + 1}}
                 </td>
-            </ng-container>
-            <ng-container matColumnDef="subject">
-                <th mat-header-cell *matHeaderCellDef i18n="subject">Betroffenes Item</th>
-                <td mat-cell *matCellDef="let entry">{{entry.subject}}</td>
-            </ng-container>
-            <ng-container matColumnDef="severity">
-                <th mat-header-cell *matHeaderCellDef i18n="severity">Kategorie</th>
-                <td mat-cell *matCellDef="let entry">
+                <td>
+                    {{entry.subject}}
+                </td>
+                <td>
                     <ng-container [ngSwitch]="entry.severity">
                         <span *ngSwitchCase="1" i18n="warning">Warnhinweis</span>
                         <span *ngSwitchCase="2" i18n="error">Fehler</span>
@@ -210,12 +266,7 @@
                         <span *ngSwitchDefault i18n="info">Information</span>
                     </ng-container>
                 </td>
-            </ng-container>
-            <ng-container matColumnDef="message">
-                <th mat-header-cell *matHeaderCellDef i18n="message">
-                    Meldung
-                </th>
-                <td mat-cell *matCellDef="let entry">
+                <td>
                     <ng-container [ngSwitch]="entry.message">
                         <span *ngSwitchCase="'No lines in table.'" i18n="table contains no rows">
                             Die Tabelle ent&auml;t keine Zeilen.
@@ -277,14 +328,11 @@
                         </span>
                     </ng-container>
                 </td>
-            </ng-container>
-            <ng-container matColumnDef="details">
-                <th mat-header-cell *matHeaderCellDef i18n="details">Details</th>
-                <td mat-cell *matCellDef="let entry">{{entry.details}}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="['index', 'subject', 'severity', 'message', 'details']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['index', 'subject', 'severity', 'message', 'details']"></tr>
-        </table>
-        <button mat-button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
-    </div>
+                <td>
+                    {{entry.details}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
 </div>

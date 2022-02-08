@@ -1,99 +1,107 @@
 <app-busy *ngIf="(itemReady | async) !== true || working"></app-busy>
-<div class="box" *ngIf="(itemReady | async) && formReady">
-    <h3 i18n="copy configuration item">Configuration Item kopieren</h3>
+<h3 i18n="copy configuration item">Configuration Item kopieren</h3>
+<ng-container *ngIf="(itemReady | async) && formReady">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
-        <div class="box-top">
-            {{(configurationItem | async).type}} <b>{{(configurationItem | async).name}}</b>
-        </div>
-        <div class="box-body">
-            <mat-form-field>
-                <input matInput type="text" name="name" formControlName="name" autofocus
-                    placeholder="Name des neuen Items" i18n-placeholder="new item name" required/>
-            </mat-form-field>
-        </div>
-        <div class="box-top">
-            <mat-slide-toggle class="text-on-background"
-                [checked]="(configurationItem | async).attributes.length > 0"
-                [disabled]="(configurationItem | async).attributes.length === 0"
-                i18n="copy attributes" #att
-                (change)="toggleFormArray(itemForm.controls['attributes'], $event.checked)">
-                Attribute &uuml;bernehmen
-            </mat-slide-toggle>
-        </div>
-        <div class="box-body" *ngIf="att.checked" formArrayName="attributes">
-            <div class="box-element" [formGroupName]="i"
-                *ngFor="let attribute of (configurationItem | async).attributes; let i = index">
-                <mat-slide-toggle [checked]="true"
-                    (change)="toggleFormControl(getControl('attributes', i), $event.checked)">
-                    {{attribute.type}}
-                </mat-slide-toggle>
-                <mat-form-field *ngIf="getControl('attributes', i)?.enabled">
-                    <input matInput formControlName="value" type="text" required
-                        [placeholder]="attribute.type"/>
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="box-top">
-            <mat-slide-toggle class="text-on-background"
-                [checked]="(configurationItem | async).connectionsToLower.length > 0"
-                [disabled]="(configurationItem | async).connectionsToLower.length === 0"
-                i18n="copy connections to lower" #conn
-                (change)="toggleFormArray(itemForm.controls['connectionsToLower'], $event.checked)">
-                Verbindungen nach unten &uuml;bernehmen
-            </mat-slide-toggle>
-        </div>
-        <div class="box-body" *ngIf="conn.checked" formArrayName="connectionsToLower">
-            <div class="box-element" [formGroupName]="i"
-                *ngFor="let connection of (configurationItem | async).connectionsToLower; let i = index">
-                <mat-slide-toggle [checked]="true"
-                    (change)="toggleFormControl(getControl('connectionsToLower', i), $event.checked)">
-                    {{(getConnectionType(connection.typeId) | async).name}} {{connection.targetType}} {{connection.targetName}}
-                </mat-slide-toggle>
-                <mat-form-field *ngIf="getControl('connectionsToLower', i)?.enabled">
-                    <select matNativeControl formControlName="targetId" required>
-                        <option *ngFor="let item of (getConnectableItems(connection.ruleId) | async)"
-                            [value]="item.id">{{item.name}}</option>
-                    </select>
-                </mat-form-field>
-                <mat-form-field *ngIf="getControl('connectionsToLower', i)?.enabled">
-                    <input matInput formControlName="description" type="text"
-                        placeholder="Beschreibung der Verbindung" i18n-placeholde="connection description" />
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="box-top">
-            <mat-slide-toggle class="text-on-background"
-                [checked]="(configurationItem | async).links.length > 0"
-                [disabled]="(configurationItem | async).links.length === 0"
-                i18n="copy links" #lnk
-                (change)="toggleFormArray(itemForm.controls['links'], $event.checked)">
-                Links &uuml;bernehmen
-            </mat-slide-toggle>
-        </div>
-        <div class="box-body" *ngIf="lnk.checked" formArrayName="links">
-            <div class="box-element" [formGroupName]="i"
-                *ngFor="let link of (configurationItem | async).links; let i = index">
-                <mat-slide-toggle [checked]="true"
-                    (change)="toggleFormControl(getControl('links', i), $event.checked)">
-                    {{link.uri}}
-                </mat-slide-toggle>
-                <mat-form-field *ngIf="getControl('links', i)?.enabled">
-                    <input matInput formControlName="uri" type="url" required
-                        placeholder="URL des Links" i18n-placeholder="link URL"/>
-                </mat-form-field>
-                <mat-form-field *ngIf="getControl('links', i)?.enabled">
-                        <input matInput formControlName="description" type="url" required
-                            placeholder="Beschreibung des Links" i18n-placeholder="link description"/>
-                </mat-form-field>
-                </div>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th i18n="property">Eigenschaft</th>
+                    <th i18n="value">Wert</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td i18n="item type">
+                        Item-Typ
+                    </td>
+                    <td>
+                        {{(configurationItem | async).type}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="name" i18n="new item name">Name des neuen Items</label>
+                    </td>
+                    <td>
+                        <input type="text" id="name" formControlName="name" autofocus required>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <input type="checkbox" id="copyAttributes" formControlName="attributesEnabled" #att [disabled]="(configurationItem | async).attributes.length === 0">
+                        <label for="copyAttributes" i18n="copy attributes">Attribute &uuml;bernehmen</label>
+                    </th>
+                </tr>
+                <ng-container *ngIf="att.checked" formArrayName="attributes">
+                    <tr [formGroupName]="i" *ngFor="let attribute of (configurationItem | async).attributes; let i = index">
+                        <td>
+                            <input type="checkbox" [id]="attribute.typeId" formControlName="enabled">
+                            <label [for]="attribute.typeId">
+                                {{attribute.type}}
+                            </label>
+                        </td>
+                        <td>
+                            <input formControlName="value" type="text" required>
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr>
+                    <th colspan="2">
+                        <input type="checkbox" id="copyConnections" formControlName="connectionsToLowerEnabled" #conn
+                            [disabled]="(configurationItem | async).connectionsToLower.length === 0">
+                        <label for="copyConnections" i18n="copy downward connections">
+                            Verbindungen nach unten &uuml;bernehmen
+                        </label>
+                    </th>
+                </tr>
+                <ng-container *ngIf="conn.checked" formArrayName="connectionsToLower">
+                    <tr [formGroupName]="i" *ngFor="let connection of (configurationItem | async).connectionsToLower; let i = index">
+                        <td>
+                            <input type="checkbox" [id]="i" formControlName="enabled">
+                            <label [for]="i">
+                                {{(getConnectionType(connection.typeId) | async).name}} {{connection.targetType}} {{connection.targetName}}
+                            </label>
+                        </td>
+                        <td>
+                            <select formControlName="targetId" required>
+                                <option *ngFor="let item of (getConnectableItems(connection.ruleId) | async)" [value]="item.id">
+                                    {{item.name}}
+                                </option>
+                            </select>
+                            <input matInput formControlName="description" type="text"
+                                placeholder="Beschreibung der Verbindung" i18n-placeholde="connection description" />
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr>
+                    <th colspan="2">
+                        <input type="checkbox" id="copyLinks" formControlName="linksEnabled" #lnk
+                            [disabled]="(configurationItem | async).links.length === 0">
+                        <label for="copyLinks" i18n="copy links">
+                            Links &uuml;bernehmen
+                        </label>
+                    </th>
+                </tr>
+                <ng-container *ngIf="lnk.checked" formArrayName="links">
+                    <tr [formGroupName]="i" *ngFor="let link of (configurationItem | async).links; let i = index">
+                        <td>
+                            <input type="checkbox" formControlName="enabled">
+                            <input matInput formControlName="uri" type="url" required placeholder="URL des Links" i18n-placeholder="link URL"/>
+                        </td>
+                        <td>
+                            <input matInput formControlName="description" type="url" required placeholder="Beschreibung des Links" i18n-placeholder="link description"/>
+                        </td>                        
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
         <div class="error" *ngIf="error === true">
             {{errorMessage}}
         </div>
         <p>
-            <button mat-button type="submit" i18n="copy item" [disabled]="!itemForm.valid" class="selectable">
+            <button type="submit" i18n="copy item" [disabled]="!itemForm.valid" class="selectable">
                 Item kopieren
             </button>
         </p>
     </form>
-</div>
+</ng-container>

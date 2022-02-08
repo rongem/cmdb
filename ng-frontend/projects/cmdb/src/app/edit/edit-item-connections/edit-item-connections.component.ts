@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map, tap } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
 import { FullConfigurationItem, FullConnection, ConnectionRule, Connection, EditActions, MetaDataSelectors } from 'backend-access';
 import { ItemSelectors } from '../../shared/store/store.api';
 import { AddConnectionComponent } from '../add-connection/add-connection.component';
@@ -14,8 +13,9 @@ import { AddConnectionComponent } from '../add-connection/add-connection.compone
 export class EditItemConnectionsComponent implements OnInit {
   itemId: string;
   editConnection: FullConnection;
+  addRule: ConnectionRule;
 
-  constructor(private store: Store, public dialog: MatDialog) { }
+  constructor(private store: Store) { }
 
   get configurationItem() {
     return this.store.select(ItemSelectors.configurationItem).pipe(
@@ -63,16 +63,15 @@ export class EditItemConnectionsComponent implements OnInit {
   }
 
   onAddConnection(rule: ConnectionRule) {
-    const dialogRef = this.dialog.open(AddConnectionComponent, {
-      width: 'auto',
-      // class:
-      data: { rule, itemId: this.itemId },
-    });
-    dialogRef.afterClosed().subscribe(connection => {
-      if (connection instanceof Connection) {
-        this.store.dispatch(EditActions.createConnection({connection}));
-      }
-    });
+    this.addRule = rule;
+  }
+
+  onCreateNewConnection(connection: Connection) {
+    if (connection)
+    {
+      this.store.dispatch(EditActions.createConnection({connection}));
+    }
+    this.addRule = undefined;
   }
 
   onUpdateConnection(conn: FullConnection, newText: string) {

@@ -64,11 +64,13 @@ export class ActionListComponent implements OnInit, OnDestroy {
       let url = route.state.url.includes('?') ? route.state.url.split('?')[0] : route.state.url;
       url = url.includes('#') ? url.split('#')[0] : url;
       this.insideList = url === this.displayBaseLink || url.startsWith(this.displayBaseLink + '/item-type/');
-      this.itemId = url.startsWith(this.displayBaseLink + '/' + this.itemLinkPart) && route.state.params.id ? route.state.params.id as string : undefined;
+      this.itemId = (url.startsWith(this.displayBaseLink + '/' + this.itemLinkPart) || url.startsWith(this.editBaseLink + '/' + this.itemLinkPart)) &&
+        route.state.params.id ? route.state.params.id as string : undefined;
       const urlParts = url.split('/').filter(str => !!str);
       this.mode = urlParts[0];
-      this.pathExt = urlParts.length > 3 && [this.editBaseLink.substring(1), this.displayBaseLink.substring(1)].includes(urlParts[0]) &&
-        urlParts[1] === this.itemLinkPart && this.itemId ? urlParts[3] : undefined;
+      this.pathExt = urlParts.length > 3 && urlParts[0] === this.displayBaseLink.substring(1) &&
+        urlParts[1] === this.itemLinkPart && this.itemId ? urlParts[3] : urlParts.length === 3 && urlParts[0] === this.editBaseLink.substring(1) ?
+        urlParts[0] : undefined;
     });
   }
 

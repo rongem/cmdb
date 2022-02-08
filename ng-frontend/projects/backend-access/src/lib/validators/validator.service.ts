@@ -8,6 +8,7 @@ import { itemForTypeIdAndName } from '../store/read-data/read.functions';
 import { ValidatorModule } from './validator.module';
 import { selectItemTypes } from '../store/meta-data/meta-data.selectors';
 import { ItemType } from '../objects/meta-data/item-type.model';
+import { AppConfigService } from '../app-config/app-config.service';
 
 @Injectable({providedIn: ValidatorModule})
 export class ValidatorService {
@@ -27,6 +28,7 @@ export class ValidatorService {
 
     clearCache = () => this.textObjectPresentMap.clear();
 
+    // validate if a control's value exists as a name with a given type
     validateNameAndType: AsyncValidatorFn = (c: AbstractControl) => {
         if (this.timeout) { clearTimeout(this.timeout); }
         this.timeout = setTimeout(this.clearCache, 60000);
@@ -38,6 +40,7 @@ export class ValidatorService {
         );
     };
 
+    // validate if a control's value is a valid regular expression pattern, containing ^ for start and $ for end
     validateRegex: ValidatorFn = (c: AbstractControl) => {
         const content = (c.value as string)?.trim() ?? '';
         if (!content || !content.startsWith('^') || !content.endsWith('$')) {
@@ -47,6 +50,31 @@ export class ValidatorService {
           const regex = RegExp(c.value);
         } catch (e) {
           return e;
+        }
+        return null;
+    };
+
+    // validate if a control's value is a valid url
+    validatUrl: ValidatorFn = (control: AbstractControl) => {
+        if (typeof control.value === 'string' && AppConfigService.validURL(control.value)) {
+          return null;
+        }
+        return {notAValidUrl: true};
+    };
+
+    // validate, if a control's value is trimmed
+    validateTrimmed: ValidatorFn = (control: AbstractControl) => {
+        if (typeof control.value === 'string' && control.value !== control.value.trim()) {
+          return {noTrailingOrLeadingSpacesAllowedError: true};
+        }
+        return null;
+    };
+
+    // validate if a control's value matches a given regular expression
+    validateMatchesRegex = (regex: string): ValidatorFn => (control: AbstractControl) => {
+        const r = new RegExp(regex);
+        if (typeof control.value === 'string' && !r.test(control.value)) {
+            return {notMatchingRegexp: true};
         }
         return null;
     };

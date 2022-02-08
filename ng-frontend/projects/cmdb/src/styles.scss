@@ -15,6 +15,11 @@ body {
     font-family: Roboto, Verdana, Helvetica, sans-serif;
 }
 
+input:read-only {
+    cursor: default;
+    background-color: #e0e0e0;
+}
+
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -258,9 +263,14 @@ main.page-layout {
 .box-body .box-top,
 .box-top__sub {
     background-color: darken($body-background-color, 8%);
-    border-top-right-radius: 0.5rem;
-    padding: 0.4rem;
     margin-top: 0.4rem;
+    margin-bottom: 0.5rem;
+    border-right: 1px darken($element-background-color, 20%) solid;
+    border-bottom: 1px darken($element-background-color, 20%) solid;
+    border-top-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    padding: 0.5rem 1rem;
 }
 
 .box-top__no-body {
@@ -298,17 +308,6 @@ form.ng-invalid {
     color: $error-color;
 }
 
-.box-body .box-body,
-.box-body__sub {
-    background-color: $element-background-color;
-    border-right: 1px darken($element-background-color, 20%) solid;
-    border-bottom: 1px darken($element-background-color, 20%) solid;
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    margin-bottom: 0.5rem;
-}
-
 em {
     font-weight: bold;
     font-size: 1.1rem;
@@ -320,27 +319,6 @@ em {
     row-gap: 0.2rem;
     column-gap: 0.2rem;
     align-items: center;
-}
-
-.grid__center-content {
-    @extend .grid;
-    justify-items: center;
-}
-
-.grid__2-columns {
-    grid-template-columns: 1fr auto;
-}
-
-.grid-reverse__2-columns {
-    grid-template-columns: auto 1fr;
-}
-
-.grid__3-columns {
-    grid-template-columns: 1fr 1fr auto;
-}
-
-.grid__4-columns {
-    grid-template-columns: 1fr 1fr 1fr auto;
 }
 
 .grid__layout {
@@ -367,16 +345,6 @@ em {
     flex-wrap: wrap;
     span {
         padding-right: 0.5rem;
-    }
-}
-
-.right-top__corner {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-
-    @media print {
-        display: none;
     }
 }
 
@@ -731,103 +699,6 @@ button.input__content-button {
     white-space: nowrap;
 }
 
-.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
-    background-color: #7dee9d;
-}
-
-.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
-    background-color: #00be50;
-}
-
-.search-form {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    background-color: $element-background-color;
-    border-radius: 0.5rem;
-
-    @media (min-width: 50rem) {
-        margin: auto;
-        min-width: 40rem;
-        max-width: 60rem;
-    }
-
-    .search-form__element {
-        display: block;
-        padding: 1rem;
-
-        label {
-            font-weight: bold;
-            padding-top: 0.5rem;
-        }
-    
-        input,
-        select {
-            width: 100%;
-        }
-        
-        input:not([type="checkbox"]),
-        select {
-            border: 1px solid #ccc;
-            padding: 0.2rem 0.5rem;
-            font: inherit;
-        }
-        
-        input:focus,
-        select:focus {
-            outline: none;
-            background: #d8f3df;
-            border-color: #2ddf5c;
-        }
-        
-        input[type="checkbox"] {
-            border: 1px solid #ccc;
-            background: white;
-            width: 1rem;
-            height: 1rem;
-            appearance: none;
-        }
-        
-        input[type="checkbox"]:checked {
-            background: #2ddf5c;
-            border: #0e4f1f;
-        }
-        
-        input.invalid,
-        select.invalid,
-        :invalid {
-            border-color: red !important;
-            background: #faacac;
-        }
-    }
-
-    mat-form-field.search-form__element {
-        padding-bottom: 0;
-    }
-
-    [id="title"] {
-        @media (min-width: 50rem) {
-            grid-column: span 2;
-        }
-    }
-    
-    button[type="submit"] {
-        display: inline-block;
-    }
-
-    @media print {
-        button[type="button"] {
-            display: none;
-        }
-    }
-}
-
-.result-list
-{
-    padding: 1rem;
-    grid-area: criteria;
-}
-
 table.mat-table {
     width: 100%;
 
@@ -883,7 +754,7 @@ table.mat-table {
     }
 }
 
-table.item-table { 
+table.table { 
     border-collapse: collapse;
     background: $element-background-color;
     tr:not(:last-child) {
