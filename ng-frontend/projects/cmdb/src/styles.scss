@@ -556,14 +556,6 @@ tr.active-line {
     // box-shadow: $box-shadow-small;
 }
 
-@media print {
-    button .material-icons,
-    .mat-button .material-icons,
-    .mat-icon-button .material-icons {
-        display: none;
-    }
-}
-
 .position-absolute {
     position: absolute;
 }
@@ -619,26 +611,6 @@ button.btn-cancel {
     @extend .red;
 }
 
-button.filter-button {
-    border: $main-border-style;
-    border-radius: 0.5rem;
-    min-width: unset;
-    line-height: unset;
-    padding: 0;
-    flex-grow: 0;
-}
-
-.circle-button,
-.mat-icon-button.circle-button {
-    border: $medium-border-style;
-    border-radius: 50%;
-    background-color: darken($element-background-color, 10%);
-    margin: 0 0.25rem;
-    &:not(:disabled) {
-        box-shadow: $box-shadow-small;
-    }
-}
-
 button.input__content-button {
     border: none;
     text-align: left;
@@ -656,10 +628,6 @@ button.input__content-button {
     flex-flow: row nowrap;
     align-items: center;
     margin: 0 1rem;
-
-    .mat-form-field-infix {
-        border-top: unset;
-    }
 
     input[type="text"],
     input[type="number"],
@@ -697,29 +665,6 @@ button.input__content-button {
 
 .no-wrap {
     white-space: nowrap;
-}
-
-table.mat-table {
-    width: 100%;
-
-    @media (min-width: 50rem) {
-        min-width: fit-content;
-    }
-
-    tr.mat-row > td.mat-cell,
-    tr.mat-footer-row > td.mat-footer-cell,
-    tr.mat-header-row > th.mat-header-cell {
-        padding: 0 0.5rem;
-        vertical-align: middle;
-    
-        &:first-of-type {
-            padding-left: 1.5rem;
-        }
-    
-        &:last-of-type {
-            padding-right: 1.5rem;
-        }
-    }
 }
 
 .filter-box {
