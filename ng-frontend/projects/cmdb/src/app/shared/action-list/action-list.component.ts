@@ -59,6 +59,10 @@ export class ActionListComponent implements OnInit, OnDestroy {
     return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
+  get searchItemType() {
+    return this.store.select(SearchFormSelectors.searchItemType);
+  }
+
   ngOnInit(): void {
     this.routeSubscription = this.store.select(getRouterState).subscribe(route => {
       let url = route.state.url.includes('?') ? route.state.url.split('?')[0] : route.state.url;

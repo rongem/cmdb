@@ -1,9 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { MultiAddConnectionsComponent } from './multi-add-connections/multi-add-connections.component';
@@ -37,9 +34,6 @@ import { MultiWorkingComponent } from './multi-working/multi-working.component';
         MultiEditRoutingModule,
         MultiEditServiceModule,
         ItemSharedModule,
-        MatAutocompleteModule,
-        MatInputModule,
-        MatSlideToggleModule,
         MatTableModule,
     ]
 })

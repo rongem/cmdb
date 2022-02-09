@@ -7,24 +7,23 @@
             *ngFor="let attributeType of attributeTypes; let i = index"
             [formGroupName]="i">
             <div>
-                <mat-slide-toggle formControlName="edit" #slider></mat-slide-toggle>
+                <input type="checkbox" formControlName="edit" #slider>
             </div>
             <div>{{attributeType.name}}</div>
-            <div matToolip="Ein leeres Feld l&ouml;scht das Attribut"
-                 i18n-matTooltip="an empty field will delete the attributes">
-                <mat-form-field [ngClass]="{ vanished: !slider.checked}">
-                    <input matInput type="text" formControlName="value" 
-                        [matAutocomplete]="autoAttribute"
-                        placeholder="Neuer gemeinsamer Attribut-Wert"
-                        i18n-placeholder="new attribute value for all items">
-                </mat-form-field>
-                <mat-autocomplete #autoAttribute="matAutocomplete">
+            <div [ngClass]="{ vanished: !slider.checked}">
+                 <label for="value" i18n="new attribute value for all items (an empty field will delete the attributes)">
+                    Neuer gemeinsamer Attribut-Wert (Ein leeres Feld l&ouml;scht das Attribut)
+                 </label>
+                 <input matInput type="text" formControlName="value" 
+                     placeholder=""
+                     i18n-placeholder="new attribute value for all items">
+                <!-- <mat-autocomplete #autoAttribute="matAutocomplete">
                     <mat-option
                         *ngFor="let value of getValuesForAttributeType(attributeType.id)"
                         [value]="value">
                         {{value}}
                     </mat-option>
-                </mat-autocomplete>
+                </mat-autocomplete> -->
             </div>
         </ng-container>
     </div>

@@ -17,7 +17,7 @@
                 Suchen / Ergebnisse
             </button>
         </li>
-        <li class="menu-item" *ngIf="insideList && (areMultipleItemsSelected | async) === true">
+        <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (areMultipleItemsSelected | async) === true">
             <button type="button" class="no-wrap" [@showButton]
                 (click)="onMultiEditItemList()" i18n="edit multiple items">
                 Gemeinsam editieren

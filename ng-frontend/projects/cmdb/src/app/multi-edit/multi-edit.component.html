@@ -1,3 +1,34 @@
+<table class="table">
+    <thead>
+        <th i18n="configuration item">
+            Configuration Item
+        </th>
+        <th *ngFor="let ob of (resultColumns | async)">
+            {{ ob.value }}
+        </th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of (items | async)">
+            <td>
+                {{item.name}}
+            </td>
+            <td *ngFor="let ob of (resultColumns | async)">
+                <ng-container *ngIf="ob.key.startsWith('a:')">
+                    {{ getValue(item, ob.key.substring(2)) }}
+                </ng-container>
+                <div *ngIf="ob.key.startsWith('ctl:') || ob.key.startsWith('ctu:')" class="link-list">
+                    <div *ngFor="let connection of getConnections(item, ob.key)" class="link-list__item">
+                        &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
+                        {{ connection.targetName}}</a>
+                    <span *ngIf="connection.description">
+                        ({{ connection.description }})
+                    </span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
 <main class="page-layout">
     <section>
         <div class="box-top">

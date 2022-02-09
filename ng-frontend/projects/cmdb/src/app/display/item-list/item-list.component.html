@@ -1,7 +1,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th appClickOpen *ngIf="(userRole | async) > 0">
+            <th appClickOpen *ngIf="(userRole | async) > 0 && (searchItemType | async)">
                 <app-multi-selector [items]="resultList | async"></app-multi-selector>
             </th>
             <th i18n="item name">Item-Name</th>
@@ -19,7 +19,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let item of (resultList | async)">
-            <td *ngIf="(userRole | async) > 0">
+            <td *ngIf="(userRole | async) > 0 && (searchItemType | async)">
                 <app-item-selector [itemId]="item.id"></app-item-selector>
             </td>
             <td>
