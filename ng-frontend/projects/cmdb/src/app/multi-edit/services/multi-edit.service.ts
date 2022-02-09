@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { Subject, withLatestFrom } from 'rxjs';
+import { Subject, switchMap, take, withLatestFrom } from 'rxjs';
 import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
-    MetaDataSelectors, LogActions, EditFunctions } from 'backend-access';
-import { MultiEditSelectors } from '../../shared/store/store.api';
+    MetaDataSelectors, LogActions, EditFunctions, ReadFunctions } from 'backend-access';
+import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.api';
 import { MultiEditServiceModule } from '../multi-edit-service.module';
 
 interface FormValue {
@@ -54,24 +54,27 @@ export class MultiEditService {
         const items = this.items.filter(item => this.changedItemIds.includes(item.id));
         this.itemsToChange = items.length;
         items.forEach(item => {
-            EditFunctions.updateConfigurationItem(this.http, this.store, item).subscribe(i => {
-                this.itemsChanged++;
-                this.operationsLeftSubject.next(this.operationsLeft());
-                this.log({
-                    subject: i.type + ': ' + i.name,
-                    subjectId: i.id,
-                    message: 'updated item',
-                });
-            }, error => {
-                this.itemsToChange--;
-                this.operationsLeftSubject.next(this.operationsLeft());
-                this.log({
-                    subject: item.type + ': ' + item.name,
-                    subjectId: item.id,
-                    message: 'failed updating item',
-                    details: error.message ?? error.error?.message ?? JSON.stringify(error),
-                    severity: 1,
-                });
+            EditFunctions.updateConfigurationItem(this.http, this.store, item).subscribe({
+                next: i => {
+                    this.itemsChanged++;
+                    this.operationsLeftSubject.next(this.operationsLeft());
+                    this.log({
+                        subject: i.type + ': ' + i.name,
+                        subjectId: i.id,
+                        message: 'updated item',
+                    });
+                },
+                error: error => {
+                    this.itemsToChange--;
+                    this.operationsLeftSubject.next(this.operationsLeft());
+                    this.log({
+                        subject: item.type + ': ' + item.name,
+                        subjectId: item.id,
+                        message: 'failed updating item',
+                        details: error.message ?? error.error?.message ?? JSON.stringify(error),
+                        severity: 1,
+                    });
+                },
             });
         });
         this.connectionsToChange = formValue.connectionsToAdd.filter(conn => conn.add).length +
@@ -79,6 +82,37 @@ export class MultiEditService {
         this.operationsLeftSubject.next(this.operationsLeft());
         this.deleteConnections(formValue.connectionsToDelete);
         this.addConnections(formValue.connectionsToAdd);
+    }
+
+    setAttributeValues(items: FullConfigurationItem[], attributeTypeId: string, attributeValue: string) {
+        // first remove items that don't need a change, then replace attribute or set it
+        items = items.filter(item => !item.attributes.map(a => a.typeId).includes(attributeTypeId) ||
+            item.attributes.find(a => a.typeId === attributeTypeId && a.value !== attributeValue)
+        ).map(item => ({
+            ...item,
+            attributes: [...item.attributes.filter(a => a.typeId !== attributeTypeId), {typeId: attributeTypeId, value: attributeValue}],
+        }));
+        // set the ids to process for the counter
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        items.forEach((item, index) => {
+            EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(
+                switchMap(updatedItem => ReadFunctions.fullConfigurationItem(this.http, this.store, updatedItem.id)),
+            ).subscribe({
+                next: updatedItem => {
+                    this.store.dispatch(MultiEditActions.removeItemIdToProcess({itemId: updatedItem.id}));
+                    this.store.dispatch(MultiEditActions.replaceSelectedItem({item: updatedItem}));
+                },
+                error: error => {
+                    this.log({
+                        subject: item.type + ': ' + item.name,
+                        subjectId: item.id,
+                        message: 'failed updating item',
+                        details: error.message ?? error.error?.message ?? JSON.stringify(error),
+                        severity: 1,
+                    });
+                },
+            });
+        });
     }
 
     private changeAttributes(attributes: {edit: boolean; typeId: string; type: string; value: string}[]) {

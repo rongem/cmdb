@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
-import { MultiEditActions } from 'backend-access';
 
-import { MultiEditSelectors } from '../../shared/store/store.api';
+import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-item-selector',

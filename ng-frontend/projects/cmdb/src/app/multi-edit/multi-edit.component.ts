@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { of, switchMap, take, tap } from 'rxjs';
-import { AttributeType, FullConfigurationItem, MetaDataSelectors } from 'backend-access';
+import { map, of, switchMap, take, tap } from 'rxjs';
+import { AttributeType, FullConfigurationItem, MetaDataSelectors, ValidatorService } from 'backend-access';
 import { MultiEditSelectors } from '../shared/store/store.api';
 import { MultiEditService } from './services/multi-edit.service';
 
@@ -15,12 +15,14 @@ import { MultiEditService } from './services/multi-edit.service';
 })
 export class MultiEditComponent implements OnInit {
   form: FormGroup;
+  attributeForm: FormGroup;
   itemTypeId: string;
 
   constructor(private store: Store,
               private router: Router,
               private route: ActivatedRoute,
               private fb: FormBuilder,
+              private val: ValidatorService,
               private mes: MultiEditService,
               public dialog: MatDialog) { }
 
@@ -47,6 +49,10 @@ export class MultiEditComponent implements OnInit {
     );
   }
 
+  get working() {
+    return this.store.select(MultiEditSelectors.selectOperationsLeft);
+  }
+
   ngOnInit() {
     this.items.pipe(
       tap(items => {
@@ -59,6 +65,13 @@ export class MultiEditComponent implements OnInit {
       }),
       take(1),
     ).subscribe();
+    this.attributeTypes.subscribe(attributeTypes => {
+      const form: {[key: string]: AbstractControl} = {};
+      attributeTypes.forEach(attributeType => {
+        form[attributeType.id] = this.fb.control('', [Validators.required, this.val.validateMatchesRegex(attributeType.validationExpression)]);
+      });
+      this.attributeForm = this.fb.group(form);
+    });
     this.form = this.fb.group({
       attributes: this.fb.array([]),
       connectionsToDelete: this.fb.array([]),
@@ -73,6 +86,16 @@ export class MultiEditComponent implements OnInit {
     return att ? att.value : '-';
   }
 
+  getValuesForAttributeType(typeId: string) {
+    return this.items.pipe(
+      map(items => [...new Set(items.filter(item =>
+        item.attributes.findIndex(att => att.typeId === typeId) > -1).map(item => item.attributes.find(att => att.typeId === typeId).value).sort())]));
+  }
+
+  getIsItemProcess(itemId: string) {
+    return this.store.select(MultiEditSelectors.idPresent(itemId));
+  }
+
   getConnections(ci: FullConfigurationItem, prop: string) {
     const val = prop.split(':');
     switch (val[0]) {
@@ -82,6 +105,24 @@ export class MultiEditComponent implements OnInit {
         return ci.connectionsToUpper.filter(c => c.ruleId.toString() === val[1]);
       default:
         return [];
+    }
+  }
+
+  clearKey(key: string) {
+    if (key.includes(':')) {
+      return key.split(':')[1];
+    }
+    return key;
+  }
+
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
+
+  changeAttribute(typeId: string, value?: string) {
+    if (value) { // set new value
+      this.items.pipe(take(1)).subscribe(items => this.mes.setAttributeValues(items, typeId, value));
+    } else { // delete attribute
     }
   }
 

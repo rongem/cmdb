@@ -59,8 +59,6 @@ export * as SearchActions from './lib/store/read-data/search.actions';
 export { SearchEffects } from './lib/store/read-data/search.effects';
 export * as EditActions from './lib/store/edit-data/edit.actions';
 export { EditEffects } from './lib/store/edit-data/edit.effects';
-export * as MultiEditActions from './lib/store/edit-data/multi-edit.actions';
-export { MultiEditEffects } from './lib/store/edit-data/multi-edit.effects';
 
 // REST API functions
 export * as ReadFunctions from './lib/store/read-data/read.functions';

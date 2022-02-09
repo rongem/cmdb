@@ -1,16 +1,48 @@
+<h3 i18n="edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
 <table class="table">
     <thead>
         <th i18n="configuration item">
             Configuration Item
         </th>
-        <th *ngFor="let ob of (resultColumns | async)">
-            {{ ob.value }}
+        <th *ngFor="let ob of (resultColumns | async)" class="position-relative" appClickOpen>
+            <button type="menu" class="dropdown-toggle selectable" [disabled]="(working | async) > 0">
+                {{ ob.value }}
+            </button>
+            <ul class="dropdown-menu" *ngIf="ob.key.startsWith('a:')" [formGroup]="attributeForm">
+                <li>
+                    <button type="button" class="red-button selectable" (click)="changeAttribute(clearKey(ob.key), undefined)" i18n="delete all values">
+                        Alle Werte l&ouml;schen
+                    </button>
+                </li>
+                <li>
+                    <label for="newAttributeValue" i18n="custom value">Eigener Wert</label>
+                    <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(ob.key)">
+                    <button type="button" class="selectable" (click)="changeAttribute(clearKey(ob.key), newAtt.value)" [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
+                        Speichern
+                    </button>
+                </li>
+                <ng-container *ngIf="(getValuesForAttributeType(clearKey(ob.key)) | async).length > 1">
+                    <li i18n="existing values">Vorhandene Werte</li>
+                    <li *ngFor="let value of (getValuesForAttributeType(clearKey(ob.key)) | async)">
+                        <button type="button" class="selectable" (click)="changeAttribute(clearKey(ob.key), value)">{{value}}</button>
+                    </li>
+                </ng-container>
+            </ul>
+            <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctl:')" [formGroup]="">
+                <li>Test</li>
+            </ul>
+            <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctu:')" [formGroup]="">
+                <li>Test</li>
+            </ul>
         </th>
     </thead>
     <tbody>
         <tr *ngFor="let item of (items | async)">
-            <td>
-                {{item.name}}
+            <td class="flex__space-between">
+                <a [routerLink]="['/display', 'configuration-item', item.id]">
+                    {{item.name}}
+                </a>
+                <app-working *ngIf="(getIsItemProcess(item.id) | async) === true"></app-working>
             </td>
             <td *ngFor="let ob of (resultColumns | async)">
                 <ng-container *ngIf="ob.key.startsWith('a:')">
@@ -32,13 +64,8 @@
 <main class="page-layout">
     <section>
         <div class="box-top">
-            <h3 i18n="edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
         </div>
         <form class="box-body" (ngSubmit)="onSubmit()">
-            <app-multi-attributes [items]="(items | async)"
-                [form]="form"
-                [attributeTypes]="(attributeTypes | async)">
-            </app-multi-attributes>
             <app-multi-delete-connections [form]="form" [items]="(items | async)">
             </app-multi-delete-connections>
             <app-multi-add-connections [form]="form" [items]="(items | async)"
@@ -50,7 +77,6 @@
             </app-multi-delete-links>
             <button type="submit" class="selectable" [disabled]="form.invalid" i18n="submit changes">&Auml;nderungen durchf&uuml;hren</button>
         </form>
-        <app-multi-table [items]="(items | async)"></app-multi-table>
     </section>
 </main>
 

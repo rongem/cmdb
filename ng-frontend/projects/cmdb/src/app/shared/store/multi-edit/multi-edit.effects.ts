@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { switchMap, of } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 
-import * as EditActions from './edit.actions';
-import * as MultiEditActions from './multi-edit.actions';
+import { EditActions, FullConfigurationItem, SearchActions } from 'backend-access';
 
-import { FullConfigurationItem } from '../../objects/item-data/full/full-configuration-item.model';
+import { MultiEditActions } from '../store.api';
 
 @Injectable()
 export class MultiEditEffects {
@@ -33,6 +32,12 @@ export class MultiEditEffects {
             return of(null);
         })
     ), {dispatch: false});
+
+    // multi edit list must be cleared if a new search was performed
+    clearMultiEditLists$ = createEffect(() => this.actions$.pipe(
+        ofType(SearchActions.setNeighborSearchResultList, SearchActions.setResultListFull),
+        map(() => MultiEditActions.clear()),
+    ));
 
     constructor(private actions$: Actions, private store: Store) {}
 }

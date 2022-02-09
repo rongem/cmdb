@@ -13,6 +13,7 @@ import { AutocompleteDirective } from './autocomplete/autocomplete.directive';
 import { FilterPipe } from './autocomplete/filter.pipe';
 import { HelpComponent } from './help/help.component';
 import { RouterModule } from '@angular/router';
+import { WorkingComponent } from './working/working.component';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import { RouterModule } from '@angular/router';
         OptionComponent,
         RoleDisplayComponent,
         TextInputComponent,
+        WorkingComponent,
     ],
     imports: [
         CommonModule,
@@ -41,10 +43,11 @@ import { RouterModule } from '@angular/router';
         ClickOpenDirective,
         FilterPipe,
         HelpComponent,
+        MenuTemplateComponent,
         OptionComponent,
         RoleDisplayComponent,
-        MenuTemplateComponent,
         TextInputComponent,
+        WorkingComponent,
     ],
 })
 export class CoreModule{}
