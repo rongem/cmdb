@@ -17,6 +17,10 @@ export const setSelectedItems = createAction('[MultiEdit] Set selectedItems',
     props<{ items: FullConfigurationItem[] }>()
 );
 
+export const removeSelectedItem = createAction('[MultiEdit] Remove item from selectedItems',
+    props<{ item: FullConfigurationItem }>()
+);
+
 export const replaceSelectedItem = createAction('[MultiEdit] Replace an existing item in store with an updated version',
     props<{ item: FullConfigurationItem }>()
 );

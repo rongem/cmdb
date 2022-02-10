@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { map, of, Subscription, switchMap, take, tap, withLatestFrom } from 'rxjs';
 import { AttributeType, FullConfigurationItem, FullConnection, MetaDataSelectors, ValidatorService } from 'backend-access';
-import { MultiEditSelectors, SearchFormSelectors } from '../shared/store/store.api';
+import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../shared/store/store.api';
 import { MultiEditService } from './services/multi-edit.service';
 import { TargetConnections } from '../shared/objects/target-connections.model';
 
@@ -61,62 +61,56 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.items.pipe(
+    this.subscriptions.push(this.items.pipe(
       withLatestFrom(this.store.select(SearchFormSelectors.searchItemType)),
-      tap(([items, itemType]) => {
-        // check if there are items and are all of the same type
-        if (!items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
-          const target = ['display'];
-          if (itemType) {
-            target.push(itemType.id);
-          }
-          this.router.navigate(target);
-        } else {
-          this.itemTypeId = itemType?.id ?? items[0].typeId;
+    ).subscribe(([items, itemType]) => {
+      // check if there are items and are all of the same type
+      if (!items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
+        const target = ['display'];
+        if (itemType) {
+          target.push(itemType.id);
         }
-      }),
-      take(1),
-    ).subscribe();
+        this.router.navigate(target);
+      } else {
+        this.itemTypeId = itemType?.id ?? items[0].typeId;
+        // extract all target ids from connections
+        const targetIds = [...new Set(items.map(item => item.connectionsToLower.map(c => c.targetId)).flat())];
+        // check if target is connected to all items and place it into new array if so
+        targetIds.forEach(guid => {
+          const connections: FullConnection[] = [];
+          const found = items.every(item => {
+            if (item.connectionsToLower.findIndex(conn => conn.targetId === guid) === -1) {
+              return false;
+            }
+            connections.push(item.connectionsToLower.find(conn => conn.targetId === guid));
+            return true;
+          });
+          if (found === true) {
+            connections.forEach(connection => {
+              const targetName = connection.targetType + ': ' + connection.targetName;
+              const sourceItemId = items.find(i => i.connectionsToLower.findIndex(co => co.id === connection.id) !== -1).id;
+              if (this.deletableConnectionsByRule.has(connection.ruleId)) {
+                const ruleContent = this.deletableConnectionsByRule.get(connection.ruleId);
+                const target = ruleContent.find(t => t.targetId === connection.targetId);
+                if (target) {
+                  target.connectionInfos.push({ sourceItemId, connection });
+                } else {
+                  ruleContent.push(new TargetConnections(connection.targetId, targetName, { sourceItemId, connection }));
+                }
+              } else {
+                this.deletableConnectionsByRule.set(connection.ruleId, [new TargetConnections(connection.targetId, targetName, { sourceItemId, connection })]);
+              }
+            });
+          }
+        });
+      }
+    }));
     this.subscriptions.push(this.attributeTypes.subscribe(attributeTypes => {
       const form: {[key: string]: AbstractControl} = {};
       attributeTypes.forEach(attributeType => {
         form[attributeType.id] = this.fb.control('', [Validators.required, this.val.validateMatchesRegex(attributeType.validationExpression)]);
       });
       this.attributeForm = this.fb.group(form);
-    }));
-    this.subscriptions.push(this.connectionRules.pipe(
-      withLatestFrom(this.items)
-    ).subscribe(([rules, items]) => {
-      // extract all target ids from connections
-      const targetIds = [...new Set(items.map(item => item.connectionsToLower.map(c => c.targetId)).flat())];
-      // check if target is connected to all items and place it into new array if so
-      targetIds.forEach(guid => {
-        const connections: FullConnection[] = [];
-        const found = items.every(item => {
-          if (item.connectionsToLower.findIndex(conn => conn.targetId === guid) === -1) {
-            return false;
-          }
-          connections.push(item.connectionsToLower.find(conn => conn.targetId === guid));
-          return true;
-        });
-        if (found === true) {
-          connections.forEach(c => {
-            const targetName = c.targetType + ': ' + c.targetName;
-            if (this.deletableConnectionsByRule.has(c.ruleId)) {
-              const ruleContent = this.deletableConnectionsByRule.get(c.ruleId);
-              const target = ruleContent.find(t => t.targetId === c.targetId);
-              if (target) {
-                target.connections.push(c);
-              } else {
-                ruleContent.push(new TargetConnections(c.targetId, targetName, c));
-              }
-            } else {
-              this.deletableConnectionsByRule.set(c.ruleId, [new TargetConnections(c.targetId, targetName, c)]);
-            }
-          });
-        }
-      });
-
     }));
     this.form = this.fb.group({
       connectionsToAdd: this.fb.array([]),
@@ -171,14 +165,21 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     event.stopPropagation();
   }
 
-  changeAttribute(typeId: string, value?: string) {
+  onChangeAttribute(typeId: string, value?: string) {
     if (value) { // set new value
       this.items.pipe(take(1)).subscribe(items => this.mes.setAttributeValues(items, typeId, value));
     } else { // delete attribute
+      this.items.pipe(take(1)).subscribe(items => this.mes.deleteAttributes(items, typeId));
     }
   }
 
-  deleteConnections(connections: TargetConnections) {}
+  onDeleteConnections(connections: TargetConnections) {
+    this.mes.deleteConnections(connections);
+  }
+
+  onRemoveItem(item: FullConfigurationItem) {
+    this.store.dispatch(MultiEditActions.removeSelectedItem({item}));
+  }
 
   onSubmit() {
     this.mes.change(this.form.value);

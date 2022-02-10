@@ -6,6 +6,7 @@ import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions, ReadFunctions } from 'backend-access';
 import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.api';
 import { MultiEditServiceModule } from '../multi-edit-service.module';
+import { TargetConnections } from '../../shared/objects/target-connections.model';
 
 interface FormValue {
     attributes: {edit: boolean; typeId: string; type: string; value: string}[];
@@ -25,7 +26,6 @@ export class MultiEditService {
     private items: FullConfigurationItem[];
     private changedItemIds: string[];
     private rules = new Map<string, ConnectionRule>();
-
     constructor(private store: Store, private http: HttpClient) {
         this.store.select(MultiEditSelectors.selectedItems).pipe(
             withLatestFrom(this.store.select(MetaDataSelectors.selectConnectionRules)),
@@ -80,7 +80,7 @@ export class MultiEditService {
         this.connectionsToChange = formValue.connectionsToAdd.filter(conn => conn.add).length +
             formValue.connectionsToDelete.filter(connection => connection.delete).length;
         this.operationsLeftSubject.next(this.operationsLeft());
-        this.deleteConnections(formValue.connectionsToDelete);
+        this.pDeleteConnections(formValue.connectionsToDelete);
         this.addConnections(formValue.connectionsToAdd);
     }
 
@@ -94,25 +94,33 @@ export class MultiEditService {
         }));
         // set the ids to process for the counter
         this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
-        items.forEach((item, index) => {
-            EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(
-                switchMap(updatedItem => ReadFunctions.fullConfigurationItem(this.http, this.store, updatedItem.id)),
-            ).subscribe({
-                next: updatedItem => {
-                    this.store.dispatch(MultiEditActions.removeItemIdToProcess({itemId: updatedItem.id}));
-                    this.store.dispatch(MultiEditActions.replaceSelectedItem({item: updatedItem}));
-                },
-                error: error => {
-                    this.log({
-                        subject: item.type + ': ' + item.name,
-                        subjectId: item.id,
-                        message: 'failed updating item',
-                        details: error.message ?? error.error?.message ?? JSON.stringify(error),
-                        severity: 1,
-                    });
-                },
-            });
+        items.forEach(item => this.updateAndReadItem(item));
+    }
+
+    deleteAttributes(items: FullConfigurationItem[], attributeTypeId: string) {
+        items = items.filter(item => item.attributes.findIndex(a => a.typeId === attributeTypeId) !== -1)
+            .map(item => ({
+                ...item,
+                attributes: item.attributes.filter(a => a.typeId !== attributeTypeId),
+            }));
+        // set the ids to process for the counter
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        items.forEach(item => this.updateAndReadItem(item));
+    }
+
+    deleteConnections(connections: TargetConnections) {
+        connections.connectionInfos.forEach(connection => {
+            EditFunctions.deleteConnection(this.http, this.store, connection.connection.id).pipe(
+                switchMap(() => ReadFunctions.fullConfigurationItem(this.http, this.store, connection.sourceItemId)),
+            ).subscribe(this.itemUpdateSubscriber(undefined));
         });
+    }
+
+
+    private updateAndReadItem(item: FullConfigurationItem) {
+        EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(
+            switchMap(updatedItem => ReadFunctions.fullConfigurationItem(this.http, this.store, updatedItem.id))
+        ).subscribe(this.itemUpdateSubscriber(item));
     }
 
     private changeAttributes(attributes: {edit: boolean; typeId: string; type: string; value: string}[]) {
@@ -205,7 +213,7 @@ export class MultiEditService {
         });
     }
 
-    private deleteConnections(connections: {delete: boolean; connectionType: string; targetId: string}[]) {
+    private pDeleteConnections(connections: {delete: boolean; connectionType: string; targetId: string}[]) {
         connections.filter(connection => connection.delete).forEach(connection => {
             this.items.forEach(item => {
                 const connToDelete = item.connectionsToLower.find(conn =>
@@ -254,6 +262,22 @@ export class MultiEditService {
             });
         });
     }
+
+    private itemUpdateSubscriber = (item: FullConfigurationItem) => ({
+        next: (updatedItem: FullConfigurationItem) => {
+            this.store.dispatch(MultiEditActions.removeItemIdToProcess({ itemId: updatedItem.id }));
+            this.store.dispatch(MultiEditActions.replaceSelectedItem({ item: updatedItem }));
+        },
+        error: (error: { message?: string; error?: { message?: string } }) => {
+            this.log({
+                subject: item.type + ': ' + item.name,
+                subjectId: item.id,
+                message: 'failed updating item',
+                details: error.message ?? error.error?.message ?? JSON.stringify(error),
+                severity: 1,
+            });
+        },
+    });
 
     private clearLog() {
         this.store.dispatch(LogActions.clearLog());

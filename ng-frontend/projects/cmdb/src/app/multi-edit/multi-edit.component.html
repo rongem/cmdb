@@ -10,27 +10,27 @@
             </button>
             <ul class="dropdown-menu" *ngIf="ob.key.startsWith('a:')" [formGroup]="attributeForm">
                 <li>
-                    <button type="button" class="red-button selectable" (click)="changeAttribute(clearKey(ob.key), undefined)" i18n="delete all values">
+                    <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(ob.key), undefined)" i18n="delete all values">
                         Alle Werte l&ouml;schen
                     </button>
                 </li>
                 <li>
                     <label for="newAttributeValue" i18n="custom value">Eigener Wert</label>
                     <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(ob.key)">
-                    <button type="button" class="selectable" (click)="changeAttribute(clearKey(ob.key), newAtt.value)" [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
+                    <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), newAtt.value)" [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
                         Speichern
                     </button>
                 </li>
                 <ng-container *ngIf="(getValuesForAttributeType(clearKey(ob.key)) | async).length > 1">
                     <li i18n="existing values">Vorhandene Werte</li>
                     <li *ngFor="let value of (getValuesForAttributeType(clearKey(ob.key)) | async)">
-                        <button type="button" class="selectable" (click)="changeAttribute(clearKey(ob.key), value)">{{value}}</button>
+                        <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), value)">{{value}}</button>
                     </li>
                 </ng-container>
             </ul>
             <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctl:')" [formGroup]="">
                 <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(ob.key))">
-                    <button class="red-button selectable" (click)="deleteConnections(connection)">
+                    <button class="red-button selectable" (click)="onDeleteConnections(connection)">
                         <ng-container i18n="delete connection to ">L&ouml;sche Verbindung zu </ng-container>
                         {{connection.targetName}}
                     </button>
@@ -48,6 +48,12 @@
                     {{item.name}}
                 </a>
                 <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
+                <button class="red-button selectable" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
+                    X
+                    <span class="visually-hidden" i18n="remove item from list">
+                        Item aus der Liste entfernen
+                    </span>
+                </button>
             </td>
             <td *ngFor="let ob of (resultColumns | async)">
                 <ng-container *ngIf="ob.key.startsWith('a:')">

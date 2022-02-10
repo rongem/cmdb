@@ -36,6 +36,11 @@ export const multiEditReducer = (multiEditState: State | undefined, multiEditAct
         ...state,
         selectedItems: [...state.selectedItems.map(item => item.id === action.item.id ? action.item : item)],
     })),
+    on(MultiEditActions.removeSelectedItem, (state, action) => ({
+        ...state,
+        selectedIds: state.selectedIds.filter(id => id !== action.item.id),
+        selectedItems: state.selectedItems.filter(item => item.id !== action.item.id),
+    })),
     on(MultiEditActions.clear, (state, action) => ({
         ...state,
         selectedIds: [],

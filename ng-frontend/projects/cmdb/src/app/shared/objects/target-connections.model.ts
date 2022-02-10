@@ -1,10 +1,14 @@
 import { FullConnection } from 'backend-access';
 
+class ConnectionInfo {
+    sourceItemId: string;
+    connection: FullConnection;
+}
 export class TargetConnections {
-    connections: FullConnection[] = [];
-    constructor(public targetId: string, public targetName: string, connection?: FullConnection) {
-        if (connection) {
-            this.connections.push(connection);
+    connectionInfos: ConnectionInfo[] = [];
+    constructor(public targetId: string, public targetName: string, connectionInfo?: ConnectionInfo) {
+        if (connectionInfo) {
+            this.connectionInfos.push(connectionInfo);
         }
     }
 }
