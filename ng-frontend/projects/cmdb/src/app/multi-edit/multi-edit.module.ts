@@ -1,31 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
+import { ValidatorModule } from 'backend-access';
 import { ItemSharedModule } from '../shared/item-shared.module';
+import { CoreModule } from '../shared/core.module';
 import { MultiAddConnectionsComponent } from './multi-add-connections/multi-add-connections.component';
 import { MultiAddLinksComponent } from './multi-add-links/multi-add-links.component';
-import { MultiAttributesComponent } from './multi-attributes/multi-attributes.component';
-import { MultiDeleteConnectionsComponent } from './multi-delete-connections/multi-delete-connections.component';
 import { MultiDeleteLinksComponent } from './multi-delete-links/multi-delete-links.component';
 import { MultiEditRoutingModule } from './multi-edit-routing.module';
 import { MultiEditServiceModule } from './multi-edit-service.module';
 import { MultiEditComponent } from './multi-edit.component';
 import { MultiResultsComponent } from './multi-results/multi-results.component';
-import { MultiTableComponent } from './multi-table/multi-table.component';
 import { MultiWorkingComponent } from './multi-working/multi-working.component';
 
 
 @NgModule({
     declarations: [
         MultiEditComponent,
-        MultiTableComponent,
-        MultiAttributesComponent,
         MultiAddConnectionsComponent,
-        MultiDeleteConnectionsComponent,
         MultiAddLinksComponent,
         MultiDeleteLinksComponent,
         MultiResultsComponent,
@@ -33,14 +26,13 @@ import { MultiWorkingComponent } from './multi-working/multi-working.component';
     ],
     imports: [
         CommonModule,
+        CoreModule,
         ReactiveFormsModule,
         MultiEditRoutingModule,
         MultiEditServiceModule,
         ItemSharedModule,
-        MatAutocompleteModule,
-        MatInputModule,
-        MatSlideToggleModule,
         MatTableModule,
+        ValidatorModule,
     ]
 })
 export class MultiEditModule {}

@@ -1,7 +1,7 @@
 npm update -g
 cd ng-frontend
 ng update @angular/cli @angular/core @angular/material @ngrx/store @angular-eslint/schematics
-npm update
+npm update --force
 npm audit fix
 ng build backend-access
 ng build

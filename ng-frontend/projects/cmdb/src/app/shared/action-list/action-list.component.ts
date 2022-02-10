@@ -2,10 +2,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MetaDataSelectors, MultiEditActions } from 'backend-access';
+import { MetaDataSelectors } from 'backend-access';
 import { map, Subscription, take, withLatestFrom } from 'rxjs';
 import { getRouterState } from '../store/router/router.reducer';
-import { ItemSelectors, MultiEditSelectors, NeighborSearchSelectors, SearchFormSelectors } from '../store/store.api';
+import { ItemSelectors, MultiEditActions, MultiEditSelectors, NeighborSearchSelectors, SearchFormSelectors } from '../store/store.api';
 
 @Component({
   selector: 'app-action-list',
@@ -57,6 +57,10 @@ export class ActionListComponent implements OnInit, OnDestroy {
 
   get userRole() {
     return this.store.select(MetaDataSelectors.selectUserRole);
+  }
+
+  get searchItemType() {
+    return this.store.select(SearchFormSelectors.searchItemType);
   }
 
   ngOnInit(): void {

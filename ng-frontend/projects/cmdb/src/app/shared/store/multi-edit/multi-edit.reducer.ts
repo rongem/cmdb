@@ -1,14 +1,17 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { FullConfigurationItem, MultiEditActions } from 'backend-access';
+import { FullConfigurationItem } from 'backend-access';
+import { MultiEditActions } from '../store.api';
 
 export interface State {
     selectedIds: string[];
     selectedItems: FullConfigurationItem[];
+    idsToProcess: string[];
 }
 
 const initialState: State = {
     selectedIds: [],
     selectedItems: [],
+    idsToProcess: [],
 };
 
 export const multiEditReducer = (multiEditState: State | undefined, multiEditAction: Action): State => createReducer(
@@ -29,9 +32,26 @@ export const multiEditReducer = (multiEditState: State | undefined, multiEditAct
         ...state,
         selectedItems: [...action.items],
     })),
+    on(MultiEditActions.replaceSelectedItem, (state, action) => ({
+        ...state,
+        selectedItems: [...state.selectedItems.map(item => item.id === action.item.id ? action.item : item)],
+    })),
+    on(MultiEditActions.removeSelectedItem, (state, action) => ({
+        ...state,
+        selectedIds: state.selectedIds.filter(id => id !== action.item.id),
+        selectedItems: state.selectedItems.filter(item => item.id !== action.item.id),
+    })),
     on(MultiEditActions.clear, (state, action) => ({
         ...state,
         selectedIds: [],
         selectedItems: [],
+    })),
+    on(MultiEditActions.setItemIdsToProcess, (state, action) => ({
+        ...state,
+        idsToProcess: action.itemIds,
+    })),
+    on(MultiEditActions.removeItemIdToProcess, (state, action) => ({
+        ...state,
+        idsToProcess: state.idsToProcess.filter(id => id !== action.itemId),
     })),
 )(multiEditState, multiEditAction);

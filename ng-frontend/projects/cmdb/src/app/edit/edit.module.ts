@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
-import { EditEffects, MultiEditEffects, ValidatorModule } from 'backend-access';
+import { EditEffects, ValidatorModule } from 'backend-access';
 import { CoreModule } from '../shared/core.module';
 
 import { ItemSharedModule } from '../shared/item-shared.module';
+import { MultiEditEffects } from '../shared/store/multi-edit/multi-edit.effects';
 import { AddConnectionComponent } from './add-connection/add-connection.component';
 import { CopyItemComponent } from './copy-item/copy-item.component';
 import { CreateItemComponent } from './create-item/create-item.component';

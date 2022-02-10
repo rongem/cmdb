@@ -9,19 +9,12 @@ const getMultiEditState =  createFeatureSelector<State>(MULTIEDIT);
 
 export const selectedIds = createSelector(getMultiEditState, state => state.selectedIds);
 export const selectedItems = createSelector(getMultiEditState, state => state.selectedItems);
+export const idsToProcess = createSelector(getMultiEditState, state => state.idsToProcess);
 
 // extract all attribute types that are used in an item typ
 const selectAttributeTypesInItems = createSelector(selectedItems, MetaDataSelectors.selectAttributeTypes, (items, attributeTypes) =>
     attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.id) > -1) > -1)
 );
-
-// const selectAttributeTypesNotInItems = createSelector(selectedItems, MetaDataSelectors.selectAttributeTypes, (items, attributeTypes) =>
-//     attributeTypes.filter(at => items.findIndex(ci => ci.attributes.findIndex(a => a.typeId === at.id) > -1) === -1)
-// );
-
-// const selectAttributeValuesForAttributeType = (attributeTypeId: string) => createSelector(selectedItems, items =>
-//     [...new Set(items.map(item => item.attributes.find(att => att.typeId === attributeTypeId)).map(att => att.value))]
-// );
 
 // extract all connection rules that fit to an upper item type
 const selectConnectionRulesToLowerInItems = createSelector(selectedItems, MetaDataSelectors.selectConnectionRules,
@@ -52,4 +45,8 @@ export const selectResultListFullColumns = createSelector(selectAttributeTypesIn
         return array;
     }
 );
+
+export const selectOperationsLeft = createSelector(idsToProcess, ids => ids.length);
+
+export const idPresent = (id: string) => createSelector(idsToProcess, ids => ids.includes(id));
 

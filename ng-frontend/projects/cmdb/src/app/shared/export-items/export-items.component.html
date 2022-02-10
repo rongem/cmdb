@@ -1,12 +1,10 @@
 <mat-dialog-content>
     <div>
-        <mat-form-field>
-            <mat-label i18n="choose export format">In welchem Format m&ouml;chten Sie exportieren?</mat-label>
-            <select matNativeControl [(ngModel)]="exportType">
-                <option value="excel" i18n="Excel">Excel</option>
-                <option value="csv" i18n="csv">CSV</option>
-            </select>
-        </mat-form-field>
+        <label i18n="choose export format">In welchem Format m&ouml;chten Sie exportieren?</label>
+        <select matNativeControl [(ngModel)]="exportType">
+            <option value="excel" i18n="Excel">Excel</option>
+            <option value="csv" i18n="csv">CSV</option>
+        </select>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>

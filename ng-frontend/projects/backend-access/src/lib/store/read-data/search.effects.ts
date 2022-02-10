@@ -5,7 +5,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 
 import * as SearchActions from './search.actions';
-import * as MultiEditActions from '../edit-data/multi-edit.actions';
 import * as ErrorActions from '../error-handling/error.actions';
 
 import { search, searchFull, searchNeighbor, fullConfigurationItems } from './read.functions';
@@ -73,12 +72,6 @@ export class SearchEffects {
             );
         }),
         map(resultList => SearchActions.setNeighborSearchResultList({resultList, fullItemsIncluded: true}))
-    ));
-
-    // multi edit list must be cleared if a new search was performed
-    clearMultiEditLists$ = createEffect(() => this.actions$.pipe(
-        ofType(SearchActions.setNeighborSearchResultList, SearchActions.setResultListFull),
-        map(() => MultiEditActions.clear()),
     ));
 
     constructor(private actions$: Actions,

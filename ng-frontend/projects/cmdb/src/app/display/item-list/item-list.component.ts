@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AttributeType, ConfigurationItem, ConnectionType, MetaDataSelectors, MultiEditActions } from 'backend-access';
+import { AttributeType, ConfigurationItem, ConnectionType, MetaDataSelectors } from 'backend-access';
 import { map, of, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
-import { ItemSelectors, MultiEditSelectors, SearchFormSelectors } from '../../shared/store/store.api';
+import { ItemSelectors, MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
   selector: 'app-item-list',

@@ -7,7 +7,7 @@
             <ng-container *ngFor="let target of targets; let i = index"
                 [formGroupName]="i">
                     <div>
-                        <mat-slide-toggle formControlName="delete"></mat-slide-toggle>
+                        <input type="checkbox" formControlName="delete">
                     </div>
                     <div>
                         {{target}} (

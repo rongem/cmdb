@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 
@@ -24,7 +23,6 @@ import { ItemEffects } from './store/item/item.effects';
         CommonModule,
         FormsModule,
         MatDialogModule,
-        MatInputModule,
         EffectsModule.forFeature([ItemEffects]),
     ],
     exports: [
