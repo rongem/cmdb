@@ -71,26 +71,28 @@
                     </tr>
                 </ng-container>
                 <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length < rule.maxConnectionsToLower">
-                    <td>
-                        <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length === 0">
-                            {{ connectionType.name }}
-                        </ng-container>
-                    </td>
-                    <td>
-                        <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length === 0">
-                            {{(getItemTypeName(rule.lowerItemTypeId) | async)}}
-                            <span [style.border]="'1px dotted black'" [style.background]="(getItemTypeColor(rule.lowerItemTypeId) | async)">
-                                &nbsp;&nbsp;
-                            </span>
-                        </ng-container>
-                    </td>
-                    <td colspan="3">
-                        <button type="button" class="selectable" *ngIf="!addRule" (click)="onAddConnection(rule)" i18n="add connection">
-                            Verbindung hinzuf&uuml;gen
-                        </button>
-                        <app-add-connection *ngIf="addRule" [rule]="addRule" [itemId]="(configurationItem | async).id" (connectionSaved)="onCreateNewConnection($event)">
-                        </app-add-connection>
-                    </td>
+                    <tr>
+                        <td>
+                            <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length === 0">
+                                {{ connectionType.name }}
+                            </ng-container>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="getConnectionsByRule(rule.id, (configurationItem | async).connectionsToLower).length === 0">
+                                {{(getItemTypeName(rule.lowerItemTypeId) | async)}}
+                                <span [style.border]="'1px dotted black'" [style.background]="(getItemTypeColor(rule.lowerItemTypeId) | async)">
+                                    &nbsp;&nbsp;
+                                </span>
+                            </ng-container>
+                        </td>
+                        <td colspan="3">
+                            <button type="button" class="selectable" *ngIf="!addRule" (click)="onAddConnection(rule)" i18n="add connection">
+                                Verbindung hinzuf&uuml;gen
+                            </button>
+                            <app-add-connection *ngIf="addRule" [rule]="addRule" [itemId]="(configurationItem | async).id" (connectionSaved)="onCreateNewConnection($event)">
+                            </app-add-connection>
+                        </td>
+                    </tr>
                 </ng-container>
             </ng-container>
         </ng-container>

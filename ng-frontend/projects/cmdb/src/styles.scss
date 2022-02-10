@@ -491,7 +491,7 @@ tr.active-line {
     }
 
     @media (min-width: 30rem) {
-        right: 0;
+        left: unset;
     }
 }
 .open {

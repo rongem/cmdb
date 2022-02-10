@@ -7,7 +7,6 @@ import { ItemSharedModule } from '../shared/item-shared.module';
 import { CoreModule } from '../shared/core.module';
 import { MultiAddConnectionsComponent } from './multi-add-connections/multi-add-connections.component';
 import { MultiAddLinksComponent } from './multi-add-links/multi-add-links.component';
-import { MultiDeleteConnectionsComponent } from './multi-delete-connections/multi-delete-connections.component';
 import { MultiDeleteLinksComponent } from './multi-delete-links/multi-delete-links.component';
 import { MultiEditRoutingModule } from './multi-edit-routing.module';
 import { MultiEditServiceModule } from './multi-edit-service.module';
@@ -20,7 +19,6 @@ import { MultiWorkingComponent } from './multi-working/multi-working.component';
     declarations: [
         MultiEditComponent,
         MultiAddConnectionsComponent,
-        MultiDeleteConnectionsComponent,
         MultiAddLinksComponent,
         MultiDeleteLinksComponent,
         MultiResultsComponent,

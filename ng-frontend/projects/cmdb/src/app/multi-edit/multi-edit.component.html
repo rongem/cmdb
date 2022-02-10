@@ -29,7 +29,12 @@
                 </ng-container>
             </ul>
             <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctl:')" [formGroup]="">
-                <li>Test</li>
+                <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(ob.key))">
+                    <button class="red-button selectable" (click)="deleteConnections(connection)">
+                        <ng-container i18n="delete connection to ">L&ouml;sche Verbindung zu </ng-container>
+                        {{connection.targetName}}
+                    </button>
+                </li>
             </ul>
             <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctu:')" [formGroup]="">
                 <li>Test</li>
@@ -42,7 +47,7 @@
                 <a [routerLink]="['/display', 'configuration-item', item.id]">
                     {{item.name}}
                 </a>
-                <app-working *ngIf="(getIsItemProcess(item.id) | async) === true"></app-working>
+                <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
             </td>
             <td *ngFor="let ob of (resultColumns | async)">
                 <ng-container *ngIf="ob.key.startsWith('a:')">
@@ -66,8 +71,6 @@
         <div class="box-top">
         </div>
         <form class="box-body" (ngSubmit)="onSubmit()">
-            <app-multi-delete-connections [form]="form" [items]="(items | async)">
-            </app-multi-delete-connections>
             <app-multi-add-connections [form]="form" [items]="(items | async)"
                 [connectionRules]="(connectionRules | async)">
             </app-multi-add-connections>
