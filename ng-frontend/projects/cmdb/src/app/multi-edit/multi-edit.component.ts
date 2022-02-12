@@ -1,10 +1,18 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map, of, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
-import { AttributeType, FullConfigurationItem, FullConnection, MetaDataSelectors, ValidatorService } from 'backend-access';
+import { map, Observable, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
+import {
+  ConfigurationItem,
+  ConnectionRule,
+  FullConfigurationItem,
+  FullConnection,
+  MetaDataSelectors,
+  ReadFunctions,
+  ValidatorService,
+} from 'backend-access';
 import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../shared/store/store.api';
 import { MultiEditService } from './services/multi-edit.service';
 import { TargetConnections } from '../shared/objects/target-connections.model';
@@ -17,17 +25,20 @@ import { TargetConnections } from '../shared/objects/target-connections.model';
 export class MultiEditComponent implements OnInit, OnDestroy {
   form: FormGroup;
   attributeForm: FormGroup;
-  itemTypeId: string;
-  subscriptions: Subscription[] = [];
+  connectionForm: FormGroup;
+  private itemTypeId: string;
+  private subscriptions: Subscription[] = [];
   private deletableConnectionsByRule: Map<string, TargetConnections[]> = new Map();
+  private addableConnectionRules: ConnectionRule[] = [];
+  private availableItemsForRule = new Map<string, Observable<ConfigurationItem[]>>();
 
-  constructor(private store: Store,
+  constructor(private http: HttpClient,
+              private store: Store,
               private router: Router,
               private route: ActivatedRoute,
               private fb: FormBuilder,
               private val: ValidatorService,
-              private mes: MultiEditService,
-              public dialog: MatDialog) { }
+              private mes: MultiEditService) { }
 
   get items() {
     return this.store.select(MultiEditSelectors.selectedItems);
@@ -35,13 +46,6 @@ export class MultiEditComponent implements OnInit, OnDestroy {
 
   get resultColumns() {
     return this.store.select(MultiEditSelectors.selectResultListFullColumnsForSearchItemType);
-  }
-
-  get attributeTypes() {
-    if (!this.itemTypeId) {
-      return of([] as AttributeType[]);
-    }
-    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.itemTypeId));
   }
 
   get connectionRules() {
@@ -60,12 +64,19 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     return this.store.select(MultiEditSelectors.selectOperationsLeft);
   }
 
+  private get attributeTypes() {
+    return this.store.select(SearchFormSelectors.attributeTypesForCurrentSearchItemType);
+  }
+
   ngOnInit(): void {
     this.subscriptions.push(this.items.pipe(
-      withLatestFrom(this.store.select(SearchFormSelectors.searchItemType)),
-    ).subscribe(([items, itemType]) => {
+      withLatestFrom(
+        this.store.select(SearchFormSelectors.searchItemType),
+        this.store.select(SearchFormSelectors.connectionRulesForCurrentIsUpperSearchItemType),
+      ),
+    ).subscribe(([items, itemType, connectionRules]) => {
       // check if there are items and are all of the same type
-      if (!items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
+      if (!itemType || !items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
         const target = ['display'];
         if (itemType) {
           target.push(itemType.id);
@@ -103,6 +114,25 @@ export class MultiEditComponent implements OnInit, OnDestroy {
             });
           }
         });
+        // find rules that have enough connections to upper left for all items
+        connectionRules.filter(rule => rule.maxConnectionsToUpper >= items.length).forEach(rule => {
+          const spaceLeft = items.every(item => {
+            const conns = item.connectionsToLower.filter(conn => conn.ruleId === rule.id);
+            return (conns.length < rule.maxConnectionsToLower);
+          });
+          if (spaceLeft === true) {
+            this.addableConnectionRules.push(rule);
+          }
+        });
+        const form: {[key: string]: AbstractControl} = {};
+        this.addableConnectionRules.forEach(rule => {
+          form[rule.id] = this.fb.group({
+            ruleId: this.fb.control(rule.id),
+            targetId: this.fb.control('', Validators.required),
+            description: this.fb.control('', this.val.validateMatchesRegex(rule.validationExpression))
+          });
+        });
+        this.connectionForm = this.fb.group(form);
       }
     }));
     this.subscriptions.push(this.attributeTypes.subscribe(attributeTypes => {
@@ -154,6 +184,30 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  getItemType(typeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleItemType(typeId));
+  }
+
+  getConnectionType(typeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(typeId));
+  }
+
+  getConnectionRuleAllowsAdding(ruleId: string) {
+    return this.addableConnectionRules.map(r => r.id).includes(ruleId);
+  }
+
+  getAvailableItems(ruleId: string, items: FullConfigurationItem[]) {
+    if (!this.availableItemsForRule.has(ruleId)) {
+      this.availableItemsForRule.set(ruleId, ReadFunctions.availableItemsForRuleId(this.http, ruleId, items.length).pipe(
+          map(configurationItems => configurationItems.filter(item => items.every(i =>
+              i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.id) === -1
+            ))
+          )
+        ));
+    }
+    return this.availableItemsForRule.get(ruleId);
+  }
+
   clearKey(key: string) {
     if (key.includes(':')) {
       return key.split(':')[1];
@@ -171,6 +225,10 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     } else { // delete attribute
       this.items.pipe(take(1)).subscribe(items => this.mes.deleteAttributes(items, typeId));
     }
+  }
+
+  onAddConnection(ruleId: string) {
+    console.log(this.connectionForm.get(ruleId).value);
   }
 
   onDeleteConnections(connections: TargetConnections) {

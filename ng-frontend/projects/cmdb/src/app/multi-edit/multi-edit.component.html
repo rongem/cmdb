@@ -17,7 +17,8 @@
                 <li>
                     <label for="newAttributeValue" i18n="custom value">Eigener Wert</label>
                     <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(ob.key)">
-                    <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), newAtt.value)" [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
+                    <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), newAtt.value)"
+                        [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
                         Speichern
                     </button>
                 </li>
@@ -28,11 +29,26 @@
                     </li>
                 </ng-container>
             </ul>
-            <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctl:')" [formGroup]="">
+            <ul class="dropdown-menu" [formGroup]="connectionForm"
+                *ngIf="ob.key.startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(ob.key)).length > 0 || getConnectionRuleAllowsAdding(clearKey(ob.key)))">
                 <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(ob.key))">
                     <button class="red-button selectable" (click)="onDeleteConnections(connection)">
                         <ng-container i18n="delete connection to ">L&ouml;sche Verbindung zu </ng-container>
                         {{connection.targetName}}
+                    </button>
+                </li>
+                <li *ngIf="getConnectionRuleAllowsAdding(clearKey(ob.key))" [formGroupName]="clearKey(ob.key)">
+                    <label [for]="ob.key" i18n="item">Item</label>
+                    <select [id]="ob.key" (click)="stopPropagation($event)" formControlName="targetId">
+                        <option *ngFor="let item of (getAvailableItems(clearKey(ob.key), (items | async)) | async)" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                    <label [for]="'d' + ob.key" i18n="description" class="selectable">Beschreibung</label>
+                    <input [id]="'d' + ob.key" type="text" class="selectable" (click)="stopPropagation($event)" formControlName="description">
+                    <button type="button" class="selectable" i18n="save" (click)="onAddConnection(clearKey(ob.key))"
+                        [disabled]="connectionForm.get(clearKey(ob.key)).invalid">
+                        Speichern
                     </button>
                 </li>
             </ul>

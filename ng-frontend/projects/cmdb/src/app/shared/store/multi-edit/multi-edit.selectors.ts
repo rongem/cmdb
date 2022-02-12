@@ -31,22 +31,7 @@ const selectConnectionRulesToUpperInItems = createSelector(selectedItems, MetaDa
             ci.connectionsToUpper.findIndex(c => c.ruleId === cr.id) > -1) > -1)
 );
 
-// Convert items to table columns
-export const selectResultListFullColumns = createSelector(selectAttributeTypesInItems, MetaDataSelectors.selectConnectionTypes,
-    MetaDataSelectors.selectItemTypes, selectConnectionRulesToLowerInItems, selectConnectionRulesToUpperInItems,
-    (attributeTypes, connectionTypes, itemTypes, connectionRulesToLower, connectionRulesToUpper) => {
-        const array: KeyValue<string, string>[] = [];
-        attributeTypes.forEach(at => array.push({key: 'a:' + at.id, value: at.name}));
-        connectionRulesToLower.forEach(cr => array.push({key: 'ctl:' + cr.id, value:
-            connectionTypes.find(c => c.id === cr.connectionTypeId).name + ' ' +
-            itemTypes.find(i => i.id === cr.lowerItemTypeId).name}));
-        connectionRulesToUpper.forEach(cr => array.push({key: 'ctu:' + cr.id, value:
-            connectionTypes.find(c => c.id === cr.connectionTypeId).reverseName + ' ' +
-            itemTypes.find(i => i.id === cr.upperItemTypeId).name}));
-        return array;
-    }
-);
-
+// Convert item type to table columns
 export const selectResultListFullColumnsForSearchItemType = createSelector(SearchFormSelectors.attributeTypesForCurrentSearchItemType,
     SearchFormSelectors.connectionRulesForCurrentIsLowerSearchItemType, SearchFormSelectors.connectionRulesForCurrentIsUpperSearchItemType,
     MetaDataSelectors.selectConnectionTypes, MetaDataSelectors.selectItemTypes,

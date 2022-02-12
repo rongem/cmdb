@@ -15,7 +15,7 @@ export class MultiAddConnectionsComponent implements OnInit {
   @Input() items: FullConfigurationItem[];
   @Input() connectionRules: ConnectionRule[];
   rules: ConnectionRule[] = [];
-  private connectionsToDelete: FormArray;
+  private connectionsToAdd: FormArray;
   private availableItemsForRule = new Map<string, Observable<ConfigurationItem[]>>();
 
   constructor(private store: Store,
@@ -23,7 +23,7 @@ export class MultiAddConnectionsComponent implements OnInit {
               private http: HttpClient) { }
 
   ngOnInit() {
-    this.connectionsToDelete = this.form.get('connectionsToAdd') as FormArray;
+    this.connectionsToAdd = this.form.get('connectionsToAdd') as FormArray;
     // find rules that have enough connections to upper left for all items
     this.connectionRules.filter(rule => rule.maxConnectionsToUpper >= this.items.length).forEach(rule => {
       // find rules that have enough connections to lower left for all items
@@ -35,7 +35,7 @@ export class MultiAddConnectionsComponent implements OnInit {
         this.rules.push(rule);
       }
     });
-    this.rules.forEach(rule => this.connectionsToDelete.push(this.fb.group({
+    this.rules.forEach(rule => this.connectionsToAdd.push(this.fb.group({
       add: false,
       ruleId: rule.id,
       description: '',
