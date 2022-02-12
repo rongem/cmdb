@@ -40,12 +40,13 @@ export const selectSingleConnectionRule = (ruleId: string) => createSelector(sel
     (connectionRules: ConnectionRule[]) => connectionRules.find(c => c.id === ruleId)
 );
 
-export const selectConnectionRulesForUpperItemType = (itemType: ItemType) => createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[]) => connectionRules.filter((value) => itemType && value.upperItemTypeId === itemType.id)
+export const selectConnectionRulesForUpperItemType = (itemType: string | ItemType) => createSelector(selectConnectionRules,
+    (connectionRules: ConnectionRule[]) =>
+        connectionRules.filter((value) => itemType && value.upperItemTypeId === (typeof itemType === 'string' ? itemType : itemType.id))
 );
-export const selectConnectionRulesForLowerItemType = (itemType: ItemType) => createSelector(selectConnectionRules,
-    (connectionRules: ConnectionRule[]) => connectionRules.filter((value) =>
-    itemType && value.lowerItemTypeId === itemType.id)
+export const selectConnectionRulesForLowerItemType = (itemType: string | ItemType) => createSelector(selectConnectionRules,
+    (connectionRules: ConnectionRule[]) =>
+        connectionRules.filter((value) => itemType && value.lowerItemTypeId === (typeof itemType === 'string' ? itemType : itemType.id))
 );
 
 export const selectAttributeTypesInGroup = (groupId: string) => createSelector(selectAttributeTypes, (attributeTypes: AttributeType[]) =>

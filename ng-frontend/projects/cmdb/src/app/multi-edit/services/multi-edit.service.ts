@@ -47,7 +47,6 @@ export class MultiEditService {
         this.connectionsToChange = 0;
         this.changedItemIds = [];
         this.clearLog();
-        this.changeAttributes(formValue.attributes);
         this.deleteLinks(formValue.linksToDelete);
         this.addLinks(formValue.linksToAdd);
         this.changedItemIds = [...new Set(this.changedItemIds)]; // remove duplicates, then update items
@@ -80,7 +79,6 @@ export class MultiEditService {
         this.connectionsToChange = formValue.connectionsToAdd.filter(conn => conn.add).length +
             formValue.connectionsToDelete.filter(connection => connection.delete).length;
         this.operationsLeftSubject.next(this.operationsLeft());
-        this.pDeleteConnections(formValue.connectionsToDelete);
         this.addConnections(formValue.connectionsToAdd);
     }
 
@@ -123,59 +121,6 @@ export class MultiEditService {
         ).subscribe(this.itemUpdateSubscriber(item));
     }
 
-    private changeAttributes(attributes: {edit: boolean; typeId: string; type: string; value: string}[]) {
-        attributes.filter(attribute => attribute.edit).forEach(attribute => {
-            this.items.forEach(item => {
-                if (item.attributes.findIndex(att => att.typeId === attribute.typeId) > -1) {
-                    // existing attribute
-                    const att = item.attributes.find(attr => attr.typeId === attribute.typeId);
-                    if ((!attribute.value || attribute.value === '') && !!att) {
-                        // delete attribute
-                        const attPos = item.attributes.findIndex(attr => attr.typeId === att.typeId);
-                        item.attributes.splice(attPos, 1);
-                        this.changedItemIds.push(item.id);
-                        this.log({
-                            subject: item.type + ': ' + item.name,
-                            subjectId: item.id,
-                            message: 'deleting attribute',
-                            details: att.type + ': ' + att.value,
-                        });
-                    } else {
-                        // change attribute
-                        if (att.value !== attribute.value) {
-                            this.log({
-                                subject: item.type + ': ' + item.name,
-                                subjectId: item.id,
-                                message: 'changing attribute value',
-                                details: att.type + ': "' + att.value + '" -> "' + attribute.value + '"',
-                            });
-                            att.value = attribute.value;
-                            this.changedItemIds.push(item.id);
-                        }
-                    }
-                } else {
-                    // no attribute found
-                    if (!attribute.value || attribute.value === '') {
-                        // do nothing
-                    } else {
-                        // create attribute
-                        item.attributes.push({
-                            typeId: attribute.typeId,
-                            value: attribute.value,
-                        });
-                        this.changedItemIds.push(item.id);
-                        this.log({
-                            subject: item.type + ': ' + item.name,
-                            subjectId: item.id,
-                            message: 'creating attribute',
-                            details: attribute.type + ': ' + attribute.value,
-                        });
-                    }
-                }
-            });
-        });
-    }
-
     private deleteLinks(links: {delete: boolean; target: string}[]) {
         links.filter(link => link.delete).forEach(link => {
             this.items.forEach(item => {
@@ -208,31 +153,6 @@ export class MultiEditService {
                         message: 'adding link',
                         details: link.uri,
                     });
-                }
-            });
-        });
-    }
-
-    private pDeleteConnections(connections: {delete: boolean; connectionType: string; targetId: string}[]) {
-        connections.filter(connection => connection.delete).forEach(connection => {
-            this.items.forEach(item => {
-                const connToDelete = item.connectionsToLower.find(conn =>
-                    conn.targetId === connection.targetId && conn.typeId === connection.connectionType);
-                if (connToDelete) {
-                    const connIndex = item.connectionsToLower.findIndex(c => c.id === connToDelete.id);
-                    item.connectionsToLower.splice(connIndex, 1);
-                    EditFunctions.deleteConnection(this.http, this.store, connToDelete.id).subscribe(() => {
-                        this.connectionsChanged++;
-                        this.operationsLeftSubject.next(this.operationsLeft());
-                        this.log({
-                            subject: item.type + ': ' + item.name,
-                            subjectId: item.id,
-                            message: 'deleted connection',
-                            details: connToDelete.type + ' ' + connToDelete.targetType + ': ' + connToDelete.targetName,
-                        });
-                    });
-                } else {
-                    console.log(item.connectionsToLower, connection);
                 }
             });
         });

@@ -1,5 +1,5 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { MetaDataSelectors, ItemType, ConnectionRule, AttributeType, ConnectionType } from 'backend-access';
+import { MetaDataSelectors, ConnectionType } from 'backend-access';
 
 import { ADMIN } from '../../shared/store/store.constants';
 import * as fromAdmin from './admin.reducer';

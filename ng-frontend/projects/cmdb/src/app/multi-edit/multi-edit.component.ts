@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map, of, Subscription, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import { map, of, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
 import { AttributeType, FullConfigurationItem, FullConnection, MetaDataSelectors, ValidatorService } from 'backend-access';
 import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../shared/store/store.api';
 import { MultiEditService } from './services/multi-edit.service';
@@ -34,7 +34,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   }
 
   get resultColumns() {
-    return this.store.select(MultiEditSelectors.selectResultListFullColumns);
+    return this.store.select(MultiEditSelectors.selectResultListFullColumnsForSearchItemType);
   }
 
   get attributeTypes() {
