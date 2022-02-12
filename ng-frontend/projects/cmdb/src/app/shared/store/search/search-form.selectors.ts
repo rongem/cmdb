@@ -27,7 +27,7 @@ const attributeGroupIdsForCurrentSearchItemType = createSelector(searchItemType,
 );
 
 // get used attribute types for current item type in search form
-const attributeTypesForCurrentSearchItemType = createSelector(attributeGroupIdsForCurrentSearchItemType, MetaDataSelectors.selectAttributeTypes,
+export const attributeTypesForCurrentSearchItemType = createSelector(attributeGroupIdsForCurrentSearchItemType, MetaDataSelectors.selectAttributeTypes,
     (groupIds: string[], attributeTypes: AttributeType[]) => attributeTypes.filter(at => groupIds.indexOf(at.attributeGroupId) > -1)
 );
 
@@ -37,11 +37,11 @@ export const availableSearchAttributeTypes =  createSelector(searchUsedAttribute
 );
 
 // get connection rules that match this item type as upper
-const connectionRulesForCurrentIsUpperSearchItemType = createSelector(MetaDataSelectors.selectConnectionRules, searchItemType,
+export const connectionRulesForCurrentIsUpperSearchItemType = createSelector(MetaDataSelectors.selectConnectionRules, searchItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) => itemType && value.upperItemTypeId === itemType.id)
 );
 // get connection rules that match this item type as lower
-const connectionRulesForCurrentIsLowerSearchItemType =
+export const connectionRulesForCurrentIsLowerSearchItemType =
     createSelector(MetaDataSelectors.selectConnectionRules, searchItemType,
     (connectionRules: ConnectionRule[], itemType: ItemType) => connectionRules.filter((value) =>
     itemType && value.lowerItemTypeId === itemType.id)
