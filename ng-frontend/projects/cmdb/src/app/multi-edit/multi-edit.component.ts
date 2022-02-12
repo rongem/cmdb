@@ -87,6 +87,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
         // extract all target ids from connections
         const targetIds = [...new Set(items.map(item => item.connectionsToLower.map(c => c.targetId)).flat())];
         // check if target is connected to all items and place it into new array if so
+        this.deletableConnectionsByRule.clear();
         targetIds.forEach(guid => {
           const connections: FullConnection[] = [];
           const found = items.every(item => {
@@ -115,6 +116,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
           }
         });
         // find rules that have enough connections to upper left for all items
+        this.addableConnectionRules = [];
         connectionRules.filter(rule => rule.maxConnectionsToUpper >= items.length).forEach(rule => {
           const spaceLeft = items.every(item => {
             const conns = item.connectionsToLower.filter(conn => conn.ruleId === rule.id);
@@ -128,6 +130,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
         this.addableConnectionRules.forEach(rule => {
           form[rule.id] = this.fb.group({
             ruleId: this.fb.control(rule.id),
+            typeId: this.fb.control(rule.connectionTypeId),
             targetId: this.fb.control('', Validators.required),
             description: this.fb.control('', this.val.validateMatchesRegex(rule.validationExpression))
           });
@@ -208,12 +211,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     return this.availableItemsForRule.get(ruleId);
   }
 
-  clearKey(key: string) {
-    if (key.includes(':')) {
-      return key.split(':')[1];
-    }
-    return key;
-  }
+  clearKey = (key: string) =>  key.includes(':') ? key.split(':')[1] : key;
 
   stopPropagation(event: Event) {
     event.stopPropagation();
@@ -228,7 +226,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   }
 
   onAddConnection(ruleId: string) {
-    console.log(this.connectionForm.get(ruleId).value);
+    this.items.pipe(take(1)).subscribe(items => this.mes.createConnections(items, this.connectionForm.get(ruleId).value));
   }
 
   onDeleteConnections(connections: TargetConnections) {

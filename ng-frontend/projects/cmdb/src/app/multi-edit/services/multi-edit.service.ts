@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { Subject, switchMap, take, withLatestFrom } from 'rxjs';
+import { Subject, switchMap, withLatestFrom } from 'rxjs';
 import { FullConfigurationItem, ConnectionRule, Connection, LineMessage,
     MetaDataSelectors, LogActions, EditFunctions, ReadFunctions } from 'backend-access';
 import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.api';
@@ -106,14 +106,33 @@ export class MultiEditService {
         items.forEach(item => this.updateAndReadItem(item));
     }
 
+    createConnections(items: FullConfigurationItem[], connTemplate: { ruleId: string; targetId: string; description: string; typeId: string}) {
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        items.filter(item => !item.connectionsToLower.find(c =>
+            c.ruleId === connTemplate.ruleId && c.targetId === connTemplate.targetId && c.description === connTemplate.description))
+            .forEach(item => {
+                const connection: Connection = {
+                    ruleId: connTemplate.ruleId,
+                    upperItemId: item.id,
+                    lowerItemId: connTemplate.targetId,
+                    description: connTemplate.description,
+                    typeId: connTemplate.typeId,
+                };
+                EditFunctions.createConnection(this.http, this.store, connection).pipe(
+                    switchMap(() => ReadFunctions.fullConfigurationItem(this.http, this.store, item.id)),
+                ).subscribe(this.itemUpdateSubscriber(item));
+            }
+        );
+    }
+
     deleteConnections(connections: TargetConnections) {
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: connections.connectionInfos.map(c => c.sourceItemId)}));
         connections.connectionInfos.forEach(connection => {
             EditFunctions.deleteConnection(this.http, this.store, connection.connection.id).pipe(
                 switchMap(() => ReadFunctions.fullConfigurationItem(this.http, this.store, connection.sourceItemId)),
             ).subscribe(this.itemUpdateSubscriber(undefined));
         });
     }
-
 
     private updateAndReadItem(item: FullConfigurationItem) {
         EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(

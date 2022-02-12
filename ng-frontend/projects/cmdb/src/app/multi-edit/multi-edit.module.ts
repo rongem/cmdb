@@ -5,7 +5,6 @@ import { MatTableModule } from '@angular/material/table';
 import { ValidatorModule } from 'backend-access';
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { CoreModule } from '../shared/core.module';
-import { MultiAddConnectionsComponent } from './multi-add-connections/multi-add-connections.component';
 import { MultiAddLinksComponent } from './multi-add-links/multi-add-links.component';
 import { MultiDeleteLinksComponent } from './multi-delete-links/multi-delete-links.component';
 import { MultiEditRoutingModule } from './multi-edit-routing.module';
@@ -18,7 +17,6 @@ import { MultiWorkingComponent } from './multi-working/multi-working.component';
 @NgModule({
     declarations: [
         MultiEditComponent,
-        MultiAddConnectionsComponent,
         MultiAddLinksComponent,
         MultiDeleteLinksComponent,
         MultiResultsComponent,

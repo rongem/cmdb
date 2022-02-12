@@ -5,9 +5,13 @@
             Configuration Item
         </th>
         <th *ngFor="let ob of (resultColumns | async)" class="position-relative" appClickOpen>
-            <button type="menu" class="dropdown-toggle selectable" [disabled]="(working | async) > 0">
+            <button type="menu" class="dropdown-toggle selectable" [disabled]="(working | async) > 0"
+                *ngIf="ob.key.startsWith('a:') || (ob.key.startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(ob.key)).length > 0 || getConnectionRuleAllowsAdding(clearKey(ob.key)))); else labelOnly">
                 {{ ob.value }}
             </button>
+            <ng-template #labelOnly>
+                {{ ob.value }}
+            </ng-template>
             <ul class="dropdown-menu" *ngIf="ob.key.startsWith('a:')" [formGroup]="attributeForm">
                 <li>
                     <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(ob.key), undefined)" i18n="delete all values">
@@ -37,7 +41,7 @@
                         {{connection.targetName}}
                     </button>
                 </li>
-                <li *ngIf="getConnectionRuleAllowsAdding(clearKey(ob.key))" [formGroupName]="clearKey(ob.key)">
+                <li class="flex-vertical__full-width" *ngIf="getConnectionRuleAllowsAdding(clearKey(ob.key))" [formGroupName]="clearKey(ob.key)">
                     <label [for]="ob.key" i18n="item">Item</label>
                     <select [id]="ob.key" (click)="stopPropagation($event)" formControlName="targetId">
                         <option *ngFor="let item of (getAvailableItems(clearKey(ob.key), (items | async)) | async)" [value]="item.id">
@@ -52,9 +56,6 @@
                     </button>
                 </li>
             </ul>
-            <ul class="dropdown-menu" *ngIf="ob.key.startsWith('ctu:')" [formGroup]="">
-                <li>Test</li>
-            </ul>
         </th>
     </thead>
     <tbody>
@@ -64,7 +65,7 @@
                     {{item.name}}
                 </a>
                 <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
-                <button class="red-button selectable" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
+                <button class="red-button selectable smaller-font" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
                     X
                     <span class="visually-hidden" i18n="remove item from list">
                         Item aus der Liste entfernen
@@ -93,9 +94,6 @@
         <div class="box-top">
         </div>
         <form class="box-body" (ngSubmit)="onSubmit()">
-            <app-multi-add-connections [form]="form" [items]="(items | async)"
-                [connectionRules]="(connectionRules | async)">
-            </app-multi-add-connections>
             <app-multi-add-links [form]="form" [items]="(items | async)">
             </app-multi-add-links>
             <app-multi-delete-links [form]="form" [items]="(items | async)">
