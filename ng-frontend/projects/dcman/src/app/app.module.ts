@@ -1,11 +1,11 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { MetaDataEffects, ValidatorModule } from 'backend-access';
+import { AuthInterceptor, MetaDataEffects, ValidatorModule } from 'backend-access';
 
 import { registerLocaleData } from '@angular/common';
 import localeEn from '@angular/common/locales/en';
@@ -22,7 +22,6 @@ import { AssetEffects } from './shared/store/asset/asset.effects';
 import { ProvisionableEffects } from './shared/store/provisionable/provisionable.effects';
 
 import { ExtendedAppConfigService } from './shared/app-config.service';
-import { CoreModule } from './core.module';
 import { NgrxRouterStoreModule } from './shared/store/router/router.module';
 
 import { AppComponent } from './app.component';
@@ -54,7 +53,6 @@ registerLocaleData(localeEn);
     StoreModule.forRoot(fromApp.appReducer),
     EffectsModule.forRoot([MetaDataEffects, SchemaEffects, BasicsEffects, AssetEffects, ProvisionableEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
-    CoreModule,
     SharedModule,
     NgrxRouterStoreModule,
     ValidatorModule,
@@ -66,7 +64,12 @@ registerLocaleData(localeEn);
       useFactory: initializeApp,
       deps: [ExtendedAppConfigService], multi: true
     },
-  ],
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

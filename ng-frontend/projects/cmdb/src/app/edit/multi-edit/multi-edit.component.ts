@@ -13,9 +13,9 @@ import {
   ReadFunctions,
   ValidatorService,
 } from 'backend-access';
-import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../shared/store/store.api';
-import { MultiEditService } from './services/multi-edit.service';
-import { TargetConnections } from '../shared/objects/target-connections.model';
+import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../../shared/store/store.api';
+import { MultiEditService } from '../services/multi-edit.service';
+import { TargetConnections } from '../objects/target-connections.model';
 
 @Component({
   selector: 'app-multi-edit',
@@ -23,9 +23,9 @@ import { TargetConnections } from '../shared/objects/target-connections.model';
   styleUrls: ['./multi-edit.component.scss']
 })
 export class MultiEditComponent implements OnInit, OnDestroy {
-  form: FormGroup;
   attributeForm: FormGroup;
   connectionForm: FormGroup;
+  linkForm: FormGroup;
   private itemTypeId: string;
   private subscriptions: Subscription[] = [];
   private deletableConnectionsByRule: Map<string, TargetConnections[]> = new Map();
@@ -149,10 +149,9 @@ export class MultiEditComponent implements OnInit, OnDestroy {
       });
       this.attributeForm = this.fb.group(form);
     }));
-    this.form = this.fb.group({
-      connectionsToAdd: this.fb.array([]),
-      linksToDelete: this.fb.array([]),
-      linksToAdd: this.fb.array([]),
+    this.linkForm = this.fb.group({
+      uri: this.fb.control('https://', [Validators.required, this.val.validatUrl]),
+      description: this.fb.control('', [Validators.required]),
     });
   }
 
@@ -241,17 +240,16 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     this.store.dispatch(MultiEditActions.removeSelectedItem({item}));
   }
 
+  onAddLink() {
+    this.items.pipe(take(1)).subscribe(items => this.mes.addLink(items, this.linkForm.value));
+  }
+
   onDeleteAllLinks() {
     this.items.pipe(take(1)).subscribe(items => this.mes.deleteAllLinks(items));
   }
 
   onDeleteLink(uri: string) {
     this.items.pipe(take(1)).subscribe(items => this.mes.deleteLink(items, uri));
-  }
-
-  onSubmit() {
-    this.mes.change(this.form.value);
-    this.router.navigate(['working'], {relativeTo: this.route });
   }
 
 }

@@ -75,6 +75,16 @@
                         </ng-container>
                     </button>
                 </li>
+                <li [formGroup]="linkForm">
+                    <label for="newUri" i18n="URI">URL</label>
+                    <input id="newUri" type="text" (click)="stopPropagation($event)" formControlName="uri">
+                    <label for="newDescription" i18n="description">Beschreibung</label>
+                    <input id="newDescription" type="text" (click)="stopPropagation($event)" formControlName="description">
+                    <button type="button" class="selectable" (click)="onAddLink()"
+                        [disabled]="linkForm.invalid" i18n="save">
+                        Speichern
+                    </button>
+                </li>
             </ul>
         </th>
     </thead>
@@ -116,15 +126,3 @@
         </tr>
     </tbody>
 </table>
-<main class="page-layout">
-    <section>
-        <div class="box-top">
-        </div>
-        <form class="box-body" (ngSubmit)="onSubmit()">
-            <app-multi-add-links [form]="form" [items]="(items | async)">
-            </app-multi-add-links>
-            <button type="submit" class="selectable" [disabled]="form.invalid" i18n="submit changes">&Auml;nderungen durchf&uuml;hren</button>
-        </form>
-    </section>
-</main>
-

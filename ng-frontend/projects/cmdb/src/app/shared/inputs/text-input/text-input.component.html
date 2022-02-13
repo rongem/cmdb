@@ -6,11 +6,9 @@
     <button class="btn-ok selectable" type="button"
         [disabled]="text===originalText || text.length < minimumLength || !isValid"
         (click)="onAccept()">
-        <span class="material-icons">done</span>
         <span i18n="save">Speichern</span>
     </button>
     <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-        <span class="material-icons">block</span>
         <span i18n="cancel">Abbrechen</span>
     </button>
 </div>

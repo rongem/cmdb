@@ -99,7 +99,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
       take(1),
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
-      this.router.navigate(['edit-multiple-items']);
+      this.router.navigate(['edit', 'multiple-items']);
     });
   }
 
@@ -110,7 +110,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
       take(1),
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
-      this.router.navigate(['edit-multiple-items']);
+      this.router.navigate(['edit', 'multiple-items']);
     });
   }
 }
