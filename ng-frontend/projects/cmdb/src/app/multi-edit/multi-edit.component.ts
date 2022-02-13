@@ -64,6 +64,10 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     return this.store.select(MultiEditSelectors.selectOperationsLeft);
   }
 
+  get uniqueLinks() {
+    return this.store.select(MultiEditSelectors.uniqueLinks);
+  }
+
   private get attributeTypes() {
     return this.store.select(SearchFormSelectors.attributeTypesForCurrentSearchItemType);
   }
@@ -235,6 +239,14 @@ export class MultiEditComponent implements OnInit, OnDestroy {
 
   onRemoveItem(item: FullConfigurationItem) {
     this.store.dispatch(MultiEditActions.removeSelectedItem({item}));
+  }
+
+  onDeleteAllLinks() {
+    this.items.pipe(take(1)).subscribe(items => this.mes.deleteAllLinks(items));
+  }
+
+  onDeleteLink(uri: string) {
+    this.items.pipe(take(1)).subscribe(items => this.mes.deleteLink(items, uri));
   }
 
   onSubmit() {

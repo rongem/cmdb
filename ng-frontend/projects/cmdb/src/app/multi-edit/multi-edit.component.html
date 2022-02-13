@@ -36,7 +36,7 @@
             <ul class="dropdown-menu" [formGroup]="connectionForm"
                 *ngIf="ob.key.startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(ob.key)).length > 0 || getConnectionRuleAllowsAdding(clearKey(ob.key)))">
                 <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(ob.key))">
-                    <button class="red-button selectable" (click)="onDeleteConnections(connection)">
+                    <button type="button" class="red-button selectable" (click)="onDeleteConnections(connection)">
                         <ng-container i18n="delete connection to ">L&ouml;sche Verbindung zu </ng-container>
                         {{connection.targetName}}
                     </button>
@@ -53,6 +53,26 @@
                     <button type="button" class="selectable" i18n="save" (click)="onAddConnection(clearKey(ob.key))"
                         [disabled]="connectionForm.get(clearKey(ob.key)).invalid">
                         Speichern
+                    </button>
+                </li>
+            </ul>
+        </th>
+        <th class="position-relative" appClickOpen>
+            <button type="menu" class="dropdown-toggle selectable" i18n="external links">
+                Externe Links
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button type="button" class="red-button selectable" (click)="onDeleteAllLinks()" i18n="delete all links">
+                        Alle Links l&ouml;schen
+                    </button>
+                </li>
+                <li *ngFor="let uri of (uniqueLinks | async)">
+                    <button type="button" class="red-button selectable" (click)="onDeleteLink(uri)">
+                        {{uri}}
+                        <ng-container i18n="delete">
+                            l&ouml;schen
+                        </ng-container>
                     </button>
                 </li>
             </ul>
@@ -86,6 +106,13 @@
                     </div>
                 </div>
             </td>
+            <td>
+                <div *ngFor="let link of item.links">
+                    <a [href]="link.uri">
+                        {{link.description}}
+                    </a>
+                </div>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -96,8 +123,6 @@
         <form class="box-body" (ngSubmit)="onSubmit()">
             <app-multi-add-links [form]="form" [items]="(items | async)">
             </app-multi-add-links>
-            <app-multi-delete-links [form]="form" [items]="(items | async)">
-            </app-multi-delete-links>
             <button type="submit" class="selectable" [disabled]="form.invalid" i18n="submit changes">&Auml;nderungen durchf&uuml;hren</button>
         </form>
     </section>

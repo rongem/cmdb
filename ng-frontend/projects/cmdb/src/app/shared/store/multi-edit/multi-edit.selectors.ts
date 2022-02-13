@@ -52,3 +52,4 @@ export const selectOperationsLeft = createSelector(idsToProcess, ids => ids.leng
 
 export const idPresent = (id: string) => createSelector(idsToProcess, ids => ids.includes(id));
 
+export const uniqueLinks = createSelector(selectedItems, (items) => [...new Set(items.map(item => item.links.map(l => l.uri)).flat())]);

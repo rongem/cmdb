@@ -6,7 +6,6 @@ import { ValidatorModule } from 'backend-access';
 import { ItemSharedModule } from '../shared/item-shared.module';
 import { CoreModule } from '../shared/core.module';
 import { MultiAddLinksComponent } from './multi-add-links/multi-add-links.component';
-import { MultiDeleteLinksComponent } from './multi-delete-links/multi-delete-links.component';
 import { MultiEditRoutingModule } from './multi-edit-routing.module';
 import { MultiEditServiceModule } from './multi-edit-service.module';
 import { MultiEditComponent } from './multi-edit.component';
@@ -18,7 +17,6 @@ import { MultiWorkingComponent } from './multi-working/multi-working.component';
     declarations: [
         MultiEditComponent,
         MultiAddLinksComponent,
-        MultiDeleteLinksComponent,
         MultiResultsComponent,
         MultiWorkingComponent,
     ],

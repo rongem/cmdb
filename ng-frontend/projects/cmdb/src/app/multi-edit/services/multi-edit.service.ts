@@ -47,7 +47,6 @@ export class MultiEditService {
         this.connectionsToChange = 0;
         this.changedItemIds = [];
         this.clearLog();
-        this.deleteLinks(formValue.linksToDelete);
         this.addLinks(formValue.linksToAdd);
         this.changedItemIds = [...new Set(this.changedItemIds)]; // remove duplicates, then update items
         const items = this.items.filter(item => this.changedItemIds.includes(item.id));
@@ -79,7 +78,6 @@ export class MultiEditService {
         this.connectionsToChange = formValue.connectionsToAdd.filter(conn => conn.add).length +
             formValue.connectionsToDelete.filter(connection => connection.delete).length;
         this.operationsLeftSubject.next(this.operationsLeft());
-        this.addConnections(formValue.connectionsToAdd);
     }
 
     setAttributeValues(items: FullConfigurationItem[], attributeTypeId: string, attributeValue: string) {
@@ -134,27 +132,28 @@ export class MultiEditService {
         });
     }
 
+    deleteAllLinks(items: FullConfigurationItem[]) {
+        items = items.filter(item => item.links && item.links.length > 0).map(item => ({
+            ...item,
+            links: [],
+        }));
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        items.forEach(item => this.updateAndReadItem(item));
+    }
+
+    deleteLink(items: FullConfigurationItem[], uri: string) {
+        items = items.filter(item => item.links && item.links.find(l => l.uri === uri)).map(item => ({
+            ...item,
+            links: item.links.filter(l => l.uri !== uri),
+        }));
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        items.forEach(item => this.updateAndReadItem(item));
+    }
+
     private updateAndReadItem(item: FullConfigurationItem) {
         EditFunctions.updateConfigurationItem(this.http, this.store, item).pipe(
             switchMap(updatedItem => ReadFunctions.fullConfigurationItem(this.http, this.store, updatedItem.id))
         ).subscribe(this.itemUpdateSubscriber(item));
-    }
-
-    private deleteLinks(links: {delete: boolean; target: string}[]) {
-        links.filter(link => link.delete).forEach(link => {
-            this.items.forEach(item => {
-                item.links.filter(li => li.uri === link.target).forEach(li => {
-                    this.changedItemIds.push(item.id);
-                    this.log({
-                        subject: item.type + ': ' + item.name,
-                        subjectId: item.id,
-                        message: 'deleting link',
-                        details: li.uri,
-                    });
-                });
-                item.links = item.links.filter(li => li.uri !== link.target);
-            });
-        });
     }
 
     private addLinks(links: {uri: string; description: string}[]) {
@@ -173,31 +172,6 @@ export class MultiEditService {
                         details: link.uri,
                     });
                 }
-            });
-        });
-    }
-
-    private addConnections(connections: {add: boolean; ruleId: string; description: string; targetId: string}[]) {
-        // console.log(connections, this.rules);
-        connections.filter(conn => conn.add).forEach(conn => {
-            this.items.forEach(item => {
-                const connection: Connection = {
-                    upperItemId: item.id,
-                    lowerItemId: conn.targetId,
-                    typeId: this.rules.get(conn.ruleId).connectionTypeId,
-                    description: conn.description,
-                    ruleId: conn.ruleId,
-                };
-                EditFunctions.createConnection(this.http, this.store, connection).subscribe(() => {
-                    this.connectionsChanged++;
-                    this.operationsLeftSubject.next(this.operationsLeft());
-                    this.log({
-                        subject: item.type + ': ' + item.name,
-                        subjectId: item.id,
-                        message: 'created connection with',
-                        details: conn.targetId + ' (' + conn.description + ')',
-                    });
-                });
             });
         });
     }
