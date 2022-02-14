@@ -3,7 +3,6 @@ import { HttpClientModule } from '@angular/common/http';
 import localeDe from '@angular/common/locales/de';
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
@@ -41,7 +40,6 @@ registerLocaleData(localeDe);
     StoreModule.forRoot(appReducer),
     EffectsModule.forRoot([MetaDataEffects, RouterEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
-    MatDialogModule,
     NgrxRouterStoreModule,
   ],
   bootstrap: [AppComponent],
@@ -55,14 +53,7 @@ registerLocaleData(localeDe);
       deps: [AppConfigService], multi: true
     }, {
        provide: LOCALE_ID, useValue: 'de-DE'
-    }, {
-      provide: MatDialogRef,
-      useValue: {}
-    }, {
-      provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: {hasBackdrop: true}
     }
-
   ],
 })
 

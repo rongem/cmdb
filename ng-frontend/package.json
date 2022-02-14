@@ -1,6 +1,6 @@
 {
   "name": "ng-frontend",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -24,7 +24,6 @@
     "@angular/core": "^13.2.2",
     "@angular/forms": "^13.2.2",
     "@angular/localize": "^13.2.2",
-    "@angular/material": "^13.2.2",
     "@angular/platform-browser": "^13.2.2",
     "@angular/platform-browser-dynamic": "^13.2.2",
     "@angular/router": "^13.2.2",
@@ -39,11 +38,10 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.2.3",
-    "@angular-devkit/core": "^13.2.3",
-    "@angular-eslint/eslint-plugin": "^13.0.1",
-    "@angular-eslint/eslint-plugin-template": "^13.0.1",
-    "@angular-eslint/schematics": "13.0.1",
-    "@angular-eslint/template-parser": "^13.0.1",
+    "@angular-eslint/eslint-plugin": "^13.1.0",
+    "@angular-eslint/eslint-plugin-template": "^13.1.0",
+    "@angular-eslint/schematics": "13.1.0",
+    "@angular-eslint/template-parser": "^13.1.0",
     "@angular/cli": "^13.2.3",
     "@angular/compiler-cli": "^13.2.2",
     "@angular/language-service": "^13.2.2",

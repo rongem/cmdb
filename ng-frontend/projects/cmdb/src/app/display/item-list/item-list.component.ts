@@ -41,7 +41,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         }
         return of(undefined);
     })).subscribe(result => {
-      if (result) {
+      if (result) { // have to do it that way because it can be undefined
         const [attributeTypes, rulesToUpper, rulesToLower] = result;
         this.displayedAttributeTypesList = attributeTypes;
       }
