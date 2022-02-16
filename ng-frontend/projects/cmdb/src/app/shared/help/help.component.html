@@ -1,8 +1,9 @@
-<button class="help-button position-relative selectable" (click)="onToggle()">
-    <span>?</span>
-</button>
-<div class="backdrop" (click)="onToggle()" 
-    [ngClass]="{backdrop__open: helpVisible}"></div>
+<div class="position-relative">
+    <button class="help-button position-absolute selectable" (click)="onToggle()">
+        <span>?</span>
+        <span class="visually-hidden" i18n="show help">Hilfe einblenden</span>
+    </button>
+</div>
 <div class="help-box" (click)="onToggle()" [ngClass]="{visible: helpVisible}">
     <ng-content></ng-content>
 </div>

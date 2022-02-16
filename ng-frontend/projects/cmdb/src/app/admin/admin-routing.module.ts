@@ -19,6 +19,7 @@ import { NewUserComponent } from './users/new-user/new-user.component';
 const adminRoutes: Routes = [
     {
         path: '', component: AdminComponent, children: [
+            { path: '', pathMatch: 'full', redirectTo: 'attribute-groups' },
             { path: 'attribute-groups', component: AttributeGroupsComponent },
             { path: 'attribute-group/:id', component: AttributeGroupItemTypeMappingsComponent },
             { path: 'attribute-types/convert/:id', component: ConvertToItemTypeComponent },
