@@ -23,10 +23,12 @@
                 Gemeinsam editieren
             </button>
         </li>
-        <li class="menu-item" *ngIf="insideList && (resultList | async).length > 0">
-            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, 'export']" i18n="export list">
+        <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (resultList | async).length > 0">
+            <button type="button" class="no-wrap" (click)="showExport = !showExport" i18n="export list">
                 Liste exportieren
             </button>
+            <app-export-items *ngIf="showExport" [items]="(resultList | async)" [searchItemType]="(searchItemType | async)" (exported)="showExport = false">
+            </app-export-items>
         </li>
         <li class="menu-item" *ngIf="pathExt === 'neighbors' && (areMultipleItemsSelected | async) === true">
             <button type="button" class="no-wrap" [@showButton]

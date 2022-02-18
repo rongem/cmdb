@@ -1,0 +1,128 @@
+<h3 i18n="edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
+<table class="table">
+    <thead>
+        <th i18n="configuration item">
+            Configuration Item
+        </th>
+        <th *ngFor="let ob of (resultColumns | async)" class="position-relative" appClickOpen>
+            <button type="menu" class="dropdown-toggle selectable" [disabled]="(working | async) > 0"
+                *ngIf="ob.key.startsWith('a:') || (ob.key.startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(ob.key)).length > 0 || getConnectionRuleAllowsAdding(clearKey(ob.key)))); else labelOnly">
+                {{ ob.value }}
+            </button>
+            <ng-template #labelOnly>
+                {{ ob.value }}
+            </ng-template>
+            <ul class="dropdown-menu" *ngIf="ob.key.startsWith('a:')" [formGroup]="attributeForm">
+                <li>
+                    <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(ob.key), undefined)" i18n="delete all values">
+                        Alle Werte l&ouml;schen
+                    </button>
+                </li>
+                <li>
+                    <label for="newAttributeValue" i18n="custom value">Eigener Wert</label>
+                    <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(ob.key)">
+                    <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), newAtt.value)"
+                        [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
+                        Speichern
+                    </button>
+                </li>
+                <ng-container *ngIf="(getValuesForAttributeType(clearKey(ob.key)) | async).length > 1">
+                    <li i18n="existing values">Vorhandene Werte</li>
+                    <li *ngFor="let value of (getValuesForAttributeType(clearKey(ob.key)) | async)">
+                        <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), value)">{{value}}</button>
+                    </li>
+                </ng-container>
+            </ul>
+            <ul class="dropdown-menu" [formGroup]="connectionForm"
+                *ngIf="ob.key.startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(ob.key)).length > 0 || getConnectionRuleAllowsAdding(clearKey(ob.key)))">
+                <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(ob.key))">
+                    <button type="button" class="red-button selectable" (click)="onDeleteConnections(connection)">
+                        <ng-container i18n="delete connection to ">L&ouml;sche Verbindung zu </ng-container>
+                        {{connection.targetName}}
+                    </button>
+                </li>
+                <li class="flex-vertical__full-width" *ngIf="getConnectionRuleAllowsAdding(clearKey(ob.key))" [formGroupName]="clearKey(ob.key)">
+                    <label [for]="ob.key" i18n="item">Item</label>
+                    <select [id]="ob.key" (click)="stopPropagation($event)" formControlName="targetId">
+                        <option *ngFor="let item of (getAvailableItems(clearKey(ob.key), (items | async)) | async)" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                    <label [for]="'d' + ob.key" i18n="description" class="selectable">Beschreibung</label>
+                    <input [id]="'d' + ob.key" type="text" class="selectable" (click)="stopPropagation($event)" formControlName="description">
+                    <button type="button" class="selectable" i18n="save" (click)="onAddConnection(clearKey(ob.key))"
+                        [disabled]="connectionForm.get(clearKey(ob.key)).invalid">
+                        Speichern
+                    </button>
+                </li>
+            </ul>
+        </th>
+        <th class="position-relative" appClickOpen>
+            <button type="menu" class="dropdown-toggle selectable" i18n="external links">
+                Externe Links
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button type="button" class="red-button selectable" (click)="onDeleteAllLinks()" i18n="delete all links">
+                        Alle Links l&ouml;schen
+                    </button>
+                </li>
+                <li *ngFor="let uri of (uniqueLinks | async)">
+                    <button type="button" class="red-button selectable" (click)="onDeleteLink(uri)">
+                        {{uri}}
+                        <ng-container i18n="delete">
+                            l&ouml;schen
+                        </ng-container>
+                    </button>
+                </li>
+                <li [formGroup]="linkForm">
+                    <label for="newUri" i18n="URI">URL</label>
+                    <input id="newUri" type="text" (click)="stopPropagation($event)" formControlName="uri">
+                    <label for="newDescription" i18n="description">Beschreibung</label>
+                    <input id="newDescription" type="text" (click)="stopPropagation($event)" formControlName="description">
+                    <button type="button" class="selectable" (click)="onAddLink()"
+                        [disabled]="linkForm.invalid" i18n="save">
+                        Speichern
+                    </button>
+                </li>
+            </ul>
+        </th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of (items | async)">
+            <td class="flex__space-between">
+                <a [routerLink]="['/display', 'configuration-item', item.id]">
+                    {{item.name}}
+                </a>
+                <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
+                <button class="red-button selectable smaller-font" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
+                    X
+                    <span class="visually-hidden" i18n="remove item from list">
+                        Item aus der Liste entfernen
+                    </span>
+                </button>
+            </td>
+            <td *ngFor="let ob of (resultColumns | async)">
+                <ng-container *ngIf="ob.key.startsWith('a:')">
+                    {{ getValue(item, ob.key.substring(2)) }}
+                </ng-container>
+                <div *ngIf="ob.key.startsWith('ctl:') || ob.key.startsWith('ctu:')" class="link-list">
+                    <div *ngFor="let connection of getConnections(item, ob.key)" class="link-list__item">
+                        &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
+                        {{ connection.targetName}}</a>
+                    <span *ngIf="connection.description">
+                        ({{ connection.description }})
+                    </span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div *ngFor="let link of item.links">
+                    <a [href]="link.uri">
+                        {{link.description}}
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

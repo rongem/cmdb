@@ -1,13 +1,21 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { map, of, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
-import { AttributeType, FullConfigurationItem, FullConnection, MetaDataSelectors, ValidatorService } from 'backend-access';
-import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../shared/store/store.api';
-import { MultiEditService } from './services/multi-edit.service';
-import { TargetConnections } from '../shared/objects/target-connections.model';
+import { map, Observable, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
+import {
+  ConfigurationItem,
+  ConnectionRule,
+  FullConfigurationItem,
+  FullConnection,
+  MetaDataSelectors,
+  ReadFunctions,
+  ValidatorService,
+} from 'backend-access';
+import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../../shared/store/store.api';
+import { MultiEditService } from '../services/multi-edit.service';
+import { TargetConnections } from '../objects/target-connections.model';
 
 @Component({
   selector: 'app-multi-edit',
@@ -15,19 +23,22 @@ import { TargetConnections } from '../shared/objects/target-connections.model';
   styleUrls: ['./multi-edit.component.scss']
 })
 export class MultiEditComponent implements OnInit, OnDestroy {
-  form: FormGroup;
   attributeForm: FormGroup;
-  itemTypeId: string;
-  subscriptions: Subscription[] = [];
+  connectionForm: FormGroup;
+  linkForm: FormGroup;
+  private itemTypeId: string;
+  private subscriptions: Subscription[] = [];
   private deletableConnectionsByRule: Map<string, TargetConnections[]> = new Map();
+  private addableConnectionRules: ConnectionRule[] = [];
+  private availableItemsForRule = new Map<string, Observable<ConfigurationItem[]>>();
 
-  constructor(private store: Store,
+  constructor(private http: HttpClient,
+              private store: Store,
               private router: Router,
               private route: ActivatedRoute,
               private fb: FormBuilder,
               private val: ValidatorService,
-              private mes: MultiEditService,
-              public dialog: MatDialog) { }
+              private mes: MultiEditService) { }
 
   get items() {
     return this.store.select(MultiEditSelectors.selectedItems);
@@ -35,13 +46,6 @@ export class MultiEditComponent implements OnInit, OnDestroy {
 
   get resultColumns() {
     return this.store.select(MultiEditSelectors.selectResultListFullColumnsForSearchItemType);
-  }
-
-  get attributeTypes() {
-    if (!this.itemTypeId) {
-      return of([] as AttributeType[]);
-    }
-    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.itemTypeId));
   }
 
   get connectionRules() {
@@ -60,12 +64,23 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     return this.store.select(MultiEditSelectors.selectOperationsLeft);
   }
 
+  get uniqueLinks() {
+    return this.store.select(MultiEditSelectors.uniqueLinks);
+  }
+
+  private get attributeTypes() {
+    return this.store.select(SearchFormSelectors.attributeTypesForCurrentSearchItemType);
+  }
+
   ngOnInit(): void {
     this.subscriptions.push(this.items.pipe(
-      withLatestFrom(this.store.select(SearchFormSelectors.searchItemType)),
-    ).subscribe(([items, itemType]) => {
+      withLatestFrom(
+        this.store.select(SearchFormSelectors.searchItemType),
+        this.store.select(SearchFormSelectors.connectionRulesForCurrentIsUpperSearchItemType),
+      ),
+    ).subscribe(([items, itemType, connectionRules]) => {
       // check if there are items and are all of the same type
-      if (!items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
+      if (!itemType || !items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
         const target = ['display'];
         if (itemType) {
           target.push(itemType.id);
@@ -76,6 +91,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
         // extract all target ids from connections
         const targetIds = [...new Set(items.map(item => item.connectionsToLower.map(c => c.targetId)).flat())];
         // check if target is connected to all items and place it into new array if so
+        this.deletableConnectionsByRule.clear();
         targetIds.forEach(guid => {
           const connections: FullConnection[] = [];
           const found = items.every(item => {
@@ -103,6 +119,27 @@ export class MultiEditComponent implements OnInit, OnDestroy {
             });
           }
         });
+        // find rules that have enough connections to upper left for all items
+        this.addableConnectionRules = [];
+        connectionRules.filter(rule => rule.maxConnectionsToUpper >= items.length).forEach(rule => {
+          const spaceLeft = items.every(item => {
+            const conns = item.connectionsToLower.filter(conn => conn.ruleId === rule.id);
+            return (conns.length < rule.maxConnectionsToLower);
+          });
+          if (spaceLeft === true) {
+            this.addableConnectionRules.push(rule);
+          }
+        });
+        const form: {[key: string]: AbstractControl} = {};
+        this.addableConnectionRules.forEach(rule => {
+          form[rule.id] = this.fb.group({
+            ruleId: this.fb.control(rule.id),
+            typeId: this.fb.control(rule.connectionTypeId),
+            targetId: this.fb.control('', Validators.required),
+            description: this.fb.control('', this.val.validateMatchesRegex(rule.validationExpression))
+          });
+        });
+        this.connectionForm = this.fb.group(form);
       }
     }));
     this.subscriptions.push(this.attributeTypes.subscribe(attributeTypes => {
@@ -112,10 +149,9 @@ export class MultiEditComponent implements OnInit, OnDestroy {
       });
       this.attributeForm = this.fb.group(form);
     }));
-    this.form = this.fb.group({
-      connectionsToAdd: this.fb.array([]),
-      linksToDelete: this.fb.array([]),
-      linksToAdd: this.fb.array([]),
+    this.linkForm = this.fb.group({
+      uri: this.fb.control('https://', [Validators.required, this.val.validatUrl]),
+      description: this.fb.control('', [Validators.required]),
     });
   }
 
@@ -154,12 +190,31 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  clearKey(key: string) {
-    if (key.includes(':')) {
-      return key.split(':')[1];
-    }
-    return key;
+  getItemType(typeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleItemType(typeId));
   }
+
+  getConnectionType(typeId: string) {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(typeId));
+  }
+
+  getConnectionRuleAllowsAdding(ruleId: string) {
+    return this.addableConnectionRules.map(r => r.id).includes(ruleId);
+  }
+
+  getAvailableItems(ruleId: string, items: FullConfigurationItem[]) {
+    if (!this.availableItemsForRule.has(ruleId)) {
+      this.availableItemsForRule.set(ruleId, ReadFunctions.availableItemsForRuleId(this.http, ruleId, items.length).pipe(
+          map(configurationItems => configurationItems.filter(item => items.every(i =>
+              i.connectionsToLower.findIndex(c => c.ruleId === ruleId && c.targetId === item.id) === -1
+            ))
+          )
+        ));
+    }
+    return this.availableItemsForRule.get(ruleId);
+  }
+
+  clearKey = (key: string) =>  key.includes(':') ? key.split(':')[1] : key;
 
   stopPropagation(event: Event) {
     event.stopPropagation();
@@ -173,6 +228,10 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  onAddConnection(ruleId: string) {
+    this.items.pipe(take(1)).subscribe(items => this.mes.createConnections(items, this.connectionForm.get(ruleId).value));
+  }
+
   onDeleteConnections(connections: TargetConnections) {
     this.mes.deleteConnections(connections);
   }
@@ -181,9 +240,16 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     this.store.dispatch(MultiEditActions.removeSelectedItem({item}));
   }
 
-  onSubmit() {
-    this.mes.change(this.form.value);
-    this.router.navigate(['working'], {relativeTo: this.route });
+  onAddLink() {
+    this.items.pipe(take(1)).subscribe(items => this.mes.addLink(items, this.linkForm.value));
+  }
+
+  onDeleteAllLinks() {
+    this.items.pipe(take(1)).subscribe(items => this.mes.deleteAllLinks(items));
+  }
+
+  onDeleteLink(uri: string) {
+    this.items.pipe(take(1)).subscribe(items => this.mes.deleteLink(items, uri));
   }
 
 }

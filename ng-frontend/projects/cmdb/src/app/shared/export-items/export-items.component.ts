@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/member-ordering, @typescript-eslint/naming-convention */
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FullConfigurationItem } from 'backend-access';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ConnectionRule, FullConfigurationItem, FullConnection, ItemType, MetaDataSelectors } from 'backend-access';
+import { map, withLatestFrom } from 'rxjs';
 
 import { ExportService } from '../services/export.service';
 
@@ -17,19 +18,32 @@ interface ExportElement {
   styleUrls: ['./export-items.component.scss']
 })
 export class ExportItemsComponent implements OnInit {
-  exportType = 'excel';
+  @Input() items: FullConfigurationItem[];
+  @Input() searchItemType: ItemType;
+  @Output() exported = new EventEmitter();
+  @ViewChild('table') tableElement: ElementRef<HTMLTableElement>;
+  exportType = 'clipboard';
 
-  constructor(public dialogRef: MatDialogRef<ExportItemsComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: FullConfigurationItem[],
-              private exportService: ExportService,
-              public dialog: MatDialog) { }
+  constructor(private exportService: ExportService, private store: Store) {}
 
   ngOnInit() {
   }
 
-  exportFile() {
+  get attributeTypes() {
+    return this.store.select(MetaDataSelectors.selectAttributeTypesForItemType(this.searchItemType.id));
+  }
+
+  get downwardConnectionRules() {
+    return this.store.select(MetaDataSelectors.selectConnectionRulesForUpperItemType(this.searchItemType.id));
+  }
+
+  get upwardConnectionRules() {
+    return this.store.select(MetaDataSelectors.selectConnectionRulesForLowerItemType(this.searchItemType.id));
+  }
+
+  exportFile(): void {
     const elements: ExportElement[] = [];
-    this.data.forEach(item => {
+    this.items.forEach(item => {
       let el: ExportElement = { Name: item.name, ItemType: item.type };
       item.attributes.forEach(att => {
         el = Object.assign(el, {[att.type]: att.value});
@@ -53,8 +67,26 @@ export class ExportItemsComponent implements OnInit {
       case 'csv':
         this.exportService.exportAsCsvFile(elements, 'download.csv');
         break;
+      case 'clipboard':
+        this.exportService.exportToClipboard(this.tableElement.nativeElement);
+        break;
     }
-    this.dialogRef.close();
+    this.exported.emit();
+  }
+
+  getAttributeValue(attributeTypeId: string, item: FullConfigurationItem) {
+    return item.attributes?.find(a => a.typeId === attributeTypeId)?.value ?? '';
+  }
+
+  getConnectionRuleText(rule: ConnectionRule, direction: 'up' | 'down') {
+    return this.store.select(MetaDataSelectors.selectSingleConnectionType(rule.connectionTypeId)).pipe(
+      withLatestFrom(this.store.select(MetaDataSelectors.selectSingleItemType(direction === 'down' ? rule.lowerItemTypeId : rule.upperItemTypeId))),
+      map(([connectionType, itemType]) => (direction === 'down' ? connectionType.name : connectionType.reverseName) + ' ' + itemType.name)
+    );
+  }
+
+  getConnectionRuleItems(ruleId: string, connections: FullConnection[]) {
+    return connections.filter(c => c.ruleId === ruleId).map(c => c.targetName).join(', ');
   }
 
 }

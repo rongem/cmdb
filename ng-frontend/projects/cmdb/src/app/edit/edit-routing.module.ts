@@ -5,6 +5,7 @@ import { CreateItemComponent } from './create-item/create-item.component';
 import { CopyItemComponent } from './copy-item/copy-item.component';
 import { ImportItemsComponent } from './import-items/import-items.component';
 import { ItemFrameComponent } from '../shared/item-frame/item-frame.component';
+import { MultiEditComponent } from './multi-edit/multi-edit.component';
 
 const editRoutes: Routes = [
     { path: '', component: ItemFrameComponent, children: [
@@ -13,6 +14,7 @@ const editRoutes: Routes = [
         { path: 'configuration-item/create', component: CreateItemComponent },
         { path: 'configuration-item/:id', component: EditItemComponent },
         { path: 'configuration-item/:id/copy', component: CopyItemComponent },
+        { path: 'multiple-items', component: MultiEditComponent },
     ]},
 ];
 

@@ -29,6 +29,10 @@ export class ExportService {
         this.saveFile(blob, fileName);
     }
 
+    exportToClipboard(table: HTMLTableElement) {
+        navigator.clipboard.writeText(table.outerHTML);
+    }
+
     private saveFile(blob: Blob, fileName: string) {
         const a = document.createElement('a');
         const url = window.URL.createObjectURL(blob);

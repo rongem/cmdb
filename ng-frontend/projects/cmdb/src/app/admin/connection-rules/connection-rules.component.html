@@ -13,10 +13,10 @@
     </p>
 </app-help>
 <div class="box">
-    <div class="box-top" i18n="filter">
+    <div i18n="filter">
         Filter
     </div>
-    <div class="sticky-header box-body flex__space-between">
+    <div class="flex__space-between">
         <div>
             <ng-container i18n="upper item type">
                 Oberer Item-Typ
@@ -120,147 +120,147 @@
             </div>
         </div>
     </div>
-    <table class="table" *ngIf="(canCreateNew | async) === false">
-        <thead>
-            <tr>
-                <th class="table-cell table-header">
-                    <span class="mobile-only">1: </span>
-                    <ng-container i18n="upper item type">
-                        Oberer Item-Typ
-                    </ng-container>
-                    &nbsp;
-                    <ng-container i18n="connection type">
-                        Verbindungstyp
-                    </ng-container>
-                    &nbsp;
-                    <ng-container i18n="lower item type">
-                        Unterer Item-Typ
-                    </ng-container>
-                </th>
-                <th class="table-cell table-header">
-                    <span class="mobile-only">2: </span>
-                    <ng-container i18n="validation rule for description">
-                        G&uuml;ltigkeitsregel f&uuml;r Beschreibung:
-                    </ng-container>
-                </th>
-                <th class="table-cell table-header">
-                    <span class="mobile-only">3: </span>
-                    <ng-container i18n="connections count for connection rule">
-                        Anzahl Verbindungen
-                    </ng-container>
-                </th>
-                <th class="table-cell table-header">
-                    <span class="mobile-only">4: </span>
-                    <ng-container i18n="commands">
-                        Befehle
-                    </ng-container>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let rule of (filteredConnectionRules | async)">
-                <td class="table-cell">
-                    <span class="mobile-only">1: </span>
-                    <div>
-                        {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
-                        &darr;
-                        {{ (getConnectionType(rule.connectionTypeId) | async).name }}
-                        (&le; {{ rule.maxConnectionsToLower }})
-                        &darr;
-                        {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
-                    </div>
-                    <div>
-                        {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
-                        &uarr;
-                        {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
-                        (&le; {{ rule.maxConnectionsToUpper }})
-                        &uarr;
-                        {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
-                    </div>
-                </td>
-                <td class="table-cell">
-                    <span class="mobile-only">2: </span>
-                    {{ rule.validationExpression }}
-                </td>
-                <td class="table-cell">
-                    <span class="mobile-only">3: </span>
-                    {{ (getRulesCount(rule) | async) }}
-                </td>
-                <td class="table-cell position-relative" appClickOpen>
-                    <ng-container *ngIf="activeLine === -1">
-                        <span class="mobile-only">4: </span>
-                        <button type="button" class="dropdown-toggle">
-                            ...
-                            <span class="visually-hidden" i18n="click to open action menu">
-                                Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
-                            </span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <button class="selectable" [routerLink]="['..', 'connection-rule', rule.id]">
-                                    <span i18n="edit connecion rule">Verbindungsregel bearbeiten</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="selectable"
-                                    [cdkCopyToClipboard]="rule.id">
-                                    <ng-container i18n="Copy Id">Id kopieren</ng-container>
-                                    <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
-                                        Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
-                                    </span>
-                                </button>
-                            </li>
-                            <li *ngIf="(getRulesCount(rule) | async) === 0">
-                                <button type="button" class="red-button selectable"
-                                    (click)="onDeleteRule(rule)">
-                                    <ng-container i18n="delete connection rule">Verbindungsregel l&ouml;schen</ng-container>
-                                </button>
-                            </li>
-                        </ul>
-                    </ng-container>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div *ngIf="(canCreateNew | async) === true">
-        <form [formGroup]="ruleForm">
-            <p>
-                <span>&darr;</span>
-                {{ upperItemType.name }}
-                {{ selectedConnectionType.name }}
-                &le; 
-                <input type="number" formControlName="maxConnectionsToLower" class="selectable"
-                    (keyup.enter)="onCreateRule()"
-                    min="1" max="9999" />
-                {{ lowerItemType.name }}
-                <span>&darr;</span>
-            </p>
-            <p>
-                <span>&uarr;</span>
-                {{ lowerItemType.name }}
-                {{ selectedConnectionType.reverseName }}
-                &le; 
-                <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
-                    (keyup.enter)="onCreateRule()"
-                    min="1" max="9999" />
-                {{ upperItemType.name }}
-                <span>&uarr;</span>
-            </p>
-            <div>
-                <label for="validation" i18n="validation rule (RegEx) for connection description">
-                    G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen
-                </label>
-                <input type="text" id="validation" formControlName="validationExpression" class="selectable"
-                    placeholder="^.*$"
-                    (keyup.enter)="onCreateRule()">
-            </div>
-            <div>
-                <button type="button" class="selectable" (click)="onCreateRule()" [disabled]="ruleForm.invalid">
-                    <ng-container i18n="add new connection rule">
-                        Neue Verbindungsregel hinzuf&uuml;gen
-                    </ng-container>
-                </button>
-            </div>
-        </form>
-    </div>  
 </div>
+<table class="table" *ngIf="(canCreateNew | async) === false">
+    <thead>
+        <tr>
+            <th class="table-cell table-header">
+                <span class="mobile-only">1: </span>
+                <ng-container i18n="upper item type">
+                    Oberer Item-Typ
+                </ng-container>
+                &nbsp;
+                <ng-container i18n="connection type">
+                    Verbindungstyp
+                </ng-container>
+                &nbsp;
+                <ng-container i18n="lower item type">
+                    Unterer Item-Typ
+                </ng-container>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">2: </span>
+                <ng-container i18n="validation rule for description">
+                    G&uuml;ltigkeitsregel f&uuml;r Beschreibung:
+                </ng-container>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">3: </span>
+                <ng-container i18n="connections count for connection rule">
+                    Anzahl Verbindungen
+                </ng-container>
+            </th>
+            <th class="table-cell table-header">
+                <span class="mobile-only">4: </span>
+                <ng-container i18n="commands">
+                    Befehle
+                </ng-container>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rule of (filteredConnectionRules | async)">
+            <td class="table-cell">
+                <span class="mobile-only">1: </span>
+                <div>
+                    {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
+                    &darr;
+                    {{ (getConnectionType(rule.connectionTypeId) | async).name }}
+                    (&le; {{ rule.maxConnectionsToLower }})
+                    &darr;
+                    {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
+                </div>
+                <div>
+                    {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
+                    &uarr;
+                    {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
+                    (&le; {{ rule.maxConnectionsToUpper }})
+                    &uarr;
+                    {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
+                </div>
+            </td>
+            <td class="table-cell">
+                <span class="mobile-only">2: </span>
+                {{ rule.validationExpression }}
+            </td>
+            <td class="table-cell">
+                <span class="mobile-only">3: </span>
+                {{ (getRulesCount(rule) | async) }}
+            </td>
+            <td class="table-cell position-relative" appClickOpen>
+                <ng-container *ngIf="activeLine === -1">
+                    <span class="mobile-only">4: </span>
+                    <button type="button" class="dropdown-toggle">
+                        ...
+                        <span class="visually-hidden" i18n="click to open action menu">
+                            Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button class="selectable" [routerLink]="['..', 'connection-rule', rule.id]">
+                                <span i18n="edit connecion rule">Verbindungsregel bearbeiten</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="selectable"
+                                [cdkCopyToClipboard]="rule.id">
+                                <ng-container i18n="Copy Id">Id kopieren</ng-container>
+                                <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                                    Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
+                                </span>
+                            </button>
+                        </li>
+                        <li *ngIf="(getRulesCount(rule) | async) === 0">
+                            <button type="button" class="red-button selectable"
+                                (click)="onDeleteRule(rule)">
+                                <ng-container i18n="delete connection rule">Verbindungsregel l&ouml;schen</ng-container>
+                            </button>
+                        </li>
+                    </ul>
+                </ng-container>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="box" *ngIf="(canCreateNew | async) === true">
+    <form [formGroup]="ruleForm">
+        <p>
+            <span>&darr;</span>
+            {{ upperItemType.name }}
+            {{ selectedConnectionType.name }}
+            &le; 
+            <input type="number" formControlName="maxConnectionsToLower" class="selectable"
+                (keyup.enter)="onCreateRule()"
+                min="1" max="9999" />
+            {{ lowerItemType.name }}
+            <span>&darr;</span>
+        </p>
+        <p>
+            <span>&uarr;</span>
+            {{ lowerItemType.name }}
+            {{ selectedConnectionType.reverseName }}
+            &le; 
+            <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
+                (keyup.enter)="onCreateRule()"
+                min="1" max="9999" />
+            {{ upperItemType.name }}
+            <span>&uarr;</span>
+        </p>
+        <div>
+            <label for="validation" i18n="validation rule (RegEx) for connection description">
+                G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen
+            </label>
+            <input type="text" id="validation" formControlName="validationExpression" class="selectable"
+                placeholder="^.*$"
+                (keyup.enter)="onCreateRule()">
+        </div>
+        <div>
+            <button type="button" class="selectable" (click)="onCreateRule()" [disabled]="ruleForm.invalid">
+                <ng-container i18n="add new connection rule">
+                    Neue Verbindungsregel hinzuf&uuml;gen
+                </ng-container>
+            </button>
+        </div>
+    </form>
+</div>  

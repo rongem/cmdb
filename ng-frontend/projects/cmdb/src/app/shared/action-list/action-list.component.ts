@@ -36,7 +36,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
   hidden = false;
   itemId: string;
   insideList = false;
-  mode: string;
+  showExport = false;
   displayBaseLink = '/display';
   editBaseLink = '/edit';
   itemLinkPart = 'configuration-item';
@@ -71,7 +71,6 @@ export class ActionListComponent implements OnInit, OnDestroy {
       this.itemId = (url.startsWith(this.displayBaseLink + '/' + this.itemLinkPart) || url.startsWith(this.editBaseLink + '/' + this.itemLinkPart)) &&
         route.state.params.id ? route.state.params.id as string : undefined;
       const urlParts = url.split('/').filter(str => !!str);
-      this.mode = urlParts[0];
       this.pathExt = urlParts.length > 3 && urlParts[0] === this.displayBaseLink.substring(1) &&
         urlParts[1] === this.itemLinkPart && this.itemId ? urlParts[3] : urlParts.length === 3 && urlParts[0] === this.editBaseLink.substring(1) ?
         urlParts[0] : undefined;
@@ -99,7 +98,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
       take(1),
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
-      this.router.navigate(['edit-multiple-items']);
+      this.router.navigate(['edit', 'multiple-items']);
     });
   }
 
@@ -110,7 +109,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
       take(1),
     ).subscribe(items => {
       this.store.dispatch(MultiEditActions.setSelectedItems({items}));
-      this.router.navigate(['edit-multiple-items']);
+      this.router.navigate(['edit', 'multiple-items']);
     });
   }
 }

@@ -2,31 +2,24 @@
 
 .help-button {
     left: 90%;
-}
-
-.backdrop {
-    z-index: 49;
+    top: 0.5rem;
+    border-radius: 50%;
 }
 
 .help-box {
-    position: fixed;
-    background: $element-background-color;
-    border: $main-border-style;
-    border-radius: 0.5rem;
-    box-shadow: $box-shadow-large;
-    padding: 1rem;
-    top: 0;
-    left: 0;
-    width: 70%;
     max-width: 80rem;
-    max-height: calc(98% - 7rem);
-    transform:  translate(-100%, -50%) scale(0.0001);
-    transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
-    z-index: 50;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s ease-in;
+    margin: 0 3rem;
+    padding: 0 1rem;
+    &.visible {
+        background: $element-background-color;
+        border: $main-border-style;
+        border-radius: 0.5rem;
+        box-shadow: $box-shadow-large;
+        padding: 1rem;
+        max-height: calc(98% - 7rem);
+    }
 }
 
-.visible {
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-}
