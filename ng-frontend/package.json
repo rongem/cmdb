@@ -24,6 +24,7 @@
     "@angular/core": "^13.2.2",
     "@angular/forms": "^13.2.2",
     "@angular/localize": "^13.2.2",
+
     "@angular/platform-browser": "^13.2.2",
     "@angular/platform-browser-dynamic": "^13.2.2",
     "@angular/router": "^13.2.2",
@@ -38,6 +39,8 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.2.3",
+
+
     "@angular-eslint/eslint-plugin": "^13.1.0",
     "@angular-eslint/eslint-plugin-template": "^13.1.0",
     "@angular-eslint/schematics": "13.1.0",
