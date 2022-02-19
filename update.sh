@@ -1,6 +1,6 @@
 npm update -g
 cd ng-frontend
-ng update @angular/cli @angular/core @angular/cdk @ngrx/store @angular-eslint/schematics
+ng update @angular/cli @angular/core @angular/cdk @ngrx/store @angular-eslint/schematics --force
 npm update
 npm audit fix
 grunt bump
