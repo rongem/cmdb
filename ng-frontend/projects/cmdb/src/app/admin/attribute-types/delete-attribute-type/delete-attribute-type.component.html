@@ -1,14 +1,14 @@
 <div class="box">
     <h1>
-        <ng-container i18n="delete attribute type">L&ouml;schen des Attributtyps </ng-container>
+        <ng-container i18n="Delete attribute type">L&ouml;schen des Attributtyps </ng-container>
         {{attributeType.name}}
     </h1>
     <p>
-        <ng-container i18n="if you delete the attribute type,">
+        <ng-container i18n="If you delete the attribute type,">
             Wenn Sie den Attributtypen l&ouml;schen, werden auch 
         </ng-container>
         {{attributesCount}} 
-        <ng-container i18n="attributes, that are part of items, are also deleted. Are you sure you want to delete?">
+        <ng-container i18n="Attributes, that are part of items, are also deleted. Are you sure you want to delete?">
             Attribute gel&ouml;scht, die einzelnen Configuration Items zugeordnet sind.
         </ng-container>
     </p>
@@ -16,7 +16,7 @@
         Sind Sie sicher, dass Sie das wollen?
     </p>
     <div>
-        <button i18n="cancel" class="selectable" (click)="routeToAttributeTypes()">Abbrechen</button>
-        <button i18n="delete" class="selectable red" (click)="onDelete()">L&ouml;schen</button>
+        <button i18n="Cancel" class="selectable" (click)="routeToAttributeTypes()">Abbrechen</button>
+        <button i18n="Delete" class="selectable red" (click)="onDelete()">L&ouml;schen</button>
     </div>
 </div>

@@ -1,17 +1,17 @@
-<app-busy *ngIf="(itemReady | async) === false" i18n="loading data for configuration item">
+<app-busy *ngIf="(itemReady | async) === false" i18n="Loading data for configuration item">
     Lade Daten des Configuration Items...
 </app-busy>
 <ng-container *ngIf="(itemReady | async)">
     <table class="table table-enhance__last-column">
         <thead>
             <tr>
-                <th i18n="property">Eigenschaft</th>
-                <th i18n="value">Wert</th>
+                <th i18n="Property">Eigenschaft</th>
+                <th i18n="Value">Wert</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td i18n="item-type">Item-Typ</td>
+                <td i18n="Item-type">Item-Typ</td>
                 <td>
                     {{(configurationItem | async).type}}
                     <span [style.border]="'1px dotted black'" [style.background]="(configurationItem | async).color">
@@ -20,14 +20,14 @@
                 </td>
             </tr>
             <tr>
-                <td i18n="name">Name</td>
+                <td i18n="Name">Name</td>
                 <td>
                     {{(configurationItem | async).name}}
                 </td>
             </tr>
             <ng-container *ngIf="(attributeTypes | async).length > 0">
                 <tr>
-                    <th colspan="2" i18n="attributes">Attribute</th>
+                    <th colspan="2" i18n="Attributes">Attribute</th>
                 </tr>
                 <tr *ngFor="let attributeType of (attributeTypes | async)">
                     <td>
@@ -40,10 +40,10 @@
             </ng-container>
             <ng-container *ngIf="(configurationItem | async).responsibleUsers.length > 0">
                 <tr>
-                    <th colspan="2" i18n="responsible persons">Verantwortliche</th>
+                    <th colspan="2" i18n="Responsible persons">Verantwortliche</th>
                 </tr>
                 <tr *ngFor="let user of (configurationItem | async).responsibleUsers">
-                    <td i18n="name">
+                    <td i18n="Name">
                         Name
                     </td>
                     <td [ngClass]="{enhanced: user === (userName | async)}">
@@ -55,7 +55,7 @@
             <ng-container *ngIf="(configurationItem | async).connectionsToLower.length > 0">
                 <tr>
                     <th colspan="2">
-                        <ng-container i18n="connections to lower">
+                        <ng-container i18n="Connections to lower">
                             Verbindungen nach unten
                         </ng-container>
                         (&darr;)
@@ -86,7 +86,7 @@
             <ng-container *ngIf="(configurationItem | async).connectionsToUpper.length > 0">
                 <tr>
                     <th colspan="2">
-                        <ng-container i18n="connections to upper">
+                        <ng-container i18n="Connections to upper">
                             Verbindungen nach unten
                         </ng-container>
                         (&darr;)
@@ -116,7 +116,7 @@
             </ng-container>
             <ng-container *ngIf="(configurationItem | async).links.length > 0">
                 <tr>
-                    <th colspan="2" i18n="links">
+                    <th colspan="2" i18n="Links">
                         Hyperlinks
                     </th>
                 </tr>

@@ -13,7 +13,7 @@
             <span i18n="OK">OK</span>
         </button>
         <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-            <span i18n="cancel">Abbrechen</span>
+            <span i18n="Cancel">Abbrechen</span>
         </button>
     </div>
 </form>
@@ -22,6 +22,6 @@
     type="button"
     [style.border-color]="color"
     (click)="onOpenColorPicker()">
-    <span class="visually-hidden" i18n="set background color of item type">Hintergrundfarbe des Item-Typs festlegen</span>
+    <span class="visually-hidden" i18n="Set background color of item type">Hintergrundfarbe des Item-Typs festlegen</span>
     {{ color }} <span [ngStyle]="{'background-color': color}" style="border: 1px solid black;">&nbsp;&nbsp;&nbsp;</span>
 </button>

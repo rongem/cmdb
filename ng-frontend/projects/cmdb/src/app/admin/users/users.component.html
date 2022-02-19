@@ -1,28 +1,28 @@
 <app-help>
-    <p i18n="users are stored on the server in the local store or come from an active directory. Every configured user must be aded to a role. Choose between the roles">
+    <p i18n="Users are stored on the server in the local store or come from an active directory. Every configured user must be aded to a role. Choose between the roles">
         Benutzer werden auf dem Server entweder aus dem lokalen Speicher oder einem
         Active Directory bezogen. Jeder hier konfigurierte Benutzer muss einer Rolle
         zugeordnet sein. Folgende Rollen existieren:
     </p>
     <ul>
         <li>
-            <b i18n="readers:">Leser:</b>
-            <ng-container i18n="readers are all users that are not part of another role. they cannot change anything, but read everything.">
+            <b i18n="Readers:">Leser:</b>
+            <ng-container i18n="Readers are all users that are not part of another role. they cannot change anything, but read everything.">
                 Leser sind alle Benutzer, die keiner anderen Rolle zugewiesen sind.
                 Sie k&ouml;nnen alle Daten lesen, aber nichts ver&auml;ndern.
             </ng-container>
         </li>
         <li>
-            <b i18n="editors:">Editoren:</b>
-            <ng-container i18n="editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.">
+            <b i18n="Editors:">Editoren:</b>
+            <ng-container i18n="Editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.">
                 Editoren k&ouml;nnen Items erstellen und &auml;ndern, wenn sie
                 die Verantwortung f&uuml;r das Item &uuml;bernehmen. Sie k&ouml;nnen dann auch
                 Attribute und Verbindungen erstellen, &auml;ndern und l&ouml;schen.
             </ng-container>
         </li>
         <li>
-            <b i18n="administrators: ">Administratoren:</b>
-            <ng-container i18n="administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.">
+            <b i18n="Administrators: ">Administratoren:</b>
+            <ng-container i18n="Administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.">
                 Administratoren k&ouml;nnen zus&auml;tzlich zu den Rechten
                 der Editoren auch die Metadaten (Item-Typen, Verbindungsregeln usw.) bearbeiten
                 und die Rollenzuordnung von Benutzern steuern.
@@ -30,8 +30,8 @@
         </li>
     </ul>
     <p>
-        <b i18n="important notice:">Wichtiger Hinweis:</b>
-        <ng-container i18n="if no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.">
+        <b i18n="Important notice:">Wichtiger Hinweis:</b>
+        <ng-container i18n="If no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.">
             Wenn kein Benutzer der Rolle Administrator zugeordnet ist,
             dann besitzt jeder angemeldete Benutzer die Rolle Administrator. Deshalb sollte diese
             Rolle zuerst vergeben werden.
@@ -42,13 +42,13 @@
     <thead>
         <tr>
             <th class="table-cell table-header">
-                <span i18n="user / group">Benutzer / Gruppe</span>
+                <span i18n="User / group">Benutzer / Gruppe</span>
             </th>
             <th class="table-cell table-header">
-                <span i18n="role">Rolle</span>
+                <span i18n="Role">Rolle</span>
             </th>
             <th class="table-cell table-header">
-                <span i18n="commands">Befehle</span>
+                <span i18n="Commands">Befehle</span>
             </th>
         </tr>
     </thead>
@@ -64,12 +64,12 @@
                     </button>
                 </ng-container>
                 <form class="grid" [formGroup]="passwordForm" *ngIf="!!currentUser">
-                    <label for="newpassword" i18n="new password">Neues Kennwort: </label>
+                    <label for="newpassword" i18n="New password">Neues Kennwort: </label>
                     <input type="password" id="password" formControlName="password" autocomplete="new-password">
-                    <label for="repeat" i18n="repeat password">Kennwort wiederholen: </label>
+                    <label for="repeat" i18n="Repeat password">Kennwort wiederholen: </label>
                     <input type="password" id="repeat" formControlName="repeatPassword" autocomplete="new-password">
-                    <button type="button" i18n="speichern" [disabled]="!passwordForm.valid" (click)="onSavePassword()">Speichern</button>
-                    <button type="button" i18n="cancel" (click)="currentUser = undefined">Abbrechen</button>
+                    <button type="button" i18n="Speichern" [disabled]="!passwordForm.valid" (click)="onSavePassword()">Speichern</button>
+                    <button type="button" i18n="Cancel" (click)="currentUser = undefined">Abbrechen</button>
                     <div class="error" *ngIf="error">
                         <h3>
                             {{error}}
@@ -89,17 +89,17 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <button class="selectable" i18n="administrator" (click)="onSetRole(2)">
+                        <button class="selectable" i18n="Administrator" (click)="onSetRole(2)">
                             Administrator
                         </button>
                     </li>
                     <li>
-                        <button class="selectable" i18n="editor" (click)="onSetRole(1)">
+                        <button class="selectable" i18n="Editor" (click)="onSetRole(1)">
                             Editor (Schreibberechtigung)
                         </button>
                     </li>
                     <li>
-                        <button class="selectable" i18n="reader" (click)="onSetRole(0)">
+                        <button class="selectable" i18n="Reader" (click)="onSetRole(0)">
                             Leseberechtigung
                         </button>
                     </li>
@@ -109,21 +109,21 @@
                 <span class="mobile-only">3: </span>
                 <button type="button" class="dropdown-toggle">
                     ...
-                    <span class="visually-hidden" i18n="click to open action menu">
+                    <span class="visually-hidden" i18n="Click to open action menu">
                         Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                     </span>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
                         <button type="button" class="red-button selectable"
-                            i18n="delete user and keep all responsibilities"
+                            i18n="Delete user and keep all responsibilities"
                             (click)="onDeleteUser(user, false)">
                             Berechtigung l&ouml;schen
                         </button>
                     </li>
                     <li>
                         <button type="button" class="red-button selectable"
-                            i18n="delete user and all responsibilities"
+                            i18n="Delete user and all responsibilities"
                             (click)="onDeleteUser(user, true)">
                             Berechtigung/Verantwortlichkeiten l&ouml;schen
                         </button>
@@ -133,7 +133,7 @@
         </tr>
         <tr>
             <td class="table-cell" colspan="3">
-                <button type="button" class="selectable" [routerLink]="['new']" i18n="create new user">
+                <button type="button" class="selectable" [routerLink]="['new']" i18n="Create new user">
                     Neuen Benutzer anlegen
                 </button>
             </td>

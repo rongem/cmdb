@@ -1,6 +1,6 @@
 <app-busy *ngIf="loading"></app-busy>
 <div *ngIf="!(loading || error || noResult)">
-    <p i18n="add connection to another configuration item below">
+    <p i18n="Add connection to another configuration item below">
         Verbindung nach unten zu einem anderen Configuration Item hinzuf&uuml;gen
     </p>
     <form #connForm="ngForm">
@@ -11,12 +11,12 @@
         </div>
         <div>
             <label for="description">
-                <ng-container i18n="description">Beschreibung</ng-container> (<ng-container i18n="validation rule">Vorgabe</ng-container>
+                <ng-container i18n="Description">Beschreibung</ng-container> (<ng-container i18n="Validation rule">Vorgabe</ng-container>
                 {{connectionRule.validationExpression}}):
             </label>
             <input name="description" id="description" type="text" autofocus
                 [(ngModel)]="connection.description"
-                placeholder="Beschreibung" i18n-placeholder="description" />
+                placeholder="Beschreibung" i18n-placeholder="Description" />
         </div>
         <div>
             <div>
@@ -31,17 +31,17 @@
         </div>
     </form>
     <ng-container *ngIf="(error || noResult)">
-        <p class="red" i18n="no available configuration items were found">Es konnten keine geeigneten Configuration Items gefunden werden.</p>
+        <p class="red" i18n="No available configuration items were found">Es konnten keine geeigneten Configuration Items gefunden werden.</p>
     </ng-container>
     <ng-container *ngIf="!isDescriptionValid">
-        <p class="red" i18n="the description does not match the validation rule">
+        <p class="red" i18n="The description does not match the validation rule">
             Die Beschreibung entspricht nicht den Vorgaben.
         </p>
     </ng-container>
 </div>
 <div class="flex__space-between">
-    <button i18n="cancel" class="selectable" (click)="onCancel()">Abbrechen</button>
-    <button (click)="onSave()" [disabled]="loading || noResult || error || !isDescriptionValid" i18n="save" class="selectable">
+    <button i18n="Cancel" class="selectable" (click)="onCancel()">Abbrechen</button>
+    <button (click)="onSave()" [disabled]="loading || noResult || error || !isDescriptionValid" i18n="Save" class="selectable">
         Speichern
     </button>
 </div>

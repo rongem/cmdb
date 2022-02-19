@@ -1,17 +1,17 @@
-<app-busy *ngIf="(metaDataReady | async) === false" i18n="loading data...">
+<app-busy *ngIf="(metaDataReady | async) === false" i18n="Loading data...">
     Lade Daten...
 </app-busy>
 <form *ngIf="(metaDataReady | async)" (ngSubmit)="onSubmit()">
     <table class="table" [formGroup]="form">
         <thead>
             <tr>
-                <th i18n="property">Eigenschaft</th>
-                <th i18n="value">Wert</th>
+                <th i18n="Property">Eigenschaft</th>
+                <th i18n="Value">Wert</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td i18n="item-type">Item-Typ</td>
+                <td i18n="Item-type">Item-Typ</td>
                 <td>
                     <ng-container *ngIf="!itemTypeId">
                         <select formControlName="typeId">
@@ -30,7 +30,7 @@
             </tr>
             <tr *ngIf="!itemTypeId">
                 <td colspan="2">
-                    <button type="button" (click)="setItemType()" i18n="choose item type">
+                    <button type="button" (click)="setItemType()" i18n="Choose item type">
                         Item-Typ ausw&auml;hlen
                     </button>
                 </td>
@@ -38,7 +38,7 @@
             <ng-container *ngIf="itemTypeId">
                 <tr>
                     <td>
-                        <label for="name" i18n="name">Name</label>
+                        <label for="name" i18n="Name">Name</label>
                     </td>
                     <td colspan="2">
                         <input type="text" id="name" formControlName="name">
@@ -46,7 +46,7 @@
                 </tr>
                 <ng-container *ngIf="(attributeTypes | async).length > 0" formArrayName="attributes">
                     <tr>
-                        <th colspan="2" i18n="attributes">
+                        <th colspan="2" i18n="Attributes">
                             Attribute
                         </th>
                     </tr>
@@ -63,9 +63,9 @@
                 </ng-container>
                 <ng-container formArrayName="links">
                     <tr>
-                        <th i18n="links">Links</th>
+                        <th i18n="Links">Links</th>
                         <td>
-                            <button type="button" class="selectable" (click)="onAddLink()" i18n="add link">
+                            <button type="button" class="selectable" (click)="onAddLink()" i18n="Add link">
                                 Link hinzuf&uuml;gen
                             </button>
                         </td>
@@ -76,19 +76,19 @@
                         </td>
                         <td>
                             <div>
-                                <label [for]="'linkdescription'" i18n="link description">
+                                <label [for]="'linkdescription'" i18n="Link description">
                                      Beschreibung: 
                                 </label>
                                 <input type="text" [id]="'linkdescription'" formControlName="description">
                             </div>
                             <div>
-                                <label [for]="'linkuri'" i18n="link uri">
+                                <label [for]="'linkuri'" i18n="Link uri">
                                     URL: 
                                 </label>
                                 <input type="url" [id]="'linkuri'" formControlName="uri">
                             </div>
                             <div>
-                                <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="delete link">
+                                <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="Delete link">
                                     Link l&ouml;schen
                                 </button>
                             </div>
@@ -99,7 +99,7 @@
         </tbody>
     </table>
     <p *ngIf="itemTypeId">
-        <button type="submit" i18n="create item" [disabled]="form.invalid" class="selectable">
+        <button type="submit" i18n="Create item" [disabled]="form.invalid" class="selectable">
             Neues Item erstellen
         </button>
     </p>

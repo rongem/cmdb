@@ -25,8 +25,8 @@
 				<note priority="1" from="description">
 					change password
 				</note>
-				<target priority="1" from="description">
-					change password
+				<target>
+					Change password
 				</target>
 			</trans-unit>
 			<trans-unit id="2104892736210968144" datatype="html">
@@ -44,8 +44,8 @@
 				<note priority="1" from="description">
 					current password
 				</note>
-				<target priority="1" from="description">
-					current password
+				<target>
+					Current password
 				</target>
 			</trans-unit>
 			<trans-unit id="6945330255241487045" datatype="html">
@@ -63,8 +63,8 @@
 				<note priority="1" from="description">
 					new password
 				</note>
-				<target priority="1" from="description">
-					new password
+				<target>
+					New password
 				</target>
 			</trans-unit>
 			<trans-unit id="8801971130247123895" datatype="html">
@@ -82,8 +82,8 @@
 				<note priority="1" from="description">
 					repeat password
 				</note>
-				<target priority="1" from="description">
-					repeat password
+				<target>
+					Repeat password
 				</target>
 			</trans-unit>
 			<trans-unit id="7624133960269641605" datatype="html">
@@ -205,8 +205,8 @@
 				<note priority="1" from="description">
 					cancel
 				</note>
-				<target priority="1" from="description">
-					cancel
+				<target>
+					Cancel
 				</target>
 			</trans-unit>
 			<trans-unit id="5289314841334535829" datatype="html">
@@ -232,8 +232,8 @@
 				<note priority="1" from="description">
 					server validation error
 				</note>
-				<target priority="1" from="description">
-					server validation error
+				<target>
+					Server validation error
 				</target>
 			</trans-unit>
 			<trans-unit id="8956898363308968941" datatype="html">
@@ -251,7 +251,7 @@
 				<note priority="1" from="description">
 					The new password is identical with the old one. Nothing changed.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					The new password is identical with the old one. Nothing changed.
 				</target>
 			</trans-unit>
@@ -278,8 +278,8 @@
 				<note priority="1" from="description">
 					password does not meet complexity criteria
 				</note>
-				<target priority="1" from="description">
-					password does not meet complexity criteria
+				<target>
+					Password does not meet complexity criteria.
 				</target>
 			</trans-unit>
 			<trans-unit id="1992302649187727540" datatype="html">
@@ -297,8 +297,8 @@
 				<note priority="1" from="description">
 					login
 				</note>
-				<target priority="1" from="description">
-					login
+				<target>
+					Login
 				</target>
 			</trans-unit>
 			<trans-unit id="3705949261180490223" datatype="html">
@@ -316,8 +316,8 @@
 				<note priority="1" from="description">
 					Username
 				</note>
-				<target priority="1" from="description">
-					Username
+				<target>
+					Username:
 				</target>
 			</trans-unit>
 			<trans-unit id="1956489267813314611" datatype="html">
@@ -335,8 +335,8 @@
 				<note priority="1" from="description">
 					password
 				</note>
-				<target priority="1" from="description">
-					password
+				<target>
+					Password:
 				</target>
 			</trans-unit>
 			<trans-unit id="6661755861829657557" datatype="html">
@@ -354,8 +354,8 @@
 				<note priority="1" from="description">
 					login
 				</note>
-				<target priority="1" from="description">
-					login
+				<target>
+					Login:
 				</target>
 			</trans-unit>
 			<trans-unit id="520376386642516307" datatype="html">
@@ -381,8 +381,8 @@
 				<note priority="1" from="description">
 					search / results
 				</note>
-				<target priority="1" from="description">
-					search / results
+				<target>
+					Search / results
 				</target>
 			</trans-unit>
 			<trans-unit id="372484394479554315" datatype="html">
@@ -400,8 +400,8 @@
 				<note priority="1" from="description">
 					attribute groups
 				</note>
-				<target priority="1" from="description">
-					attribute groups
+				<target>
+					Attribute groups
 				</target>
 			</trans-unit>
 			<trans-unit id="5815355135630709887" datatype="html">
@@ -427,8 +427,8 @@
 				<note priority="1" from="description">
 					attribute types
 				</note>
-				<target priority="1" from="description">
-					attribute types
+				<target>
+					Attribute types
 				</target>
 			</trans-unit>
 			<trans-unit id="5080553820560882997" datatype="html">
@@ -454,8 +454,8 @@
 				<note priority="1" from="description">
 					item types
 				</note>
-				<target priority="1" from="description">
-					item types
+				<target>
+					Item types
 				</target>
 			</trans-unit>
 			<trans-unit id="4178536941777554857" datatype="html">
@@ -473,8 +473,8 @@
 				<note priority="1" from="description">
 					connection types
 				</note>
-				<target priority="1" from="description">
-					connection types
+				<target>
+					Connection types
 				</target>
 			</trans-unit>
 			<trans-unit id="2865735784284513411" datatype="html">
@@ -500,8 +500,8 @@
 				<note priority="1" from="description">
 					connection rules
 				</note>
-				<target priority="1" from="description">
-					connection rules
+				<target>
+					Connection rules
 				</target>
 			</trans-unit>
 			<trans-unit id="1421440492527702395" datatype="html">
@@ -519,8 +519,8 @@
 				<note priority="1" from="description">
 					user administration
 				</note>
-				<target priority="1" from="description">
-					user administration
+				<target>
+					User administration
 				</target>
 			</trans-unit>
 			<trans-unit id="1969070268204504205" datatype="html">
@@ -578,8 +578,8 @@
 				<note priority="1" from="description">
 					actions
 				</note>
-				<target priority="1" from="description">
-					actions
+				<target>
+					Actions
 				</target>
 			</trans-unit>
 			<trans-unit id="2087852080958112195" datatype="html">
@@ -597,8 +597,8 @@
 				<note priority="1" from="description">
 					attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.
 				</note>
-				<target priority="1" from="description">
-					attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.
+				<target>
+					Attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.
 				</target>
 			</trans-unit>
 			<trans-unit id="5809202649237116100" datatype="html">
@@ -614,10 +614,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					attributes groups integrate one ore more attribute types, and are mapped to item types.
+					attribute groups integrate one ore more attribute types, and are mapped to item types.
 				</note>
-				<target priority="1" from="description">
-					attributes groups integrate one ore more attribute types, and are mapped to item types.
+				<target>
+					Attribute groups integrate one ore more attribute types, and are mapped to item types.
 				</target>
 			</trans-unit>
 			<trans-unit id="8684593348032480177" datatype="html">
@@ -635,8 +635,8 @@
 				<note priority="1" from="description">
 					attribute groups can be deleted if they are no longer mapped to an item type and don&apos;t contain any attribute types.
 				</note>
-				<target priority="1" from="description">
-					attribute groups can be deleted if they are no longer mapped to an item type and don&apos;t contain any attribute types.
+				<target>
+					Attribute groups can be deleted if they are no longer mapped to an item type and don&apos;t contain any attribute types.
 				</target>
 			</trans-unit>
 			<trans-unit id="7723514151822245734" datatype="html">
@@ -654,8 +654,8 @@
 				<note priority="1" from="description">
 					attribute group name
 				</note>
-				<target priority="1" from="description">
-					attribute group name
+				<target>
+					Attribute group name
 				</target>
 			</trans-unit>
 			<trans-unit id="5153160701497177302" datatype="html">
@@ -673,8 +673,8 @@
 				<note priority="1" from="description">
 					number and names of mapped attribute types
 				</note>
-				<target priority="1" from="description">
-					number and names of mapped attribute types
+				<target>
+					Number and names of mapped attribute types
 				</target>
 			</trans-unit>
 			<trans-unit id="1508389354241741488" datatype="html">
@@ -692,8 +692,8 @@
 				<note priority="1" from="description">
 					click here to edit name of the attribute group
 				</note>
-				<target priority="1" from="description">
-					click here to edit name of the attribute group
+				<target>
+					Click here to edit name of the attribute group
 				</target>
 			</trans-unit>
 			<trans-unit id="9054798220733043458" datatype="html">
@@ -757,10 +757,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to open action menu
+					Click to open action menu
 				</note>
-				<target priority="1" from="description">
-					click to open action menu
+				<target>
+					Click to open action menu
 				</target>
 			</trans-unit>
 			<trans-unit id="1339688073543361063" datatype="html">
@@ -778,8 +778,8 @@
 				<note priority="1" from="description">
 					manage mappings of item types
 				</note>
-				<target priority="1" from="description">
-					manage mappings of item types
+				<target>
+					Manage mappings of item types
 				</target>
 			</trans-unit>
 			<trans-unit id="8408333428751329552" datatype="html">
@@ -795,10 +795,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to manage mappings between the attribute group and item types
+					Click to manage mappings between the attribute group and item types
 				</note>
-				<target priority="1" from="description">
-					click to manage mappings between the attribute group and item types
+				<target>
+					Click to manage mappings between the attribute group and item types
 				</target>
 			</trans-unit>
 			<trans-unit id="4368532244633866246" datatype="html">
@@ -816,8 +816,8 @@
 				<note priority="1" from="description">
 					delete attribute group
 				</note>
-				<target priority="1" from="description">
-					delete attribute group
+				<target>
+					Delete attribute group
 				</target>
 			</trans-unit>
 			<trans-unit id="3659725727287549812" datatype="html">
@@ -833,10 +833,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to manage mappings between the attribute group and item types
+					Click to manage mappings between the attribute group and item types
 				</note>
-				<target priority="1" from="description">
-					click to manage mappings between the attribute group and item types
+				<target>
+					Click to manage mappings between the attribute group and item types
 				</target>
 			</trans-unit>
 			<trans-unit id="2499129877040569147" datatype="html">
@@ -886,7 +886,7 @@
 				<note priority="1" from="description">
 					Copy id
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Copy id
 				</target>
 			</trans-unit>
@@ -903,10 +903,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to copy the attribute group id into the clipbaord
+					Click to copy the attribute group id into the clipbaord
 				</note>
-				<target priority="1" from="description">
-					click to copy the attribute group id into the clipbaord
+				<target>
+					Click to copy the attribute group id into the clipbaord
 				</target>
 			</trans-unit>
 			<trans-unit id="6687005116009684822" datatype="html">
@@ -922,10 +922,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					add new attribute group
+					Add new attribute group
 				</note>
-				<target priority="1" from="description">
-					add new attribute group
+				<target>
+					Add new attribute group
 				</target>
 			</trans-unit>
 			<trans-unit id="8656556944525945979" datatype="html">
@@ -951,7 +951,7 @@
 				<note priority="1" from="description">
 					manage mappings
 				</note>
-				<target priority="1" from="description">
+				<target>
 					manage mappings
 				</target>
 			</trans-unit>
@@ -970,7 +970,7 @@
 				<note priority="1" from="description">
 					between the attribute group
 				</note>
-				<target priority="1" from="description">
+				<target>
 					between the attribute group
 				</target>
 			</trans-unit>
@@ -989,7 +989,7 @@
 				<note priority="1" from="description">
 					and the item types
 				</note>
-				<target priority="1" from="description">
+				<target>
 					and the item types
 				</target>
 			</trans-unit>
@@ -1016,7 +1016,7 @@
 				<note priority="1" from="description">
 					You want to delete the mapping of the
 				</note>
-				<target priority="1" from="description">
+				<target>
 					You want to delete the mapping of the
 				</target>
 			</trans-unit>
@@ -1043,7 +1043,7 @@
 				<note priority="1" from="description">
 					attribute group
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute group
 				</target>
 			</trans-unit>
@@ -1070,7 +1070,7 @@
 				<note priority="1" from="description">
 					to the item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					to the item type
 				</target>
 			</trans-unit>
@@ -1097,7 +1097,7 @@
 				<note priority="1" from="description">
 					This will also delete
 				</note>
-				<target priority="1" from="description">
+				<target>
 					This will also delete
 				</target>
 			</trans-unit>
@@ -1124,7 +1124,7 @@
 				<note priority="1" from="description">
 					attributes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attributes
 				</target>
 			</trans-unit>
@@ -1151,7 +1151,7 @@
 				<note priority="1" from="description">
 					Are you sure you want to delete the mapping?
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Are you sure you want to delete the mapping?
 				</target>
 			</trans-unit>
@@ -1178,7 +1178,7 @@
 				<note priority="1" from="description">
 					no
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no
 				</target>
 			</trans-unit>
@@ -1205,7 +1205,7 @@
 				<note priority="1" from="description">
 					yes, delete
 				</note>
-				<target priority="1" from="description">
+				<target>
 					yes, delete
 				</target>
 			</trans-unit>
@@ -1224,7 +1224,7 @@
 				<note priority="1" from="description">
 					back to attribute groups
 				</note>
-				<target priority="1" from="description">
+				<target>
 					back to attribute groups
 				</target>
 			</trans-unit>
@@ -1243,7 +1243,7 @@
 				<note priority="1" from="description">
 					attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.
 				</target>
 			</trans-unit>
@@ -1262,7 +1262,7 @@
 				<note priority="1" from="description">
 					every attribute of that type will be validated by the given regular expression
 				</note>
-				<target priority="1" from="description">
+				<target>
 					every attribute of that type will be validated by the given regular expression
 				</target>
 			</trans-unit>
@@ -1281,7 +1281,7 @@
 				<note priority="1" from="description">
 					attribute types are being merged into attribute groups
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute types are being merged into attribute groups
 				</target>
 			</trans-unit>
@@ -1300,7 +1300,7 @@
 				<note priority="1" from="description">
 					any attribute type may only be used once per configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					any attribute type may only be used once per configuration item
 				</target>
 			</trans-unit>
@@ -1319,7 +1319,7 @@
 				<note priority="1" from="description">
 					attribute type name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute type name
 				</target>
 			</trans-unit>
@@ -1338,7 +1338,7 @@
 				<note priority="1" from="description">
 					attribute group
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute group
 				</target>
 			</trans-unit>
@@ -1365,7 +1365,7 @@
 				<note priority="1" from="description">
 					validation rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					validation rule
 				</target>
 			</trans-unit>
@@ -1384,7 +1384,7 @@
 				<note priority="1" from="description">
 					delete attribute type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete attribute type
 				</target>
 			</trans-unit>
@@ -1403,7 +1403,7 @@
 				<note priority="1" from="description">
 					convert to item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					convert to item type
 				</target>
 			</trans-unit>
@@ -1420,10 +1420,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to convert attribute type to item type
+					Click to convert attribute type to item type
 				</note>
-				<target priority="1" from="description">
-					click to convert attribute type to item type
+				<target>
+					Click to convert attribute type to item type
 				</target>
 			</trans-unit>
 			<trans-unit id="1042461437709895483" datatype="html">
@@ -1463,10 +1463,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to copy the attribute type id into the clipbaord
+					Click to copy the attribute type id into the clipbaord
 				</note>
-				<target priority="1" from="description">
-					click to copy the attribute type id into the clipbaord
+				<target>
+					Click to copy the attribute type id into the clipbaord
 				</target>
 			</trans-unit>
 			<trans-unit id="2854123663314832793" datatype="html">
@@ -1532,7 +1532,7 @@
 				<note priority="1" from="description">
 					save
 				</note>
-				<target priority="1" from="description">
+				<target>
 					save
 				</target>
 			</trans-unit>
@@ -1549,10 +1549,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					add new attribute type
+					Add new attribute type
 				</note>
-				<target priority="1" from="description">
-					add new attribute type
+				<target>
+					Add new attribute type
 				</target>
 			</trans-unit>
 			<trans-unit id="8953033926734869941" datatype="html">
@@ -1618,7 +1618,7 @@
 				<note priority="1" from="description">
 					name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					name
 				</target>
 			</trans-unit>
@@ -1637,7 +1637,7 @@
 				<note priority="1" from="description">
 					the new configuration items will have connections to those configuration items, to which the attributes have belonged
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the new configuration items will have connections to those configuration items, to which the attributes have belonged
 				</target>
 			</trans-unit>
@@ -1656,7 +1656,7 @@
 				<note priority="1" from="description">
 					While converting an attribute type into a configuration item type, identical attribute values will be merged into one configuration item. So if you have five attributes with the value &apos;X&apos;, you will afterwards have only one item with the name &apos;X&apos; that will be connected to five configuration items.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					While converting an attribute type into a configuration item type, identical attribute values will be merged into one configuration item. So if you have five attributes with the value &apos;X&apos;, you will afterwards have only one item with the name &apos;X&apos; that will be connected to five configuration items.
 				</target>
 			</trans-unit>
@@ -1675,7 +1675,7 @@
 				<note priority="1" from="description">
 					set if the new item type will be above or below the connected items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					set if the new item type will be above or below the connected items
 				</target>
 			</trans-unit>
@@ -1694,7 +1694,7 @@
 				<note priority="1" from="description">
 					you may take additional attributes from the old configuration item to the new one, if their values are consistent with the converted attribute values. If you have an attribute of type &apos;model&apos; with the value &apos;Y&apos; and the attribute of type &apos;manufacturer&apos; is always &apos;Z&apos; for that, you can take the &apos;manufacturer&apos; attribute to the new &apos;model&apos; item type. Existing attributes of type &apos;manufacturer&apos; will be deleted in that case.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					you may take additional attributes from the old configuration item to the new one, if their values are consistent with the converted attribute values. If you have an attribute of type &apos;model&apos; with the value &apos;Y&apos; and the attribute of type &apos;manufacturer&apos; is always &apos;Z&apos; for that, you can take the &apos;manufacturer&apos; attribute to the new &apos;model&apos; item type. Existing attributes of type &apos;manufacturer&apos; will be deleted in that case.
 				</target>
 			</trans-unit>
@@ -1713,7 +1713,7 @@
 				<note priority="1" from="description">
 					drag or click attribute types to be transferred from the old item to the new item type created from the attribute type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					drag or click attribute types to be transferred from the old item to the new item type created from the attribute type
 				</target>
 			</trans-unit>
@@ -1732,7 +1732,7 @@
 				<note priority="1" from="description">
 					depending on the number of attribute values to be converted, this operation may take multiple minutes.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					depending on the number of attribute values to be converted, this operation may take multiple minutes.
 				</target>
 			</trans-unit>
@@ -1751,7 +1751,7 @@
 				<note priority="1" from="description">
 					converting attribute type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					converting attribute type
 				</target>
 			</trans-unit>
@@ -1770,7 +1770,7 @@
 				<note priority="1" from="description">
 					to an item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					to an item type
 				</target>
 			</trans-unit>
@@ -1789,7 +1789,7 @@
 				<note priority="1" from="description">
 					all existing item types with the attribute
 				</note>
-				<target priority="1" from="description">
+				<target>
 					all existing item types with the attribute
 				</target>
 			</trans-unit>
@@ -1808,7 +1808,7 @@
 				<note priority="1" from="description">
 					are situated inside of the connection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					are situated inside of the connection
 				</target>
 			</trans-unit>
@@ -1835,7 +1835,7 @@
 				<note priority="1" from="description">
 					below
 				</note>
-				<target priority="1" from="description">
+				<target>
 					below
 				</target>
 			</trans-unit>
@@ -1862,7 +1862,7 @@
 				<note priority="1" from="description">
 					above
 				</note>
-				<target priority="1" from="description">
+				<target>
 					above
 				</target>
 			</trans-unit>
@@ -1889,7 +1889,7 @@
 				<note priority="1" from="description">
 					the new item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the new item
 				</target>
 			</trans-unit>
@@ -1916,7 +1916,7 @@
 				<note priority="1" from="description">
 					attribute types
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute types
 				</target>
 			</trans-unit>
@@ -1933,10 +1933,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to transfer attribute type
+					Click to transfer attribute type
 				</note>
-				<target priority="1" from="description">
-					click to transfer attribute type
+				<target>
+					Click to transfer attribute type
 				</target>
 			</trans-unit>
 			<trans-unit id="8548171928392947060" datatype="html">
@@ -1954,7 +1954,7 @@
 				<note priority="1" from="description">
 					attribute type will be transferred
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute type will be transferred
 				</target>
 			</trans-unit>
@@ -1973,7 +1973,7 @@
 				<note priority="1" from="description">
 					change connection direction
 				</note>
-				<target priority="1" from="description">
+				<target>
 					change connection direction
 				</target>
 			</trans-unit>
@@ -1990,10 +1990,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to change connection type
+					Click to change connection type
 				</note>
-				<target priority="1" from="description">
-					click to change connection type
+				<target>
+					Click to change connection type
 				</target>
 			</trans-unit>
 			<trans-unit id="4916968345332220144" datatype="html">
@@ -2011,7 +2011,7 @@
 				<note priority="1" from="description">
 					new item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					new item type
 				</target>
 			</trans-unit>
@@ -2030,7 +2030,7 @@
 				<note priority="1" from="description">
 					is situated inside of the connection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					is situated inside of the connection
 				</target>
 			</trans-unit>
@@ -2049,7 +2049,7 @@
 				<note priority="1" from="description">
 					An item type with that name already exists.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					An item type with that name already exists.
 				</target>
 			</trans-unit>
@@ -2068,7 +2068,7 @@
 				<note priority="1" from="description">
 					Merge the new configuration items into the existing item type.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Merge the new configuration items into the existing item type.
 				</target>
 			</trans-unit>
@@ -2087,7 +2087,7 @@
 				<note priority="1" from="description">
 					Create a new item type with a new name.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Create a new item type with a new name.
 				</target>
 			</trans-unit>
@@ -2106,7 +2106,7 @@
 				<note priority="1" from="description">
 					Create new Item Typ with different name.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Create new Item Typ with different name.
 				</target>
 			</trans-unit>
@@ -2125,7 +2125,7 @@
 				<note priority="1" from="description">
 					Merge into the existing item type.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Merge into the existing item type.
 				</target>
 			</trans-unit>
@@ -2144,7 +2144,7 @@
 				<note priority="1" from="description">
 					new name for the item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					new name for the item type
 				</target>
 			</trans-unit>
@@ -2163,7 +2163,7 @@
 				<note priority="1" from="description">
 					item type background color
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item type background color
 				</target>
 			</trans-unit>
@@ -2182,7 +2182,7 @@
 				<note priority="1" from="description">
 					attribute types that are being transferred to the new item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute types that are being transferred to the new item type
 				</target>
 			</trans-unit>
@@ -2199,10 +2199,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to remove attribute type
+					Click to remove attribute type
 				</note>
-				<target priority="1" from="description">
-					click to remove attribute type
+				<target>
+					Click to remove attribute type
 				</target>
 			</trans-unit>
 			<trans-unit id="6893532909257927729" datatype="html">
@@ -2220,7 +2220,7 @@
 				<note priority="1" from="description">
 					start converting
 				</note>
-				<target priority="1" from="description">
+				<target>
 					start converting
 				</target>
 			</trans-unit>
@@ -2239,7 +2239,7 @@
 				<note priority="1" from="description">
 					delete attribute type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete attribute type
 				</target>
 			</trans-unit>
@@ -2258,7 +2258,7 @@
 				<note priority="1" from="description">
 					if you delete the attribute type,
 				</note>
-				<target priority="1" from="description">
+				<target>
 					if you delete the attribute type,
 				</target>
 			</trans-unit>
@@ -2277,7 +2277,7 @@
 				<note priority="1" from="description">
 					attributes, that are part of items, are also deleted. Are you sure you want to delete?
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attributes, that are part of items, are also deleted. Are you sure you want to delete?
 				</target>
 			</trans-unit>
@@ -2304,7 +2304,7 @@
 				<note priority="1" from="description">
 					Are you sure you want to proceed?
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Are you sure you want to proceed?
 				</target>
 			</trans-unit>
@@ -2323,7 +2323,7 @@
 				<note priority="1" from="description">
 					delete
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete
 				</target>
 			</trans-unit>
@@ -2342,7 +2342,7 @@
 				<note priority="1" from="description">
 					connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists
 				</target>
 			</trans-unit>
@@ -2361,7 +2361,7 @@
 				<note priority="1" from="description">
 					together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don&apos;t have to create a connection of that type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don&apos;t have to create a connection of that type
 				</target>
 			</trans-unit>
@@ -2380,7 +2380,7 @@
 				<note priority="1" from="description">
 					filter
 				</note>
-				<target priority="1" from="description">
+				<target>
 					filter
 				</target>
 			</trans-unit>
@@ -2407,7 +2407,7 @@
 				<note priority="1" from="description">
 					upper item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					upper item type
 				</target>
 			</trans-unit>
@@ -2442,7 +2442,7 @@
 				<note priority="1" from="description">
 					no filter
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no filter
 				</target>
 			</trans-unit>
@@ -2459,10 +2459,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to open filter menu for upper item type
+					Click to open filter menu for upper item type
 				</note>
-				<target priority="1" from="description">
-					click to open filter menu for upper item type
+				<target>
+					Click to open filter menu for upper item type
 				</target>
 			</trans-unit>
 			<trans-unit id="5101099539454322871" datatype="html">
@@ -2496,7 +2496,7 @@
 				<note priority="1" from="description">
 					clear filter
 				</note>
-				<target priority="1" from="description">
+				<target>
 					clear filter
 				</target>
 			</trans-unit>
@@ -2531,7 +2531,7 @@
 				<note priority="1" from="description">
 					connection type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connection type
 				</target>
 			</trans-unit>
@@ -2548,10 +2548,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to open filter menu for connection type
+					Click to open filter menu for connection type
 				</note>
-				<target priority="1" from="description">
-					click to open filter menu for connection type
+				<target>
+					Click to open filter menu for connection type
 				</target>
 			</trans-unit>
 			<trans-unit id="5787941657788327394" datatype="html">
@@ -2577,7 +2577,7 @@
 				<note priority="1" from="description">
 					lower item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					lower item type
 				</target>
 			</trans-unit>
@@ -2594,10 +2594,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to open filter menu for lower item type
+					Click to open filter menu for lower item type
 				</note>
-				<target priority="1" from="description">
-					click to open filter menu for lower item type
+				<target>
+					Click to open filter menu for lower item type
 				</target>
 			</trans-unit>
 			<trans-unit id="4481544987545247896" datatype="html">
@@ -2615,7 +2615,7 @@
 				<note priority="1" from="description">
 					validation rule for description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					validation rule for description
 				</target>
 			</trans-unit>
@@ -2634,7 +2634,7 @@
 				<note priority="1" from="description">
 					connections count for connection rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections count for connection rule
 				</target>
 			</trans-unit>
@@ -2653,7 +2653,7 @@
 				<note priority="1" from="description">
 					commands
 				</note>
-				<target priority="1" from="description">
+				<target>
 					commands
 				</target>
 			</trans-unit>
@@ -2672,7 +2672,7 @@
 				<note priority="1" from="description">
 					edit connecion rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					edit connecion rule
 				</target>
 			</trans-unit>
@@ -2691,7 +2691,7 @@
 				<note priority="1" from="description">
 					delete connection rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete connection rule
 				</target>
 			</trans-unit>
@@ -2718,7 +2718,7 @@
 				<note priority="1" from="description">
 					validation rule (RegEx) for connection description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					validation rule (RegEx) for connection description
 				</target>
 			</trans-unit>
@@ -2735,10 +2735,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					add new connection rule
+					Add new connection rule
 				</note>
-				<target priority="1" from="description">
-					add new connection rule
+				<target>
+					Add new connection rule
 				</target>
 			</trans-unit>
 			<trans-unit id="2370858365221278989" datatype="html">
@@ -2788,7 +2788,7 @@
 				<note priority="1" from="description">
 					save
 				</note>
-				<target priority="1" from="description">
+				<target>
 					save
 				</target>
 			</trans-unit>
@@ -2807,7 +2807,7 @@
 				<note priority="1" from="description">
 					cancel
 				</note>
-				<target priority="1" from="description">
+				<target>
 					cancel
 				</target>
 			</trans-unit>
@@ -2826,7 +2826,7 @@
 				<note priority="1" from="description">
 					connection types are the labels on the arrow between two configuration items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connection types are the labels on the arrow between two configuration items
 				</target>
 			</trans-unit>
@@ -2845,7 +2845,7 @@
 				<note priority="1" from="description">
 					connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time
 				</target>
 			</trans-unit>
@@ -2864,7 +2864,7 @@
 				<note priority="1" from="description">
 					every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is &apos;built into&apos; a rack. From the viewpoint of the rack, the reverse name of the same connection is &apos;contains&apos; the server hardware
 				</note>
-				<target priority="1" from="description">
+				<target>
 					every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is &apos;built into&apos; a rack. From the viewpoint of the rack, the reverse name of the same connection is &apos;contains&apos; the server hardware
 				</target>
 			</trans-unit>
@@ -2883,7 +2883,7 @@
 				<note priority="1" from="description">
 					connection type name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connection type name
 				</target>
 			</trans-unit>
@@ -2910,7 +2910,7 @@
 				<note priority="1" from="description">
 					connection type reverse name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connection type reverse name
 				</target>
 			</trans-unit>
@@ -2929,7 +2929,7 @@
 				<note priority="1" from="description">
 					delete connection type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete connection type
 				</target>
 			</trans-unit>
@@ -2946,10 +2946,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					add new connection type
+					Add new connection type
 				</note>
-				<target priority="1" from="description">
-					add new connection type
+				<target>
+					Add new connection type
 				</target>
 			</trans-unit>
 			<trans-unit id="2810525217059521254" datatype="html">
@@ -2967,7 +2967,7 @@
 				<note priority="1" from="description">
 					between the item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					between the item type
 				</target>
 			</trans-unit>
@@ -2986,7 +2986,7 @@
 				<note priority="1" from="description">
 					and the attribute groups
 				</note>
-				<target priority="1" from="description">
+				<target>
 					and the attribute groups
 				</target>
 			</trans-unit>
@@ -3005,7 +3005,7 @@
 				<note priority="1" from="description">
 					back to item types
 				</note>
-				<target priority="1" from="description">
+				<target>
 					back to item types
 				</target>
 			</trans-unit>
@@ -3024,7 +3024,7 @@
 				<note priority="1" from="description">
 					delete item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete item type
 				</target>
 			</trans-unit>
@@ -3043,7 +3043,7 @@
 				<note priority="1" from="description">
 					loading data...
 				</note>
-				<target priority="1" from="description">
+				<target>
 					loading data...
 				</target>
 			</trans-unit>
@@ -3062,7 +3062,7 @@
 				<note priority="1" from="description">
 					You cannot delete the item type, because
 				</note>
-				<target priority="1" from="description">
+				<target>
 					You cannot delete the item type, because
 				</target>
 			</trans-unit>
@@ -3081,7 +3081,7 @@
 				<note priority="1" from="description">
 					configuration items have to be deleted before
 				</note>
-				<target priority="1" from="description">
+				<target>
 					configuration items have to be deleted before
 				</target>
 			</trans-unit>
@@ -3100,7 +3100,7 @@
 				<note priority="1" from="description">
 					if you continue, you are also deleting
 				</note>
-				<target priority="1" from="description">
+				<target>
 					if you continue, you are also deleting
 				</target>
 			</trans-unit>
@@ -3119,7 +3119,7 @@
 				<note priority="1" from="description">
 					mapped attribute groups with
 				</note>
-				<target priority="1" from="description">
+				<target>
 					mapped attribute groups with
 				</target>
 			</trans-unit>
@@ -3138,7 +3138,7 @@
 				<note priority="1" from="description">
 					delete
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete
 				</target>
 			</trans-unit>
@@ -3157,7 +3157,7 @@
 				<note priority="1" from="description">
 					item type name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item type name
 				</target>
 			</trans-unit>
@@ -3176,7 +3176,7 @@
 				<note priority="1" from="description">
 					background color
 				</note>
-				<target priority="1" from="description">
+				<target>
 					background color
 				</target>
 			</trans-unit>
@@ -3193,10 +3193,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					click to change name
+					Click to change name
 				</note>
-				<target priority="1" from="description">
-					click to change name
+				<target>
+					Click to change name
 				</target>
 			</trans-unit>
 			<trans-unit id="5709799744521666780" datatype="html">
@@ -3214,7 +3214,7 @@
 				<note priority="1" from="description">
 					delete item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete item type
 				</target>
 			</trans-unit>
@@ -3233,7 +3233,7 @@
 				<note priority="1" from="description">
 					create new item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					create new item type
 				</target>
 			</trans-unit>
@@ -3252,7 +3252,7 @@
 				<note priority="1" from="description">
 					OK
 				</note>
-				<target priority="1" from="description">
+				<target>
 					OK
 				</target>
 			</trans-unit>
@@ -3271,7 +3271,7 @@
 				<note priority="1" from="description">
 					set background color of item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					set background color of item type
 				</target>
 			</trans-unit>
@@ -3298,7 +3298,7 @@
 				<note priority="1" from="description">
 					create user
 				</note>
-				<target priority="1" from="description">
+				<target>
 					create user
 				</target>
 			</trans-unit>
@@ -3317,7 +3317,7 @@
 				<note priority="1" from="description">
 					user name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					user name
 				</target>
 			</trans-unit>
@@ -3336,7 +3336,7 @@
 				<note priority="1" from="description">
 					user role
 				</note>
-				<target priority="1" from="description">
+				<target>
 					user role
 				</target>
 			</trans-unit>
@@ -3355,7 +3355,7 @@
 				<note priority="1" from="description">
 					Reader
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Reader
 				</target>
 			</trans-unit>
@@ -3374,7 +3374,7 @@
 				<note priority="1" from="description">
 					Editor
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Editor
 				</target>
 			</trans-unit>
@@ -3401,7 +3401,7 @@
 				<note priority="1" from="description">
 					Administrator
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Administrator
 				</target>
 			</trans-unit>
@@ -3428,7 +3428,7 @@
 				<note priority="1" from="description">
 					password
 				</note>
-				<target priority="1" from="description">
+				<target>
 					password
 				</target>
 			</trans-unit>
@@ -3455,7 +3455,7 @@
 				<note priority="1" from="description">
 					repeat password
 				</note>
-				<target priority="1" from="description">
+				<target>
 					repeat password
 				</target>
 			</trans-unit>
@@ -3474,7 +3474,7 @@
 				<note priority="1" from="description">
 					cannot create a user with an already existing name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					cannot create a user with an already existing name
 				</target>
 			</trans-unit>
@@ -3493,7 +3493,7 @@
 				<note priority="1" from="description">
 					users are stored on the server in the local store or come from an active directory. Every configured user must be aded to a role. Choose between the roles
 				</note>
-				<target priority="1" from="description">
+				<target>
 					users are stored on the server in the local store or come from an active directory. Every configured user must be aded to a role. Choose between the roles
 				</target>
 			</trans-unit>
@@ -3512,7 +3512,7 @@
 				<note priority="1" from="description">
 					readers:
 				</note>
-				<target priority="1" from="description">
+				<target>
 					readers:
 				</target>
 			</trans-unit>
@@ -3531,7 +3531,7 @@
 				<note priority="1" from="description">
 					readers are all users that are not part of another role. they cannot change anything, but read everything.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					readers are all users that are not part of another role. they cannot change anything, but read everything.
 				</target>
 			</trans-unit>
@@ -3550,7 +3550,7 @@
 				<note priority="1" from="description">
 					editors:
 				</note>
-				<target priority="1" from="description">
+				<target>
 					editors:
 				</target>
 			</trans-unit>
@@ -3569,7 +3569,7 @@
 				<note priority="1" from="description">
 					editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.
 				</target>
 			</trans-unit>
@@ -3588,7 +3588,7 @@
 				<note priority="1" from="description">
 					administrators:
 				</note>
-				<target priority="1" from="description">
+				<target>
 					administrators:
 				</target>
 			</trans-unit>
@@ -3607,7 +3607,7 @@
 				<note priority="1" from="description">
 					administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.
 				</target>
 			</trans-unit>
@@ -3626,7 +3626,7 @@
 				<note priority="1" from="description">
 					important notice:
 				</note>
-				<target priority="1" from="description">
+				<target>
 					important notice:
 				</target>
 			</trans-unit>
@@ -3645,7 +3645,7 @@
 				<note priority="1" from="description">
 					if no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					if no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.
 				</target>
 			</trans-unit>
@@ -3664,7 +3664,7 @@
 				<note priority="1" from="description">
 					user / group
 				</note>
-				<target priority="1" from="description">
+				<target>
 					user / group
 				</target>
 			</trans-unit>
@@ -3683,7 +3683,7 @@
 				<note priority="1" from="description">
 					role
 				</note>
-				<target priority="1" from="description">
+				<target>
 					role
 				</target>
 			</trans-unit>
@@ -3702,7 +3702,7 @@
 				<note priority="1" from="description">
 					commands
 				</note>
-				<target priority="1" from="description">
+				<target>
 					commands
 				</target>
 			</trans-unit>
@@ -3721,7 +3721,7 @@
 				<note priority="1" from="description">
 					new password
 				</note>
-				<target priority="1" from="description">
+				<target>
 					new password
 				</target>
 			</trans-unit>
@@ -3740,7 +3740,7 @@
 				<note priority="1" from="description">
 					repeat password
 				</note>
-				<target priority="1" from="description">
+				<target>
 					repeat password
 				</target>
 			</trans-unit>
@@ -3759,7 +3759,7 @@
 				<note priority="1" from="description">
 					administrator
 				</note>
-				<target priority="1" from="description">
+				<target>
 					administrator
 				</target>
 			</trans-unit>
@@ -3778,7 +3778,7 @@
 				<note priority="1" from="description">
 					editor
 				</note>
-				<target priority="1" from="description">
+				<target>
 					editor
 				</target>
 			</trans-unit>
@@ -3797,7 +3797,7 @@
 				<note priority="1" from="description">
 					reader
 				</note>
-				<target priority="1" from="description">
+				<target>
 					reader
 				</target>
 			</trans-unit>
@@ -3816,7 +3816,7 @@
 				<note priority="1" from="description">
 					delete user and keep all responsibilities
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete user and keep all responsibilities
 				</target>
 			</trans-unit>
@@ -3835,7 +3835,7 @@
 				<note priority="1" from="description">
 					delete user and all responsibilities
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete user and all responsibilities
 				</target>
 			</trans-unit>
@@ -3854,7 +3854,7 @@
 				<note priority="1" from="description">
 					create new user
 				</note>
-				<target priority="1" from="description">
+				<target>
 					create new user
 				</target>
 			</trans-unit>
@@ -3873,7 +3873,7 @@
 				<note priority="1" from="description">
 					initializing app
 				</note>
-				<target priority="1" from="description">
+				<target>
 					initializing app
 				</target>
 			</trans-unit>
@@ -3892,7 +3892,7 @@
 				<note priority="1" from="description">
 					error loading data
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error loading data
 				</target>
 			</trans-unit>
@@ -3911,7 +3911,7 @@
 				<note priority="1" from="description">
 					No data could be loaded from the backend. please inform administrator
 				</note>
-				<target priority="1" from="description">
+				<target>
 					No data could be loaded from the backend. please inform administrator
 				</target>
 			</trans-unit>
@@ -3930,7 +3930,7 @@
 				<note priority="1" from="description">
 					fatal error
 				</note>
-				<target priority="1" from="description">
+				<target>
 					fatal error
 				</target>
 			</trans-unit>
@@ -3949,7 +3949,7 @@
 				<note priority="1" from="description">
 					A fatal error occured. Program is unable to continue. please inform administrator
 				</note>
-				<target priority="1" from="description">
+				<target>
 					A fatal error occured. Program is unable to continue. please inform administrator
 				</target>
 			</trans-unit>
@@ -3976,7 +3976,7 @@
 				<note priority="1" from="description">
 					error
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error
 				</target>
 			</trans-unit>
@@ -4003,7 +4003,7 @@
 				<note priority="1" from="description">
 					loading data for configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					loading data for configuration item
 				</target>
 			</trans-unit>
@@ -4046,7 +4046,7 @@
 				<note priority="1" from="description">
 					property
 				</note>
-				<target priority="1" from="description">
+				<target>
 					property
 				</target>
 			</trans-unit>
@@ -4089,7 +4089,7 @@
 				<note priority="1" from="description">
 					value
 				</note>
-				<target priority="1" from="description">
+				<target>
 					value
 				</target>
 			</trans-unit>
@@ -4188,7 +4188,7 @@
 				<note priority="1" from="description">
 					item-type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item-type
 				</target>
 			</trans-unit>
@@ -4215,7 +4215,7 @@
 				<note priority="1" from="description">
 					attributes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attributes
 				</target>
 			</trans-unit>
@@ -4234,7 +4234,7 @@
 				<note priority="1" from="description">
 					responsible persons
 				</note>
-				<target priority="1" from="description">
+				<target>
 					responsible persons
 				</target>
 			</trans-unit>
@@ -4253,7 +4253,7 @@
 				<note priority="1" from="description">
 					name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					name
 				</target>
 			</trans-unit>
@@ -4272,7 +4272,7 @@
 				<note priority="1" from="description">
 					(you)
 				</note>
-				<target priority="1" from="description">
+				<target>
 					(you)
 				</target>
 			</trans-unit>
@@ -4307,7 +4307,7 @@
 				<note priority="1" from="description">
 					connections to lower
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections to lower
 				</target>
 			</trans-unit>
@@ -4326,7 +4326,7 @@
 				<note priority="1" from="description">
 					links
 				</note>
-				<target priority="1" from="description">
+				<target>
 					links
 				</target>
 			</trans-unit>
@@ -4345,7 +4345,7 @@
 				<note priority="1" from="description">
 					searching
 				</note>
-				<target priority="1" from="description">
+				<target>
 					searching
 				</target>
 			</trans-unit>
@@ -4404,7 +4404,7 @@
 				<note priority="1" from="description">
 					add filter
 				</note>
-				<target priority="1" from="description">
+				<target>
 					add filter
 				</target>
 			</trans-unit>
@@ -4431,7 +4431,7 @@
 				<note priority="1" from="description">
 					name or attribute value
 				</note>
-				<target priority="1" from="description">
+				<target>
 					name or attribute value
 				</target>
 			</trans-unit>
@@ -4458,7 +4458,7 @@
 				<note priority="1" from="description">
 					attribute type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute type
 				</target>
 			</trans-unit>
@@ -4485,7 +4485,7 @@
 				<note priority="1" from="description">
 					connections upward
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections upward
 				</target>
 			</trans-unit>
@@ -4512,7 +4512,7 @@
 				<note priority="1" from="description">
 					connections downward
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections downward
 				</target>
 			</trans-unit>
@@ -4539,7 +4539,7 @@
 				<note priority="1" from="description">
 					changed before
 				</note>
-				<target priority="1" from="description">
+				<target>
 					changed before
 				</target>
 			</trans-unit>
@@ -4566,7 +4566,7 @@
 				<note priority="1" from="description">
 					changed after
 				</note>
-				<target priority="1" from="description">
+				<target>
 					changed after
 				</target>
 			</trans-unit>
@@ -4593,7 +4593,7 @@
 				<note priority="1" from="description">
 					show only owned items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					show only owned items
 				</target>
 			</trans-unit>
@@ -4620,7 +4620,7 @@
 				<note priority="1" from="description">
 					search text
 				</note>
-				<target priority="1" from="description">
+				<target>
 					search text
 				</target>
 			</trans-unit>
@@ -4647,7 +4647,7 @@
 				<note priority="1" from="description">
 					attribute type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute type
 				</target>
 			</trans-unit>
@@ -4674,7 +4674,7 @@
 				<note priority="1" from="description">
 					attribute value
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute value
 				</target>
 			</trans-unit>
@@ -4701,7 +4701,7 @@
 				<note priority="1" from="description">
 					filter for configuration item that have given attributes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					filter for configuration item that have given attributes
 				</target>
 			</trans-unit>
@@ -4744,7 +4744,7 @@
 				<note priority="1" from="description">
 					connection type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connection type
 				</target>
 			</trans-unit>
@@ -4787,7 +4787,7 @@
 				<note priority="1" from="description">
 					any type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					any type
 				</target>
 			</trans-unit>
@@ -4862,7 +4862,7 @@
 				<note priority="1" from="description">
 					add filter
 				</note>
-				<target priority="1" from="description">
+				<target>
 					add filter
 				</target>
 			</trans-unit>
@@ -4889,7 +4889,7 @@
 				<note priority="1" from="description">
 					filter for configuration items that have given connections to lower items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					filter for configuration items that have given connections to lower items
 				</target>
 			</trans-unit>
@@ -4916,7 +4916,7 @@
 				<note priority="1" from="description">
 					filter for configuration items that have given connections to upper items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					filter for configuration items that have given connections to upper items
 				</target>
 			</trans-unit>
@@ -4959,7 +4959,7 @@
 				<note priority="1" from="description">
 					date
 				</note>
-				<target priority="1" from="description">
+				<target>
 					date
 				</target>
 			</trans-unit>
@@ -4986,7 +4986,7 @@
 				<note priority="1" from="description">
 					filter for configurations items that have been changed before the given date
 				</note>
-				<target priority="1" from="description">
+				<target>
 					filter for configurations items that have been changed before the given date
 				</target>
 			</trans-unit>
@@ -5013,7 +5013,7 @@
 				<note priority="1" from="description">
 					filter for configurations items that have been changed after the given date
 				</note>
-				<target priority="1" from="description">
+				<target>
 					filter for configurations items that have been changed after the given date
 				</target>
 			</trans-unit>
@@ -5040,7 +5040,7 @@
 				<note priority="1" from="description">
 					name or value
 				</note>
-				<target priority="1" from="description">
+				<target>
 					name or value
 				</target>
 			</trans-unit>
@@ -5067,7 +5067,7 @@
 				<note priority="1" from="description">
 					(empty)
 				</note>
-				<target priority="1" from="description">
+				<target>
 					(empty)
 				</target>
 			</trans-unit>
@@ -5094,7 +5094,7 @@
 				<note priority="1" from="description">
 					(not empty)
 				</note>
-				<target priority="1" from="description">
+				<target>
 					(not empty)
 				</target>
 			</trans-unit>
@@ -5121,7 +5121,7 @@
 				<note priority="1" from="description">
 					changed before
 				</note>
-				<target priority="1" from="description">
+				<target>
 					changed before
 				</target>
 			</trans-unit>
@@ -5148,7 +5148,7 @@
 				<note priority="1" from="description">
 					changed after
 				</note>
-				<target priority="1" from="description">
+				<target>
 					changed after
 				</target>
 			</trans-unit>
@@ -5175,7 +5175,7 @@
 				<note priority="1" from="description">
 					responsible
 				</note>
-				<target priority="1" from="description">
+				<target>
 					responsible
 				</target>
 			</trans-unit>
@@ -5194,7 +5194,7 @@
 				<note priority="1" from="description">
 					center on this item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					center on this item
 				</target>
 			</trans-unit>
@@ -5237,7 +5237,7 @@
 				<note priority="1" from="description">
 					attributes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attributes
 				</target>
 			</trans-unit>
@@ -5264,7 +5264,7 @@
 				<note priority="1" from="description">
 					item name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item name
 				</target>
 			</trans-unit>
@@ -5291,7 +5291,7 @@
 				<note priority="1" from="description">
 					last change
 				</note>
-				<target priority="1" from="description">
+				<target>
 					last change
 				</target>
 			</trans-unit>
@@ -5310,7 +5310,7 @@
 				<note priority="1" from="description">
 					no items found that match the search criteria
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no items found that match the search criteria
 				</target>
 			</trans-unit>
@@ -5329,7 +5329,7 @@
 				<note priority="1" from="description">
 					selection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					selection
 				</target>
 			</trans-unit>
@@ -5348,7 +5348,7 @@
 				<note priority="1" from="description">
 					select all items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					select all items
 				</target>
 			</trans-unit>
@@ -5367,7 +5367,7 @@
 				<note priority="1" from="description">
 					select no items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					select no items
 				</target>
 			</trans-unit>
@@ -5386,7 +5386,7 @@
 				<note priority="1" from="description">
 					invert selection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					invert selection
 				</target>
 			</trans-unit>
@@ -5405,7 +5405,7 @@
 				<note priority="1" from="description">
 					my items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					my items
 				</target>
 			</trans-unit>
@@ -5424,7 +5424,7 @@
 				<note priority="1" from="description">
 					foreign items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					foreign items
 				</target>
 			</trans-unit>
@@ -5443,7 +5443,7 @@
 				<note priority="1" from="description">
 					Originating from
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Originating from
 				</target>
 			</trans-unit>
@@ -5462,7 +5462,7 @@
 				<note priority="1" from="description">
 					item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item type
 				</target>
 			</trans-unit>
@@ -5481,7 +5481,7 @@
 				<note priority="1" from="description">
 					search direction
 				</note>
-				<target priority="1" from="description">
+				<target>
 					search direction
 				</target>
 			</trans-unit>
@@ -5500,7 +5500,7 @@
 				<note priority="1" from="description">
 					up
 				</note>
-				<target priority="1" from="description">
+				<target>
 					up
 				</target>
 			</trans-unit>
@@ -5519,7 +5519,7 @@
 				<note priority="1" from="description">
 					both
 				</note>
-				<target priority="1" from="description">
+				<target>
 					both
 				</target>
 			</trans-unit>
@@ -5538,7 +5538,7 @@
 				<note priority="1" from="description">
 					down
 				</note>
-				<target priority="1" from="description">
+				<target>
 					down
 				</target>
 			</trans-unit>
@@ -5557,7 +5557,7 @@
 				<note priority="1" from="description">
 					max levels zu search
 				</note>
-				<target priority="1" from="description">
+				<target>
 					max levels zu search
 				</target>
 			</trans-unit>
@@ -5576,7 +5576,7 @@
 				<note priority="1" from="description">
 					no items found that match the search criteria
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no items found that match the search criteria
 				</target>
 			</trans-unit>
@@ -5611,7 +5611,7 @@
 				<note priority="1" from="description">
 					loading data...
 				</note>
-				<target priority="1" from="description">
+				<target>
 					loading data...
 				</target>
 			</trans-unit>
@@ -5630,7 +5630,7 @@
 				<note priority="1" from="description">
 					date
 				</note>
-				<target priority="1" from="description">
+				<target>
 					date
 				</target>
 			</trans-unit>
@@ -5649,7 +5649,7 @@
 				<note priority="1" from="description">
 					subject
 				</note>
-				<target priority="1" from="description">
+				<target>
 					subject
 				</target>
 			</trans-unit>
@@ -5668,7 +5668,7 @@
 				<note priority="1" from="description">
 					all subjects
 				</note>
-				<target priority="1" from="description">
+				<target>
 					all subjects
 				</target>
 			</trans-unit>
@@ -5687,7 +5687,7 @@
 				<note priority="1" from="description">
 					configuration items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					configuration items
 				</target>
 			</trans-unit>
@@ -5706,7 +5706,7 @@
 				<note priority="1" from="description">
 					connections
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections
 				</target>
 			</trans-unit>
@@ -5733,7 +5733,7 @@
 				<note priority="1" from="description">
 					action
 				</note>
-				<target priority="1" from="description">
+				<target>
 					action
 				</target>
 			</trans-unit>
@@ -5752,7 +5752,7 @@
 				<note priority="1" from="description">
 					who did this
 				</note>
-				<target priority="1" from="description">
+				<target>
 					who did this
 				</target>
 			</trans-unit>
@@ -5771,7 +5771,7 @@
 				<note priority="1" from="description">
 					add connection to another configuration item below
 				</note>
-				<target priority="1" from="description">
+				<target>
 					add connection to another configuration item below
 				</target>
 			</trans-unit>
@@ -5814,7 +5814,7 @@
 				<note priority="1" from="description">
 					description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					description
 				</target>
 			</trans-unit>
@@ -5833,7 +5833,7 @@
 				<note priority="1" from="description">
 					validation rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					validation rule
 				</target>
 			</trans-unit>
@@ -5852,7 +5852,7 @@
 				<note priority="1" from="description">
 					no available configuration items were found
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no available configuration items were found
 				</target>
 			</trans-unit>
@@ -5871,7 +5871,7 @@
 				<note priority="1" from="description">
 					the description does not match the validation rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the description does not match the validation rule
 				</target>
 			</trans-unit>
@@ -5890,7 +5890,7 @@
 				<note priority="1" from="description">
 					copy configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					copy configuration item
 				</target>
 			</trans-unit>
@@ -5917,7 +5917,7 @@
 				<note priority="1" from="description">
 					item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item type
 				</target>
 			</trans-unit>
@@ -5936,7 +5936,7 @@
 				<note priority="1" from="description">
 					new item name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					new item name
 				</target>
 			</trans-unit>
@@ -5955,7 +5955,7 @@
 				<note priority="1" from="description">
 					copy attributes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					copy attributes
 				</target>
 			</trans-unit>
@@ -5974,7 +5974,7 @@
 				<note priority="1" from="description">
 					copy downward connections
 				</note>
-				<target priority="1" from="description">
+				<target>
 					copy downward connections
 				</target>
 			</trans-unit>
@@ -5993,7 +5993,7 @@
 				<note priority="1" from="description">
 					copy links
 				</note>
-				<target priority="1" from="description">
+				<target>
 					copy links
 				</target>
 			</trans-unit>
@@ -6012,7 +6012,7 @@
 				<note priority="1" from="description">
 					link URL
 				</note>
-				<target priority="1" from="description">
+				<target>
 					link URL
 				</target>
 			</trans-unit>
@@ -6031,7 +6031,7 @@
 				<note priority="1" from="description">
 					link description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					link description
 				</target>
 			</trans-unit>
@@ -6050,7 +6050,7 @@
 				<note priority="1" from="description">
 					copy item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					copy item
 				</target>
 			</trans-unit>
@@ -6069,7 +6069,7 @@
 				<note priority="1" from="description">
 					choose item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					choose item type
 				</target>
 			</trans-unit>
@@ -6096,7 +6096,7 @@
 				<note priority="1" from="description">
 					links
 				</note>
-				<target priority="1" from="description">
+				<target>
 					links
 				</target>
 			</trans-unit>
@@ -6123,7 +6123,7 @@
 				<note priority="1" from="description">
 					add link
 				</note>
-				<target priority="1" from="description">
+				<target>
 					add link
 				</target>
 			</trans-unit>
@@ -6142,7 +6142,7 @@
 				<note priority="1" from="description">
 					link description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					link description
 				</target>
 			</trans-unit>
@@ -6169,7 +6169,7 @@
 				<note priority="1" from="description">
 					link uri
 				</note>
-				<target priority="1" from="description">
+				<target>
 					link uri
 				</target>
 			</trans-unit>
@@ -6196,7 +6196,7 @@
 				<note priority="1" from="description">
 					delete link
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete link
 				</target>
 			</trans-unit>
@@ -6215,7 +6215,7 @@
 				<note priority="1" from="description">
 					create item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					create item
 				</target>
 			</trans-unit>
@@ -6234,7 +6234,7 @@
 				<note priority="1" from="description">
 					item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item
 				</target>
 			</trans-unit>
@@ -6253,7 +6253,7 @@
 				<note priority="1" from="description">
 					description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					description
 				</target>
 			</trans-unit>
@@ -6272,7 +6272,7 @@
 				<note priority="1" from="description">
 					edit description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					edit description
 				</target>
 			</trans-unit>
@@ -6291,7 +6291,7 @@
 				<note priority="1" from="description">
 					delete connection type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete connection type
 				</target>
 			</trans-unit>
@@ -6310,7 +6310,7 @@
 				<note priority="1" from="description">
 					add connection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					add connection
 				</target>
 			</trans-unit>
@@ -6329,7 +6329,7 @@
 				<note priority="1" from="description">
 					delete item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete item
 				</target>
 			</trans-unit>
@@ -6348,7 +6348,7 @@
 				<note priority="1" from="description">
 					take responsibility configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					take responsibility configuration item
 				</target>
 			</trans-unit>
@@ -6367,7 +6367,7 @@
 				<note priority="1" from="description">
 					last change
 				</note>
-				<target priority="1" from="description">
+				<target>
 					last change
 				</target>
 			</trans-unit>
@@ -6386,7 +6386,7 @@
 				<note priority="1" from="description">
 					save changes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					save changes
 				</target>
 			</trans-unit>
@@ -6405,7 +6405,7 @@
 				<note priority="1" from="description">
 					version
 				</note>
-				<target priority="1" from="description">
+				<target>
 					version
 				</target>
 			</trans-unit>
@@ -6426,7 +6426,7 @@
 				<note priority="1" from="description">
 					link description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					link description
 				</target>
 			</trans-unit>
@@ -6445,7 +6445,7 @@
 				<note priority="1" from="description">
 					responsible persons
 				</note>
-				<target priority="1" from="description">
+				<target>
 					responsible persons
 				</target>
 			</trans-unit>
@@ -6464,7 +6464,7 @@
 				<note priority="1" from="description">
 					abandon responsibility
 				</note>
-				<target priority="1" from="description">
+				<target>
 					abandon responsibility
 				</target>
 			</trans-unit>
@@ -6483,7 +6483,7 @@
 				<note priority="1" from="description">
 					deleting configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					deleting configuration item
 				</target>
 			</trans-unit>
@@ -6502,7 +6502,7 @@
 				<note priority="1" from="description">
 					you are about to delete the following configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					you are about to delete the following configuration item
 				</target>
 			</trans-unit>
@@ -6521,7 +6521,7 @@
 				<note priority="1" from="description">
 					together with all of its
 				</note>
-				<target priority="1" from="description">
+				<target>
 					together with all of its
 				</target>
 			</trans-unit>
@@ -6540,7 +6540,7 @@
 				<note priority="1" from="description">
 					attributes
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attributes
 				</target>
 			</trans-unit>
@@ -6559,7 +6559,7 @@
 				<note priority="1" from="description">
 					connections to other configuration items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connections to other configuration items
 				</target>
 			</trans-unit>
@@ -6578,7 +6578,7 @@
 				<note priority="1" from="description">
 					links to external sites and
 				</note>
-				<target priority="1" from="description">
+				<target>
 					links to external sites and
 				</target>
 			</trans-unit>
@@ -6597,7 +6597,7 @@
 				<note priority="1" from="description">
 					responsibilities
 				</note>
-				<target priority="1" from="description">
+				<target>
 					responsibilities
 				</target>
 			</trans-unit>
@@ -6616,7 +6616,7 @@
 				<note priority="1" from="description">
 					are you sure you want to proceed
 				</note>
-				<target priority="1" from="description">
+				<target>
 					are you sure you want to proceed
 				</target>
 			</trans-unit>
@@ -6635,7 +6635,7 @@
 				<note priority="1" from="description">
 					yes, delete
 				</note>
-				<target priority="1" from="description">
+				<target>
 					yes, delete
 				</target>
 			</trans-unit>
@@ -6654,7 +6654,7 @@
 				<note priority="1" from="description">
 					analyzing
 				</note>
-				<target priority="1" from="description">
+				<target>
 					analyzing
 				</target>
 			</trans-unit>
@@ -6673,7 +6673,7 @@
 				<note priority="1" from="description">
 					import configuration items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					import configuration items
 				</target>
 			</trans-unit>
@@ -6692,7 +6692,7 @@
 				<note priority="1" from="description">
 					common settings
 				</note>
-				<target priority="1" from="description">
+				<target>
 					common settings
 				</target>
 			</trans-unit>
@@ -6711,7 +6711,7 @@
 				<note priority="1" from="description">
 					item type to import
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item type to import
 				</target>
 			</trans-unit>
@@ -6730,7 +6730,7 @@
 				<note priority="1" from="description">
 					additional elements to import
 				</note>
-				<target priority="1" from="description">
+				<target>
 					additional elements to import
 				</target>
 			</trans-unit>
@@ -6749,7 +6749,7 @@
 				<note priority="1" from="description">
 					downward connections
 				</note>
-				<target priority="1" from="description">
+				<target>
 					downward connections
 				</target>
 			</trans-unit>
@@ -6768,7 +6768,7 @@
 				<note priority="1" from="description">
 					downward connections
 				</note>
-				<target priority="1" from="description">
+				<target>
 					downward connections
 				</target>
 			</trans-unit>
@@ -6787,7 +6787,7 @@
 				<note priority="1" from="description">
 					links
 				</note>
-				<target priority="1" from="description">
+				<target>
 					links
 				</target>
 			</trans-unit>
@@ -6806,7 +6806,7 @@
 				<note priority="1" from="description">
 					more settings
 				</note>
-				<target priority="1" from="description">
+				<target>
 					more settings
 				</target>
 			</trans-unit>
@@ -6825,7 +6825,7 @@
 				<note priority="1" from="description">
 					ignore item names that already exist
 				</note>
-				<target priority="1" from="description">
+				<target>
 					ignore item names that already exist
 				</target>
 			</trans-unit>
@@ -6844,7 +6844,7 @@
 				<note priority="1" from="description">
 					only CIs are created, if the name does not exist. if it does, nothing will be changed
 				</note>
-				<target priority="1" from="description">
+				<target>
 					only CIs are created, if the name does not exist. if it does, nothing will be changed
 				</target>
 			</trans-unit>
@@ -6863,7 +6863,7 @@
 				<note priority="1" from="description">
 					the first line of the file contains column headers
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the first line of the file contains column headers
 				</target>
 			</trans-unit>
@@ -6882,7 +6882,7 @@
 				<note priority="1" from="description">
 					the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file
 				</target>
 			</trans-unit>
@@ -6901,7 +6901,7 @@
 				<note priority="1" from="description">
 					choose file
 				</note>
-				<target priority="1" from="description">
+				<target>
 					choose file
 				</target>
 			</trans-unit>
@@ -6920,7 +6920,7 @@
 				<note priority="1" from="description">
 					select sheet
 				</note>
-				<target priority="1" from="description">
+				<target>
 					select sheet
 				</target>
 			</trans-unit>
@@ -6939,7 +6939,7 @@
 				<note priority="1" from="description">
 					sheet
 				</note>
-				<target priority="1" from="description">
+				<target>
 					sheet
 				</target>
 			</trans-unit>
@@ -6958,7 +6958,7 @@
 				<note priority="1" from="description">
 					data preview
 				</note>
-				<target priority="1" from="description">
+				<target>
 					data preview
 				</target>
 			</trans-unit>
@@ -6977,7 +6977,7 @@
 				<note priority="1" from="description">
 					column mappings
 				</note>
-				<target priority="1" from="description">
+				<target>
 					column mappings
 				</target>
 			</trans-unit>
@@ -7004,7 +7004,7 @@
 				<note priority="1" from="description">
 					back
 				</note>
-				<target priority="1" from="description">
+				<target>
 					back
 				</target>
 			</trans-unit>
@@ -7023,7 +7023,7 @@
 				<note priority="1" from="description">
 					continue
 				</note>
-				<target priority="1" from="description">
+				<target>
 					continue
 				</target>
 			</trans-unit>
@@ -7042,7 +7042,7 @@
 				<note priority="1" from="description">
 					elements that can be imported
 				</note>
-				<target priority="1" from="description">
+				<target>
 					elements that can be imported
 				</target>
 			</trans-unit>
@@ -7061,7 +7061,7 @@
 				<note priority="1" from="description">
 					problems found
 				</note>
-				<target priority="1" from="description">
+				<target>
 					problems found
 				</target>
 			</trans-unit>
@@ -7088,7 +7088,7 @@
 				<note priority="1" from="description">
 					line
 				</note>
-				<target priority="1" from="description">
+				<target>
 					line
 				</target>
 			</trans-unit>
@@ -7107,7 +7107,7 @@
 				<note priority="1" from="description">
 					error message
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error message
 				</target>
 			</trans-unit>
@@ -7126,7 +7126,7 @@
 				<note priority="1" from="description">
 					existing item ignored
 				</note>
-				<target priority="1" from="description">
+				<target>
 					existing item ignored
 				</target>
 			</trans-unit>
@@ -7145,7 +7145,7 @@
 				<note priority="1" from="description">
 					ignoring line with empty name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					ignoring line with empty name
 				</target>
 			</trans-unit>
@@ -7164,7 +7164,7 @@
 				<note priority="1" from="description">
 					ignoring line with duplicate name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					ignoring line with duplicate name
 				</target>
 			</trans-unit>
@@ -7183,7 +7183,7 @@
 				<note priority="1" from="description">
 					no item matches this name and type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no item matches this name and type
 				</target>
 			</trans-unit>
@@ -7202,7 +7202,7 @@
 				<note priority="1" from="description">
 					There are no lines to import. Please retry with another file or other settings.
 				</note>
-				<target priority="1" from="description">
+				<target>
 					There are no lines to import. Please retry with another file or other settings.
 				</target>
 			</trans-unit>
@@ -7229,7 +7229,7 @@
 				<note priority="1" from="description">
 					import items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					import items
 				</target>
 			</trans-unit>
@@ -7248,7 +7248,7 @@
 				<note priority="1" from="description">
 					errors encountered. Please check log
 				</note>
-				<target priority="1" from="description">
+				<target>
 					errors encountered. Please check log
 				</target>
 			</trans-unit>
@@ -7267,7 +7267,7 @@
 				<note priority="1" from="description">
 					subject
 				</note>
-				<target priority="1" from="description">
+				<target>
 					subject
 				</target>
 			</trans-unit>
@@ -7286,7 +7286,7 @@
 				<note priority="1" from="description">
 					severity
 				</note>
-				<target priority="1" from="description">
+				<target>
 					severity
 				</target>
 			</trans-unit>
@@ -7305,7 +7305,7 @@
 				<note priority="1" from="description">
 					message
 				</note>
-				<target priority="1" from="description">
+				<target>
 					message
 				</target>
 			</trans-unit>
@@ -7324,7 +7324,7 @@
 				<note priority="1" from="description">
 					details
 				</note>
-				<target priority="1" from="description">
+				<target>
 					details
 				</target>
 			</trans-unit>
@@ -7343,7 +7343,7 @@
 				<note priority="1" from="description">
 					warning
 				</note>
-				<target priority="1" from="description">
+				<target>
 					warning
 				</target>
 			</trans-unit>
@@ -7362,7 +7362,7 @@
 				<note priority="1" from="description">
 					fatal
 				</note>
-				<target priority="1" from="description">
+				<target>
 					fatal
 				</target>
 			</trans-unit>
@@ -7381,7 +7381,7 @@
 				<note priority="1" from="description">
 					info
 				</note>
-				<target priority="1" from="description">
+				<target>
 					info
 				</target>
 			</trans-unit>
@@ -7400,7 +7400,7 @@
 				<note priority="1" from="description">
 					table contains no rows
 				</note>
-				<target priority="1" from="description">
+				<target>
 					table contains no rows
 				</target>
 			</trans-unit>
@@ -7419,7 +7419,7 @@
 				<note priority="1" from="description">
 					server error
 				</note>
-				<target priority="1" from="description">
+				<target>
 					server error
 				</target>
 			</trans-unit>
@@ -7438,7 +7438,7 @@
 				<note priority="1" from="description">
 					general error
 				</note>
-				<target priority="1" from="description">
+				<target>
 					general error
 				</target>
 			</trans-unit>
@@ -7457,7 +7457,7 @@
 				<note priority="1" from="description">
 					updated existing item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					updated existing item
 				</target>
 			</trans-unit>
@@ -7476,7 +7476,7 @@
 				<note priority="1" from="description">
 					created new item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					created new item
 				</target>
 			</trans-unit>
@@ -7495,7 +7495,7 @@
 				<note priority="1" from="description">
 					attribute value does not comply to the validation rule
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute value does not comply to the validation rule
 				</target>
 			</trans-unit>
@@ -7514,7 +7514,7 @@
 				<note priority="1" from="description">
 					attribute type is not allowed for this item type
 				</note>
-				<target priority="1" from="description">
+				<target>
 					attribute type is not allowed for this item type
 				</target>
 			</trans-unit>
@@ -7533,7 +7533,7 @@
 				<note priority="1" from="description">
 					updated connection description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					updated connection description
 				</target>
 			</trans-unit>
@@ -7552,7 +7552,7 @@
 				<note priority="1" from="description">
 					the description does not match the validation criteria
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the description does not match the validation criteria
 				</target>
 			</trans-unit>
@@ -7571,7 +7571,7 @@
 				<note priority="1" from="description">
 					Connection was created
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Connection was created
 				</target>
 			</trans-unit>
@@ -7590,7 +7590,7 @@
 				<note priority="1" from="description">
 					the maximum number of connections is reached. No more connections for the upper item are allowed
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the maximum number of connections is reached. No more connections for the upper item are allowed
 				</target>
 			</trans-unit>
@@ -7609,7 +7609,7 @@
 				<note priority="1" from="description">
 					the maximum number of connections is reached. No more connections for the lower item are allowed
 				</note>
-				<target priority="1" from="description">
+				<target>
 					the maximum number of connections is reached. No more connections for the lower item are allowed
 				</target>
 			</trans-unit>
@@ -7628,7 +7628,7 @@
 				<note priority="1" from="description">
 					no valid url given
 				</note>
-				<target priority="1" from="description">
+				<target>
 					no valid url given
 				</target>
 			</trans-unit>
@@ -7647,7 +7647,7 @@
 				<note priority="1" from="description">
 					hyperlink created
 				</note>
-				<target priority="1" from="description">
+				<target>
 					hyperlink created
 				</target>
 			</trans-unit>
@@ -7666,7 +7666,7 @@
 				<note priority="1" from="description">
 					error while creating hyperlink
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error while creating hyperlink
 				</target>
 			</trans-unit>
@@ -7685,7 +7685,7 @@
 				<note priority="1" from="description">
 					connection created
 				</note>
-				<target priority="1" from="description">
+				<target>
 					connection created
 				</target>
 			</trans-unit>
@@ -7704,7 +7704,7 @@
 				<note priority="1" from="description">
 					error creating connection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error creating connection
 				</target>
 			</trans-unit>
@@ -7723,7 +7723,7 @@
 				<note priority="1" from="description">
 					skipping existing connection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					skipping existing connection
 				</target>
 			</trans-unit>
@@ -7742,7 +7742,7 @@
 				<note priority="1" from="description">
 					changed connection description
 				</note>
-				<target priority="1" from="description">
+				<target>
 					changed connection description
 				</target>
 			</trans-unit>
@@ -7761,7 +7761,7 @@
 				<note priority="1" from="description">
 					error while changing connection
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error while changing connection
 				</target>
 			</trans-unit>
@@ -7780,7 +7780,7 @@
 				<note priority="1" from="description">
 					error message
 				</note>
-				<target priority="1" from="description">
+				<target>
 					error message
 				</target>
 			</trans-unit>
@@ -7799,7 +7799,7 @@
 				<note priority="1" from="description">
 					back
 				</note>
-				<target priority="1" from="description">
+				<target>
 					back
 				</target>
 			</trans-unit>
@@ -7818,7 +7818,7 @@
 				<note priority="1" from="description">
 					edit multiple items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					edit multiple items
 				</target>
 			</trans-unit>
@@ -7837,7 +7837,7 @@
 				<note priority="1" from="description">
 					configuration item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					configuration item
 				</target>
 			</trans-unit>
@@ -7856,7 +7856,7 @@
 				<note priority="1" from="description">
 					delete all values
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete all values
 				</target>
 			</trans-unit>
@@ -7875,7 +7875,7 @@
 				<note priority="1" from="description">
 					custom value
 				</note>
-				<target priority="1" from="description">
+				<target>
 					custom value
 				</target>
 			</trans-unit>
@@ -7894,7 +7894,7 @@
 				<note priority="1" from="description">
 					existing values
 				</note>
-				<target priority="1" from="description">
+				<target>
 					existing values
 				</target>
 			</trans-unit>
@@ -7913,7 +7913,7 @@
 				<note priority="1" from="description">
 					delete connection to
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete connection to
 				</target>
 			</trans-unit>
@@ -7932,7 +7932,7 @@
 				<note priority="1" from="description">
 					item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					item
 				</target>
 			</trans-unit>
@@ -7951,7 +7951,7 @@
 				<note priority="1" from="description">
 					external links
 				</note>
-				<target priority="1" from="description">
+				<target>
 					external links
 				</target>
 			</trans-unit>
@@ -7970,7 +7970,7 @@
 				<note priority="1" from="description">
 					delete all links
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete all links
 				</target>
 			</trans-unit>
@@ -7989,7 +7989,7 @@
 				<note priority="1" from="description">
 					delete
 				</note>
-				<target priority="1" from="description">
+				<target>
 					delete
 				</target>
 			</trans-unit>
@@ -8008,7 +8008,7 @@
 				<note priority="1" from="description">
 					URI
 				</note>
-				<target priority="1" from="description">
+				<target>
 					URI
 				</target>
 			</trans-unit>
@@ -8027,7 +8027,7 @@
 				<note priority="1" from="description">
 					remove item from list
 				</note>
-				<target priority="1" from="description">
+				<target>
 					remove item from list
 				</target>
 			</trans-unit>
@@ -8046,7 +8046,7 @@
 				<note priority="1" from="description">
 					Configuration Management System
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Configuration Management System
 				</target>
 			</trans-unit>
@@ -8065,7 +8065,7 @@
 				<note priority="1" from="description">
 					user
 				</note>
-				<target priority="1" from="description">
+				<target>
 					user
 				</target>
 			</trans-unit>
@@ -8084,7 +8084,7 @@
 				<note priority="1" from="description">
 					account
 				</note>
-				<target priority="1" from="description">
+				<target>
 					account
 				</target>
 			</trans-unit>
@@ -8103,7 +8103,7 @@
 				<note priority="1" from="description">
 					user name
 				</note>
-				<target priority="1" from="description">
+				<target>
 					user name
 				</target>
 			</trans-unit>
@@ -8122,7 +8122,7 @@
 				<note priority="1" from="description">
 					change password
 				</note>
-				<target priority="1" from="description">
+				<target>
 					change password
 				</target>
 			</trans-unit>
@@ -8141,7 +8141,7 @@
 				<note priority="1" from="description">
 					logout
 				</note>
-				<target priority="1" from="description">
+				<target>
 					logout
 				</target>
 			</trans-unit>
@@ -8160,7 +8160,7 @@
 				<note priority="1" from="description">
 					administration
 				</note>
-				<target priority="1" from="description">
+				<target>
 					administration
 				</target>
 			</trans-unit>
@@ -8187,7 +8187,7 @@
 				<note priority="1" from="description">
 					edit multiple items
 				</note>
-				<target priority="1" from="description">
+				<target>
 					edit multiple items
 				</target>
 			</trans-unit>
@@ -8206,7 +8206,7 @@
 				<note priority="1" from="description">
 					export list
 				</note>
-				<target priority="1" from="description">
+				<target>
 					export list
 				</target>
 			</trans-unit>
@@ -8225,7 +8225,7 @@
 				<note priority="1" from="description">
 					create new item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					create new item
 				</target>
 			</trans-unit>
@@ -8244,7 +8244,7 @@
 				<note priority="1" from="description">
 					edit item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					edit item
 				</target>
 			</trans-unit>
@@ -8263,7 +8263,7 @@
 				<note priority="1" from="description">
 					copy item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					copy item
 				</target>
 			</trans-unit>
@@ -8282,7 +8282,7 @@
 				<note priority="1" from="description">
 					view item
 				</note>
-				<target priority="1" from="description">
+				<target>
 					view item
 				</target>
 			</trans-unit>
@@ -8301,7 +8301,7 @@
 				<note priority="1" from="description">
 					view graph
 				</note>
-				<target priority="1" from="description">
+				<target>
 					view graph
 				</target>
 			</trans-unit>
@@ -8320,7 +8320,7 @@
 				<note priority="1" from="description">
 					view history
 				</note>
-				<target priority="1" from="description">
+				<target>
 					view history
 				</target>
 			</trans-unit>
@@ -8339,7 +8339,7 @@
 				<note priority="1" from="description">
 					search neighbors
 				</note>
-				<target priority="1" from="description">
+				<target>
 					search neighbors
 				</target>
 			</trans-unit>
@@ -8358,7 +8358,7 @@
 				<note priority="1" from="description">
 					choose export format:
 				</note>
-				<target priority="1" from="description">
+				<target>
 					choose export format:
 				</target>
 			</trans-unit>
@@ -8377,7 +8377,7 @@
 				<note priority="1" from="description">
 					Excel
 				</note>
-				<target priority="1" from="description">
+				<target>
 					Excel
 				</target>
 			</trans-unit>
@@ -8396,7 +8396,7 @@
 				<note priority="1" from="description">
 					csv
 				</note>
-				<target priority="1" from="description">
+				<target>
 					csv
 				</target>
 			</trans-unit>
@@ -8415,7 +8415,7 @@
 				<note priority="1" from="description">
 					clipboard
 				</note>
-				<target priority="1" from="description">
+				<target>
 					clipboard
 				</target>
 			</trans-unit>
@@ -8434,7 +8434,7 @@
 				<note priority="1" from="description">
 					export
 				</note>
-				<target priority="1" from="description">
+				<target>
 					export
 				</target>
 			</trans-unit>
@@ -8453,7 +8453,7 @@
 				<note priority="1" from="description">
 					show help
 				</note>
-				<target priority="1" from="description">
+				<target>
 					show help
 				</target>
 			</trans-unit>
@@ -8472,7 +8472,7 @@
 				<note priority="1" from="description">
 					role
 				</note>
-				<target priority="1" from="description">
+				<target>
 					role
 				</target>
 			</trans-unit>
@@ -8491,7 +8491,7 @@
 				<note priority="1" from="description">
 					editor
 				</note>
-				<target priority="1" from="description">
+				<target>
 					editor
 				</target>
 			</trans-unit>
@@ -8510,7 +8510,7 @@
 				<note priority="1" from="description">
 					reader
 				</note>
-				<target priority="1" from="description">
+				<target>
 					reader
 				</target>
 			</trans-unit>

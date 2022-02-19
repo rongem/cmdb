@@ -2,23 +2,23 @@
     <thead>
         <tr>
             <th colspan="4">
-                <ng-container i18n="downward connections">
+                <ng-container i18n="Downward connections">
                     Verbindungen nach unten 
                 </ng-container>
                 (&darr;)
             </th>
         </tr>
         <tr>
-            <th i18n="connection type">
+            <th i18n="Connection type">
                 Verbindungstyp
             </th>
-            <th i18n="item type">
+            <th i18n="Item type">
                 Item-Typ
             </th>
-            <th i18n="item">
+            <th i18n="Item">
                 Item
             </th>
-            <th i18n="description">
+            <th i18n="Description">
                 Beschreibung
             </th>
             <th>
@@ -53,10 +53,10 @@
                             </td>
                             <td appClickOpen>
                                 <button type="button" class="selectable" (click)="editConnection = connection">
-                                    <ng-container i18n="edit description">Beschreibung bearbeiten</ng-container>
+                                    <ng-container i18n="Edit description">Beschreibung bearbeiten</ng-container>
                                 </button>
                                 <button type="button" class="red-button selectable" (click)="onDeleteConnection(connection.id)">
-                                    <ng-container i18n="delete connection type">Verbindung l&ouml;schen</ng-container>
+                                    <ng-container i18n="Delete connection type">Verbindung l&ouml;schen</ng-container>
                                 </button>
                             </td>
                         </ng-container>
@@ -86,7 +86,7 @@
                             </ng-container>
                         </td>
                         <td colspan="3">
-                            <button type="button" class="selectable" *ngIf="!addRule" (click)="onAddConnection(rule)" i18n="add connection">
+                            <button type="button" class="selectable" *ngIf="!addRule" (click)="onAddConnection(rule)" i18n="Add connection">
                                 Verbindung hinzuf&uuml;gen
                             </button>
                             <app-add-connection *ngIf="addRule" [rule]="addRule" [itemId]="(configurationItem | async).id" (connectionSaved)="onCreateNewConnection($event)">

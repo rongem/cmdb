@@ -1,16 +1,16 @@
 <app-busy *ngIf="busy" i18n="analyzing">Analysiere...</app-busy>
-<h3 i18n="import configuration items">Configuration Items importieren</h3>
+<h3 i18n="Import configuration items">Configuration Items importieren</h3>
 <form [formGroup]="form" (submit)="onSubmit()" *ngIf="!resultList">
     <table class="table" *ngIf="!fileContent">
         <thead>
             <tr>
-                <th colspan="2" i18n="common settings">Allgemeine Einstellungen</th>
+                <th colspan="2" i18n="Common settings">Allgemeine Einstellungen</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>
-                    <label for="itemType" i18n="item type to import">Typ der zu importierenden Items: </label>
+                    <label for="itemType" i18n="Item type to import">Typ der zu importierenden Items: </label>
                 </td>
                 <td>
                     <select name="type" id="itemType" formControlName="itemTypeId">
@@ -21,11 +21,11 @@
                 </td>
             </tr>
             <tr>
-                <th colspan="2" i18n="additional elements to import">Welche weiteren Elemente sollen importiert werden?</th>
+                <th colspan="2" i18n="Additional elements to import">Welche weiteren Elemente sollen importiert werden?</th>
             </tr>
             <tr>
                 <td>
-                    <label for="attributes" i18n="attributes">Attribute</label>
+                    <label for="attributes" i18n="Attributes">Attribute</label>
                 </td>
                 <td>
                     <input type="checkbox" id="attributes" name="attributes" formControlName="attributes">
@@ -33,7 +33,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="connectionsToLower" i18n="downward connections">Verbindungen nach unten</label>
+                    <label for="connectionsToLower" i18n="Downward connections">Verbindungen nach unten</label>
                 </td>
                 <td>
                     <input type="checkbox" id="connectionsToLower" name="connectionsToLower" formControlName="connectionsToLower">
@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="connectionsToUpper" i18n="downward connections">Verbindungen nach oben</label>
+                    <label for="connectionsToUpper" i18n="Downward connections">Verbindungen nach oben</label>
                 </td>
                 <td>
                     <input type="checkbox" id="connectionsToUpper" name="connectionsToUpper" formControlName="connectionsToUpper">
@@ -49,7 +49,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="links" i18n="links">Hyperlinks</label>
+                    <label for="links" i18n="Links">Hyperlinks</label>
                 </td>
                 <td>
                     <input type="checkbox" id="links" name="links" formControlName="links">
@@ -76,10 +76,10 @@
             <tr>
                 <td>
                     <label for="headlines">
-                        <ng-container i18n="the first line of the file contains column headers">
+                        <ng-container i18n="The first line of the file contains column headers">
                             Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
                         </ng-container>
-                        <span class="visually-hidden" i18n="the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file">
+                        <span class="visually-hidden" i18n="The column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file">
                             Die Spalten&uuml;berschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei &Uuml;bereinstimmung zugeordnet.
                             So kann eine exportierte Datei schnell wieder importiert werden.
                         </span>
@@ -92,7 +92,7 @@
             <tr *ngIf="form.get('itemTypeId').valid">
                 <td>
                     <label class="mat-button" for="file">
-                        <ng-container i18n="choose file">
+                        <ng-container i18n="Choose file">
                             Datei ausw&auml;hlen
                         </ng-container>
                         <div class="mat-button-focus-overlay"></div>
@@ -108,17 +108,17 @@
     <table class="table" *ngIf="fileContent && !dataTable">
         <thead>
             <tr>
-                <th i18n="item type">Item-Typ</th>
+                <th i18n="Item type">Item-Typ</th>
                 <th>{{(selectedItemType | async).name}}</th>
             </tr>
         </thead>
         <tbody *ngIf="!sheet">
             <tr>
-                <th colspan="2" i18n="select sheet">Tabellenblatt ausw&auml;hlen</th>
+                <th colspan="2" i18n="Select sheet">Tabellenblatt ausw&auml;hlen</th>
             </tr>
             <tr>
                 <td>
-                    <label for="sheetIndex" i18n="sheet">Tabellenblatt</label>
+                    <label for="sheetIndex" i18n="Sheet">Tabellenblatt</label>
                 </td>
                 <td>
                     <select id="sheetIndex" name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
@@ -128,7 +128,7 @@
                 </td>
             </tr>
             <tr>
-                <th colspan="2" i18n="data preview">Vorschau auf die Daten</th>
+                <th colspan="2" i18n="Data preview">Vorschau auf die Daten</th>
             </tr>
             <tr>
                 <td colspan="2">
@@ -145,7 +145,7 @@
         </tbody>
         <tbody *ngIf="sheet && !dataTable">
             <tr>
-                <th colspan="2" i18n="column mappings">Spaltenzuordnungen</th>
+                <th colspan="2" i18n="Column mappings">Spaltenzuordnungen</th>
             </tr>
             <tr formArrayName="columns" *ngFor="let name of columnNames; let i = index">
                 <td>
@@ -161,10 +161,10 @@
             </tr>
             <tr>
                 <td>
-                    <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                    <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
                 </td>
                 <td>
-                    <button type="button" i18n="continue" [disabled]="form.invalid" class="selectable"
+                    <button type="button" i18n="Continue" [disabled]="form.invalid" class="selectable"
                         (click)="onContinue()">
                         Weiter
                     </button>
@@ -174,7 +174,7 @@
     </table>
     <table class="table" *ngIf="dataTable && dataTable.rows.length > 0">
         <tr>
-            <th [colSpan]="dataTable.columns.length" i18n="elements that can be imported">Zu importierende Elemente</th>
+            <th [colSpan]="dataTable.columns.length" i18n="Elements that can be imported">Zu importierende Elemente</th>
         </tr>
         <tr>
             <th *ngFor="let column of columns">
@@ -195,8 +195,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th i18n="line">Zeile</th>
-                        <th i18n="error message">Fehlermeldung</th>
+                        <th i18n="Line">Zeile</th>
+                        <th i18n="Error message">Fehlermeldung</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -206,7 +206,7 @@
                         </td>
                         <td>
                             <ng-container [ngSwitch]="entry.message">
-                                <span *ngSwitchCase="'existing item ignored'" i18n="existing item ignored">
+                                <span *ngSwitchCase="'existing item ignored'" i18n="Existing item ignored">
                                     Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
                                 </span>
                                 <span *ngSwitchCase="'Ignoring line with empty name.'" i18n="ignoring line with empty name">
@@ -215,7 +215,7 @@
                                 <span *ngSwitchCase="'Ignoring line with duplicate name.'" i18n="ignoring line with duplicate name">
                                     Der Name des Items ist mehrfach vorhanden. Die Zeile wird ignoriert.
                                 </span>
-                                <span *ngSwitchCase="'No item matches this name and type.'" i18n="no item matches this name and type">
+                                <span *ngSwitchCase="'No item matches this name and type.'" i18n="No item matches this name and type">
                                     Ein Item mit diesem Namen wurde nicht gefunden.
                                 </span>
                             </ng-container>
@@ -229,25 +229,25 @@
             Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
         </div>
         <div class="margin">
-            <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
-            <button type="submit" i18n="import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
+            <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+            <button type="submit" i18n="Import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
                 Items importieren
             </button>
         </div>
     </div>
 </form>
 <div *ngIf="resultList">
-    <div *ngIf="errorsInResults" class="red" i18n="errors encountered. Please check log">
+    <div *ngIf="errorsInResults" class="red" i18n="Errors encountered. Please check log">
         Es sind Fehler aufgetreten. Bitte pr&uuml;fen Sie das Protokoll.
     </div>
     <table class="table">
         <thead>
             <tr>
-                <th i18n="line">Zeile</th>
-                <th i18n="subject">Betroffenes Item</th>
-                <th i18n="severity">Kategorie</th>
+                <th i18n="Line">Zeile</th>
+                <th i18n="Subject">Betroffenes Item</th>
+                <th i18n="Severity">Kategorie</th>
                 <th i18n="message">Meldung</th>
-                <th i18n="details">Details</th>
+                <th i18n="Details">Details</th>
             </tr>
         </thead>
         <tbody>
@@ -260,10 +260,10 @@
                 </td>
                 <td>
                     <ng-container [ngSwitch]="entry.severity">
-                        <span *ngSwitchCase="1" i18n="warning">Warnhinweis</span>
-                        <span *ngSwitchCase="2" i18n="error">Fehler</span>
-                        <span *ngSwitchCase="3" i18n="fatal">Abbruch</span>
-                        <span *ngSwitchDefault i18n="info">Information</span>
+                        <span *ngSwitchCase="1" i18n="Warning">Warnhinweis</span>
+                        <span *ngSwitchCase="2" i18n="Error">Fehler</span>
+                        <span *ngSwitchCase="3" i18n="Fatal">Abbruch</span>
+                        <span *ngSwitchDefault i18n="Info">Information</span>
                     </ng-container>
                 </td>
                 <td>
@@ -271,59 +271,59 @@
                         <span *ngSwitchCase="'No lines in table.'" i18n="table contains no rows">
                             Die Tabelle ent&auml;t keine Zeilen.
                         </span>
-                        <span *ngSwitchCase="'server error'" i18n="server error">Fehler auf dem Server</span>
+                        <span *ngSwitchCase="'server error'" i18n="Server error">Fehler auf dem Server</span>
                         <span *ngSwitchCase="'error'" i18n="general error">Allgemeiner Fehler</span>
-                        <span *ngSwitchCase="'Updated item.'" i18n="updated existing item">
+                        <span *ngSwitchCase="'Updated item.'" i18n="Updated existing item">
                             Das vorhandene Configuration Item wurde aktualisiert.
                         </span>
-                        <span *ngSwitchCase="'New item created.'" i18n="created new item">
+                        <span *ngSwitchCase="'New item created.'" i18n="Created new item">
                             Ein neues Configuration Item wurde erzeugt.
                         </span>
-                        <span *ngSwitchCase="'No valid attribute value.'" i18n="attribute value does not comply to the validation rule">
+                        <span *ngSwitchCase="'No valid attribute value.'" i18n="Attribute value does not comply to the validation rule">
                             Der Attributwert entspricht nicht den Validierungsregeln.
                         </span>
-                        <span *ngSwitchCase="'Attribute type is not allowed for this item type.'" i18n="attribute type is not allowed for this item type">
+                        <span *ngSwitchCase="'Attribute type is not allowed for this item type.'" i18n="Attribute type is not allowed for this item type">
                             Der Attributtyp darf f&uuml;r diesen Item-Typ nicht verwendet werden.
                         </span>
-                        <span *ngSwitchCase="'Updated connection description.'" i18n="updated connection description">
+                        <span *ngSwitchCase="'Updated connection description.'" i18n="Updated connection description">
                             Die Beschreibung der Verbindung wurde aktualisiert.
                         </span>
-                        <span *ngSwitchCase="'No valid description.'" i18n="the description does not match the validation criteria">
+                        <span *ngSwitchCase="'No valid description.'" i18n="The description does not match the validation criteria">
                             Die Beschreibung entspricht nicht den Validierungsregeln.
                         </span>
                         <span *ngSwitchCase="'Created connection.'" i18n="Connection was created">
                             Die Verbindung wurde angelegt.
                         </span>
                         <span *ngSwitchCase="'The maximum number of connections is reached. No more connections for the upper item are allowed.'"
-                            i18n="the maximum number of connections is reached. No more connections for the upper item are allowed">
+                            i18n="The maximum number of connections is reached. No more connections for the upper item are allowed">
                             Die maximale Anzahl an Verbindungen f&uuml;r das obere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt.
                         </span>
                         <span *ngSwitchCase="'The maximum number of connections is reached. No more connections for the lower item are allowed.'"
-                            i18n="the maximum number of connections is reached. No more connections for the lower item are allowed">
+                            i18n="The maximum number of connections is reached. No more connections for the lower item are allowed">
                             Die maximale Anzahl an Verbindungen f&uuml;r das untere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt.
                         </span>
-                        <span *ngSwitchCase="'no valid url'" i18n="no valid url given">
+                        <span *ngSwitchCase="'no valid url'" i18n="No valid url given">
                             Die angegebene URL ist nicht g&uuml;ltig.
                         </span>
                         <span *ngSwitchCase="'hyperlink created'" i18n="hyperlink created">Hyperlink erzeugt</span>
-                        <span *ngSwitchCase="'error creating hyperlink'" i18n="error while creating hyperlink">
+                        <span *ngSwitchCase="'error creating hyperlink'" i18n="Error while creating hyperlink">
                             Fehler beim Erstellen des Hyperlinks
                         </span>
-                        <span *ngSwitchCase="'connection created'" i18n="connection created">Verbindung erzeugt</span>
-                        <span *ngSwitchCase="'error creating connection'" i18n="error creating connection">
+                        <span *ngSwitchCase="'connection created'" i18n="Connection created">Verbindung erzeugt</span>
+                        <span *ngSwitchCase="'error creating connection'" i18n="Error creating connection">
                             Fehler beim Erzeugen der Verbindung
                         </span>
-                        <span *ngSwitchCase="'skipping existing connection'" i18n="skipping existing connection">
+                        <span *ngSwitchCase="'skipping existing connection'" i18n="Skipping existing connection">
                             Die bereits existierende Verbindung wurde nicht ver&auml;ndert.
                         </span>
-                        <span *ngSwitchCase="'changed connection description'" i18n="changed connection description">
+                        <span *ngSwitchCase="'changed connection description'" i18n="Changed connection description">
                             Verbindungsbeschreibung wurde ge&auml;ndert.
                         </span>
-                        <span *ngSwitchCase="'error changing connection'" i18n="error while changing connection">
+                        <span *ngSwitchCase="'error changing connection'" i18n="Error while changing connection">
                             Fehler beim Ver&auml;ndern der Verbindung
                         </span>
                         <span *ngSwitchDefault>
-                            <ng-container i18n="error message">Fehlermeldung: </ng-container>
+                            <ng-container i18n="Error message">Fehlermeldung: </ng-container>
                             {{entry.message}}
                         </span>
                     </ng-container>
@@ -334,5 +334,5 @@
             </tr>
         </tbody>
     </table>
-    <button type="button" i18n="back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
+    <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
 </div>

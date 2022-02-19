@@ -4,9 +4,9 @@
             <th appClickOpen *ngIf="(userRole | async) > 0 && (searchItemType | async)">
                 <app-multi-selector [items]="resultList | async"></app-multi-selector>
             </th>
-            <th i18n="item name">Item-Name</th>
-            <th i18n="item type">Item-Typ</th>
-            <th i18n="last change">Letzte &Auml;nderung</th>
+            <th i18n="Item name">Item-Name</th>
+            <th i18n="Item type">Item-Typ</th>
+            <th i18n="Last change">Letzte &Auml;nderung</th>
             <ng-container *ngIf="(searchItemType | async)">
                 <th *ngFor="let attributeType of displayedAttributeTypesList">
                     {{attributeType.name}}
@@ -44,6 +44,6 @@
         </tr>
     </tbody>
 </table>
-<div class="error" *ngIf="(resultList | async).length === 0" i18n="no items found that match the search criteria">
+<div class="error" *ngIf="(resultList | async).length === 0" i18n="No items found that match the search criteria">
     Keine Items gefunden, die den Suchkriterien entsprechen.
 </div>

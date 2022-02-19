@@ -1,16 +1,16 @@
 <app-help>
-    <p i18n="connection types are the labels on the arrow between two configuration items">
+    <p i18n="Connection types are the labels on the arrow between two configuration items">
         Verbindungstypen sind die Beschriftungen auf dem Pfeil zwischen zwei 
         Configuration Items.
     </p>
-    <p i18n="connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
+    <p i18n="Connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
         Verbindungen sind immer &quot;gerichtet&quot;, d. h. es gibt ein oberes und ein 
         untere Configuration Item. So lassen sich ganze B&auml;ume von miteinander verbundenen
         Configuration Items realiseren, z. B. Raum zu Rack zu Server-Hardware. Es empfiehlt sich,
         am Anfang eine Systematik zur Bef&uuml;llung festzulegen und diese dann konsequent
         durchzuhalten.
     </p>
-    <p i18n="every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is 'built into' a rack. From the viewpoint of the rack, the reverse name of the same connection is 'contains' the server hardware">
+    <p i18n="Every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is 'built into' a rack. From the viewpoint of the rack, the reverse name of the same connection is 'contains' the server hardware">
         Eine Verbindung besitzt immer zwei Namen, um die Richtung widerzuspiegeln, aus der die 
         Verbindung betrachtet wird. So lautet der Name der Verbindung aus Sicht einer
         Server-Hardware, die Server-Hardware &quot;ist eingebaut in&quot; ein Rack. 
@@ -23,15 +23,15 @@
         <tr>
             <th class="table-cell table-header">
                 <span class="mobile-only">1: </span>
-                <span i18n="connection type name">Name des Verbindungstyps</span>
+                <span i18n="Connection type name">Name des Verbindungstyps</span>
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">2: </span>
-                <span i18n="connection type reverse name">R&uuml;ckw&auml;rtsname</span>
+                <span i18n="Connection type reverse name">R&uuml;ckw&auml;rtsname</span>
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">3: </span>
-                <span i18n="actions">Aktionen</span>
+                <span i18n="Actions">Aktionen</span>
             </th>
         </tr>
     </thead>
@@ -61,7 +61,7 @@
                 <span class="mobile-only">3: </span>
                 <button type="button" class="dropdown-toggle">
                     ...
-                    <span class="visually-hidden" i18n="click to open action menu">
+                    <span class="visually-hidden" i18n="Click to open action menu">
                         Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                     </span>
                 </button>
@@ -70,13 +70,13 @@
                         <button type="button" class="red-button selectable"
                             *ngIf="canDelete(connectionType, (connectionRules | async))"
                             (click)="onDeleteConnectionType(connectionType)">
-                            <ng-container i18n="delete connection type">Verbindungstyp l&ouml;schen</ng-container>
+                            <ng-container i18n="Delete connection type">Verbindungstyp l&ouml;schen</ng-container>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="selectable" [cdkCopyToClipboard]="connectionType.id">
-                            <ng-container i18n="copy id to clipboard">Id kopieren</ng-container>
-                            <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                            <ng-container i18n="Copy id to clipboard">Id kopieren</ng-container>
+                            <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
                                 Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                             </span>
                         </button>
@@ -85,10 +85,10 @@
             </ng-container>
             <ng-container *ngIf="activeLine === i">
                 <button class="btn-ok selectable" type="button" [disabled]="form.pristine || form.invalid" (click)="onChangeConnectionType()">
-                    <ng-container i18n="save">Speichern</ng-container>
+                    <ng-container i18n="Save">Speichern</ng-container>
                 </button>
                 <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                    <ng-container i18n="cancel">Abbrechen</ng-container>
+                    <ng-container i18n="Cancel">Abbrechen</ng-container>
                 </button>
             </ng-container>
         </td>
@@ -96,7 +96,7 @@
     <tr *ngIf="!createMode">
         <td class="table-cell" colspan="3">
             <button type="button" class="selectable" (click)="onCreate()">
-                <ng-container i18n="add new connection type">
+                <ng-container i18n="Add new connection type">
                     Neuen Verbindungstyp hinzuf&uuml;gen
                 </ng-container>
         </button>
@@ -107,7 +107,7 @@
             <span class="mobile-only">1: </span>
             <input autofocus type="text" formControlName="name"
                 (keyup.escape)="onCancel()" class="selectable"
-                placeholder="Name" i18n-placeholder="name" />
+                placeholder="Name" i18n-placeholder="Name" />
         </td>
         <td class="table-cell">
             <span class="mobile-only">2: </span>
@@ -117,10 +117,10 @@
         </td>
         <td class="table-cell">
             <button class="btn-ok selectable" type="button" [disabled]="form.pristine || form.invalid" (click)="onCreateConnectionType()">
-                <ng-container i18n="save">Speichern</ng-container>
+                <ng-container i18n="Save">Speichern</ng-container>
             </button>
             <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                <ng-container i18n="cancel">Abbrechen</ng-container>
+                <ng-container i18n="Cancel">Abbrechen</ng-container>
             </button>
         </td>
     </tr>

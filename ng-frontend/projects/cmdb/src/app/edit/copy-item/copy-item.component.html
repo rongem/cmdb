@@ -1,17 +1,17 @@
 <app-busy *ngIf="(itemReady | async) !== true || working"></app-busy>
-<h3 i18n="copy configuration item">Configuration Item kopieren</h3>
+<h3 i18n="Copy configuration item">Configuration Item kopieren</h3>
 <ng-container *ngIf="(itemReady | async) && formReady">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
         <table class="table">
             <thead>
                 <tr>
-                    <th i18n="property">Eigenschaft</th>
-                    <th i18n="value">Wert</th>
+                    <th i18n="Property">Eigenschaft</th>
+                    <th i18n="Value">Wert</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td i18n="item type">
+                    <td i18n="Item type">
                         Item-Typ
                     </td>
                     <td>
@@ -20,7 +20,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="name" i18n="new item name">Name des neuen Items</label>
+                        <label for="name" i18n="New item name">Name des neuen Items</label>
                     </td>
                     <td>
                         <input type="text" id="name" formControlName="name" autofocus required>
@@ -29,7 +29,7 @@
                 <tr>
                     <th colspan="2">
                         <input type="checkbox" id="copyAttributes" formControlName="attributesEnabled" #att [disabled]="(configurationItem | async).attributes.length === 0">
-                        <label for="copyAttributes" i18n="copy attributes">Attribute &uuml;bernehmen</label>
+                        <label for="copyAttributes" i18n="Copy attributes">Attribute &uuml;bernehmen</label>
                     </th>
                 </tr>
                 <ng-container *ngIf="att.checked" formArrayName="attributes">
@@ -49,7 +49,7 @@
                     <th colspan="2">
                         <input type="checkbox" id="copyConnections" formControlName="connectionsToLowerEnabled" #conn
                             [disabled]="(configurationItem | async).connectionsToLower.length === 0">
-                        <label for="copyConnections" i18n="copy downward connections">
+                        <label for="copyConnections" i18n="Copy downward connections">
                             Verbindungen nach unten &uuml;bernehmen
                         </label>
                     </th>
@@ -77,7 +77,7 @@
                     <th colspan="2">
                         <input type="checkbox" id="copyLinks" formControlName="linksEnabled" #lnk
                             [disabled]="(configurationItem | async).links.length === 0">
-                        <label for="copyLinks" i18n="copy links">
+                        <label for="copyLinks" i18n="Copy links">
                             Links &uuml;bernehmen
                         </label>
                     </th>
@@ -86,10 +86,10 @@
                     <tr [formGroupName]="i" *ngFor="let link of (configurationItem | async).links; let i = index">
                         <td>
                             <input type="checkbox" formControlName="enabled">
-                            <input matInput formControlName="uri" type="url" required placeholder="URL des Links" i18n-placeholder="link URL"/>
+                            <input matInput formControlName="uri" type="url" required placeholder="URL des Links" i18n-placeholder="Link URL"/>
                         </td>
                         <td>
-                            <input matInput formControlName="description" type="url" required placeholder="Beschreibung des Links" i18n-placeholder="link description"/>
+                            <input matInput formControlName="description" type="url" required placeholder="Beschreibung des Links" i18n-placeholder="Link description"/>
                         </td>                        
                     </tr>
                 </ng-container>
@@ -99,7 +99,7 @@
             {{errorMessage}}
         </div>
         <p>
-            <button type="submit" i18n="copy item" [disabled]="!itemForm.valid" class="selectable">
+            <button type="submit" i18n="Copy item" [disabled]="!itemForm.valid" class="selectable">
                 Item kopieren
             </button>
         </p>

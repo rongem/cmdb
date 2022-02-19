@@ -14,16 +14,16 @@
         <tr>
             <th class="table-cell table-header">
                 <span class="mobile-only">1: </span>
-                <span i18n="item type name">Name des Item-Typs</span>
+                <span i18n="Item type name">Name des Item-Typs</span>
                 
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">2: </span>
-                <span i18n="background color">Hintergrundfarbe</span>
+                <span i18n="Go background color">Hintergrundfarbe</span>
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">3: </span>
-                <span i18n="actions">Aktionen</span>
+                <span i18n="Actions">Aktionen</span>
             </th>
         </tr>
     </thead>
@@ -35,7 +35,7 @@
                     *ngIf="activeType !== itemType.id"
                     (click)="onSetType(itemType)">
                     {{ itemType.name }}
-                    <span class="visually-hidden" i18n="click to change name">
+                    <span class="visually-hidden" i18n="Click to change name">
                         Klicken, um den Namen zu &auml;ndern
                     </span>
                 </button>
@@ -57,7 +57,7 @@
                 <span class="mobile-only">3: </span>
                 <button type="button" class="dropdown-toggle">
                     ...
-                    <span class="visually-hidden" i18n="click to open action menu">
+                    <span class="visually-hidden" i18n="Click to open action menu">
                         Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                     </span>
                 </button>
@@ -65,7 +65,7 @@
                     <li>
                         <button type="button" class="red-button selectable"
                             [routerLink]="['delete', itemType.id]">
-                            <ng-container i18n="delete item type">Item-Typ l&ouml;schen</ng-container>
+                            <ng-container i18n="Delete item type">Item-Typ l&ouml;schen</ng-container>
                         </button>
                     </li>
                     <li>
@@ -76,9 +76,9 @@
                     <li>
                         <button type="button" class="selectable"
                             [cdkCopyToClipboard]="itemType.id">
-                            <ng-container i18n="copy id">Id kopieren</ng-container>
+                            <ng-container i18n="Copy id">Id kopieren</ng-container>
                         </button>
-                        <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                        <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
                             Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                         </span>
                     </li>
@@ -88,7 +88,7 @@
         <tr *ngIf="!createMode">
             <td colspan="3" class="table-cell">
                 <button type="button" class="selectable" (click)="onCreate()">
-                    <ng-container i18n="create new item type">Item-Typ erstellen</ng-container>
+                    <ng-container i18n="Create new item type">Item-Typ erstellen</ng-container>
                 </button>
             </td>
         </tr>
@@ -97,7 +97,7 @@
                 <span class="mobile-only">1: </span>
                 <input autofocus type="text" [(ngModel)]="typeName" class="selectable"
                     (keyup.escape)="onCancel()"
-                    placeholder="Name" i18n-placeholder="name" />
+                    placeholder="Name" i18n-placeholder="Name" />
             </td>
             <td class="table-cell">
                 <span class="mobile-only">2: </span>
@@ -108,10 +108,10 @@
                 <button class="btn-ok selectable" type="button"
                     [disabled]="typeName.length < minLength"
                     (click)="onCreateItemType()">
-                    <ng-container i18n="save">Speichern</ng-container>
+                    <ng-container i18n="Save">Speichern</ng-container>
                 </button>
                 <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                    <ng-container i18n="cancel">Abbrechen</ng-container>
+                    <ng-container i18n="Cancel">Abbrechen</ng-container>
                 </button>
             </td>
         </tr>

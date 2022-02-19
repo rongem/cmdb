@@ -12,7 +12,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/change-password/change-password.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
-        <note priority="1" from="description">change password</note>
+        <note priority="1" from="description">Change password</note>
       </trans-unit>
       <trans-unit id="2104892736210968144" datatype="html">
         <source>Bisheriges Kennwort:</source>
@@ -20,7 +20,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/change-password/change-password.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-        <note priority="1" from="description">current password</note>
+        <note priority="1" from="description">Current password</note>
       </trans-unit>
       <trans-unit id="6945330255241487045" datatype="html">
         <source>Neues Kennwort:</source>
@@ -28,7 +28,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/change-password/change-password.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
-        <note priority="1" from="description">new password</note>
+        <note priority="1" from="description">New password</note>
       </trans-unit>
       <trans-unit id="8801971130247123895" datatype="html">
         <source>Kennwort wiederholen:</source>
@@ -36,7 +36,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/change-password/change-password.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
-        <note priority="1" from="description">repeat password</note>
+        <note priority="1" from="description">Repeat password</note>
       </trans-unit>
       <trans-unit id="7624133960269641605" datatype="html">
         <source>Abbrechen</source>
@@ -96,7 +96,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/inputs/text-input/text-input.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
-        <note priority="1" from="description">cancel</note>
+        <note priority="1" from="description">Cancel</note>
       </trans-unit>
       <trans-unit id="5289314841334535829" datatype="html">
         <source> Der Server hat Fehler bei der Validierung der Regeln festgestellt. </source>
@@ -108,7 +108,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">35,37</context>
         </context-group>
-        <note priority="1" from="description">server validation error</note>
+        <note priority="1" from="description">Server validation error</note>
       </trans-unit>
       <trans-unit id="8956898363308968941" datatype="html">
         <source> Das neue Kennwort ist identisch mit dem alten. Keine Änderung. </source>
@@ -128,7 +128,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">43,45</context>
         </context-group>
-        <note priority="1" from="description">password does not meet complexity criteria</note>
+        <note priority="1" from="description">Password does not meet complexity criteria</note>
       </trans-unit>
       <trans-unit id="1992302649187727540" datatype="html">
         <source>Anmeldung</source>
@@ -136,7 +136,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/login-form/login-form.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">login</note>
+        <note priority="1" from="description">Login</note>
       </trans-unit>
       <trans-unit id="3705949261180490223" datatype="html">
         <source>Benutzername:</source>
@@ -152,7 +152,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/login-form/login-form.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
-        <note priority="1" from="description">password</note>
+        <note priority="1" from="description">Password</note>
       </trans-unit>
       <trans-unit id="6661755861829657557" datatype="html">
         <source> Anmelden </source>
@@ -160,7 +160,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/login-form/login-form.component.html</context>
           <context context-type="linenumber">9,11</context>
         </context-group>
-        <note priority="1" from="description">login</note>
+        <note priority="1" from="description">Do login</note>
       </trans-unit>
       <trans-unit id="520376386642516307" datatype="html">
         <source> Suchen / Ergebnisse </source>
@@ -172,7 +172,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">17,18</context>
         </context-group>
-        <note priority="1" from="description">search / results</note>
+        <note priority="1" from="description">Search / results</note>
       </trans-unit>
       <trans-unit id="372484394479554315" datatype="html">
         <source>Attributgruppen</source>
@@ -180,7 +180,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/admin-navbar/admin-navbar.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
-        <note priority="1" from="description">attribute groups</note>
+        <note priority="1" from="description">Attribute groups</note>
       </trans-unit>
       <trans-unit id="5815355135630709887" datatype="html">
         <source>Attributtypen</source>
@@ -192,7 +192,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/delete-item-type/delete-item-type.component.html</context>
           <context context-type="linenumber">35,36</context>
         </context-group>
-        <note priority="1" from="description">attribute types</note>
+        <note priority="1" from="description">Attribute types</note>
       </trans-unit>
       <trans-unit id="5080553820560882997" datatype="html">
         <source>Item-Typen</source>
@@ -204,7 +204,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/item-type-list/item-type-list.component.html</context>
           <context context-type="linenumber">2,3</context>
         </context-group>
-        <note priority="1" from="description">item types</note>
+        <note priority="1" from="description">Item types</note>
       </trans-unit>
       <trans-unit id="4178536941777554857" datatype="html">
         <source>Verbindungstypen</source>
@@ -212,7 +212,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/admin-navbar/admin-navbar.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
-        <note priority="1" from="description">connection types</note>
+        <note priority="1" from="description">Connection types</note>
       </trans-unit>
       <trans-unit id="2865735784284513411" datatype="html">
         <source>Verbindungsregeln</source>
@@ -224,7 +224,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/delete-item-type/delete-item-type.component.html</context>
           <context context-type="linenumber">40,41</context>
         </context-group>
-        <note priority="1" from="description">connection rules</note>
+        <note priority="1" from="description">Connection rules</note>
       </trans-unit>
       <trans-unit id="1421440492527702395" datatype="html">
         <source>Benutzerverwaltung</source>
@@ -232,7 +232,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/admin-navbar/admin-navbar.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
-        <note priority="1" from="description">user administration</note>
+        <note priority="1" from="description">User administration</note>
       </trans-unit>
       <trans-unit id="1969070268204504205" datatype="html">
         <source>Aktionen</source>
@@ -260,7 +260,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">2,3</context>
         </context-group>
-        <note priority="1" from="description">actions</note>
+        <note priority="1" from="description">Actions</note>
       </trans-unit>
       <trans-unit id="2087852080958112195" datatype="html">
         <source> Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden. Jedes Attribut besitzt einen eindeutigen Attribut-Typen. </source>
@@ -268,7 +268,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">3,7</context>
         </context-group>
-        <note priority="1" from="description">attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.</note>
+        <note priority="1" from="description">Attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.</note>
       </trans-unit>
       <trans-unit id="5809202649237116100" datatype="html">
         <source> Attribut-Typen werden in Attributgruppen zusammengefasst. Attributgruppen werden dann Item-Typen zugeordnet. </source>
@@ -276,7 +276,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">7,9</context>
         </context-group>
-        <note priority="1" from="description">attributes groups integrate one ore more attribute types, and are mapped to item types.</note>
+        <note priority="1" from="description">Attribute groups integrate one ore more attribute types, and are mapped to item types.</note>
       </trans-unit>
       <trans-unit id="8684593348032480177" datatype="html">
         <source> Attributgruppen können gelöscht werden, wenn sie keinem Item-Typen mehr zugeordnet sind und keine Attribut-Typen mehr enthalten. </source>
@@ -284,7 +284,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">10,18</context>
         </context-group>
-        <note priority="1" from="description">attribute groups can be deleted if they are no longer mapped to an item type and don&apos;t contain any attribute types.</note>
+        <note priority="1" from="description">Attribute groups can be deleted if they are no longer mapped to an item type and don&apos;t contain any attribute types.</note>
       </trans-unit>
       <trans-unit id="7723514151822245734" datatype="html">
         <source>Name der Attributgruppe</source>
@@ -292,7 +292,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">20,22</context>
         </context-group>
-        <note priority="1" from="description">attribute group name</note>
+        <note priority="1" from="description">Attribute group name</note>
       </trans-unit>
       <trans-unit id="5153160701497177302" datatype="html">
         <source>Anzahl und Namen der zugeordnete Attributtypen</source>
@@ -300,7 +300,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">24,26</context>
         </context-group>
-        <note priority="1" from="description">number and names of mapped attribute types</note>
+        <note priority="1" from="description">Number and names of mapped attribute types</note>
       </trans-unit>
       <trans-unit id="1508389354241741488" datatype="html">
         <source> Zum Bearbeiten des Namens der Attributgruppe anklicken </source>
@@ -308,7 +308,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">40,42</context>
         </context-group>
-        <note priority="1" from="description">click here to edit name of the attribute group</note>
+        <note priority="1" from="description">Click here to edit name of the attribute group</note>
       </trans-unit>
       <trans-unit id="9054798220733043458" datatype="html">
         <source> Klicken, um Aktionsmenü zu öffnen </source>
@@ -340,7 +340,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">113,114</context>
         </context-group>
-        <note priority="1" from="description">click to open action menu</note>
+        <note priority="1" from="description">Click to open action menu</note>
       </trans-unit>
       <trans-unit id="1339688073543361063" datatype="html">
         <source>Zuordnungen von Item-Typen verwalten</source>
@@ -348,7 +348,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">69,70</context>
         </context-group>
-        <note priority="1" from="description">manage mappings of item types</note>
+        <note priority="1" from="description">Manage mappings of item types</note>
       </trans-unit>
       <trans-unit id="8408333428751329552" datatype="html">
         <source> Klicken, um die Zuordnung der Attributgruppe zu Item-Typen zu verwalten </source>
@@ -356,7 +356,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">71,73</context>
         </context-group>
-        <note priority="1" from="description">click to manage mappings between the attribute group and item types</note>
+        <note priority="1" from="description">Click to manage mappings between the attribute group and item types</note>
       </trans-unit>
       <trans-unit id="4368532244633866246" datatype="html">
         <source>Attributgruppe löschen</source>
@@ -364,7 +364,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">77,78</context>
         </context-group>
-        <note priority="1" from="description">delete attribute group</note>
+        <note priority="1" from="description">Delete attribute group</note>
       </trans-unit>
       <trans-unit id="3659725727287549812" datatype="html">
         <source> Klicken, um die Attributgruppe zu löschen </source>
@@ -372,7 +372,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">79,80</context>
         </context-group>
-        <note priority="1" from="description">click to manage mappings between the attribute group and item types</note>
+        <note priority="1" from="description">Click to manage mappings between the attribute group and item types</note>
       </trans-unit>
       <trans-unit id="2499129877040569147" datatype="html">
         <source>Id kopieren</source>
@@ -404,7 +404,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">87,88</context>
         </context-group>
-        <note priority="1" from="description">click to copy the attribute group id into the clipbaord</note>
+        <note priority="1" from="description">Click to copy the attribute group id into the clipbaord</note>
       </trans-unit>
       <trans-unit id="6687005116009684822" datatype="html">
         <source> Neue Attributgruppe hinzufügen </source>
@@ -412,7 +412,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/attribute-groups.component.html</context>
           <context context-type="linenumber">99,100</context>
         </context-group>
-        <note priority="1" from="description">add new attribute group</note>
+        <note priority="1" from="description">Add new attribute group</note>
       </trans-unit>
       <trans-unit id="8656556944525945979" datatype="html">
         <source>Verwalten der Zuordnungen</source>
@@ -424,7 +424,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/attribute-group-mappings/attribute-group-mappings.component.html</context>
           <context context-type="linenumber">2,4</context>
         </context-group>
-        <note priority="1" from="description">manage mappings</note>
+        <note priority="1" from="description">Manage mappings</note>
       </trans-unit>
       <trans-unit id="3760382867002736756" datatype="html">
         <source> zwischen der Attributgruppe </source>
@@ -464,7 +464,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/attribute-group-mappings/attribute-group-mappings.component.html</context>
           <context context-type="linenumber">17,18</context>
         </context-group>
-        <note priority="1" from="description">attribute group</note>
+        <note priority="1" from="description">Attribute group</note>
       </trans-unit>
       <trans-unit id="7085647189053684186" datatype="html">
         <source>zum Item-Typ </source>
@@ -500,7 +500,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/attribute-group-mappings/attribute-group-mappings.component.html</context>
           <context context-type="linenumber">29,30</context>
         </context-group>
-        <note priority="1" from="description">attributes</note>
+        <note priority="1" from="description">Attributes</note>
       </trans-unit>
       <trans-unit id="6796271193097756856" datatype="html">
         <source>Sind Sie sicher, dass Sie die Zuordnung löschen möchten?</source>
@@ -524,7 +524,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/attribute-group-mappings/attribute-group-mappings.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
-        <note priority="1" from="description">no</note>
+        <note priority="1" from="description">No</note>
       </trans-unit>
       <trans-unit id="1658777441015293974" datatype="html">
         <source> Ja, löschen </source>
@@ -536,7 +536,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/attribute-group-mappings/attribute-group-mappings.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
-        <note priority="1" from="description">yes, delete</note>
+        <note priority="1" from="description">Yes, delete</note>
       </trans-unit>
       <trans-unit id="8729784109953093022" datatype="html">
         <source>Zurück zu den Attributgruppen</source>
@@ -544,7 +544,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-groups/item-type-mappings/item-type-mappings.component.html</context>
           <context context-type="linenumber">44,46</context>
         </context-group>
-        <note priority="1" from="description">back to attribute groups</note>
+        <note priority="1" from="description">Go back to attribute groups</note>
       </trans-unit>
       <trans-unit id="7049891796841754633" datatype="html">
         <source> Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden. Jedes Attribut besitzt einen eindeutigen Attribut-Typen.</source>
@@ -552,7 +552,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">3,6</context>
         </context-group>
-        <note priority="1" from="description">attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.</note>
+        <note priority="1" from="description">Attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.</note>
       </trans-unit>
       <trans-unit id="8555566214050447227" datatype="html">
         <source> Jedes Attribut dieses Typs wird mit dem angegebenen regulären Ausdruck auf Gültigkeit überprüft.</source>
@@ -560,7 +560,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">6,7</context>
         </context-group>
-        <note priority="1" from="description">every attribute of that type will be validated by the given regular expression</note>
+        <note priority="1" from="description">Every attribute of that type will be validated by the given regular expression</note>
       </trans-unit>
       <trans-unit id="3851285944660272438" datatype="html">
         <source> Attribut-Typen werden in Attributgruppen zusammengefasst. </source>
@@ -568,7 +568,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">8,10</context>
         </context-group>
-        <note priority="1" from="description">attribute types are being merged into attribute groups</note>
+        <note priority="1" from="description">Attribute types are being merged into attribute groups</note>
       </trans-unit>
       <trans-unit id="3571713904789488561" datatype="html">
         <source> Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden. </source>
@@ -576,7 +576,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">11,14</context>
         </context-group>
-        <note priority="1" from="description">any attribute type may only be used once per configuration item</note>
+        <note priority="1" from="description">Any attribute type may only be used once per configuration item</note>
       </trans-unit>
       <trans-unit id="7338927454223989012" datatype="html">
         <source>Name des Attributtyps</source>
@@ -584,7 +584,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">19,21</context>
         </context-group>
-        <note priority="1" from="description">attribute type name</note>
+        <note priority="1" from="description">Attribute type name</note>
       </trans-unit>
       <trans-unit id="8037744164396272598" datatype="html">
         <source>Attributgruppe</source>
@@ -592,7 +592,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">23,25</context>
         </context-group>
-        <note priority="1" from="description">attribute group</note>
+        <note priority="1" from="description">Attribute group</note>
       </trans-unit>
       <trans-unit id="2300459444850166438" datatype="html">
         <source>Gültigkeitsregel</source>
@@ -604,7 +604,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">146</context>
         </context-group>
-        <note priority="1" from="description">validation rule</note>
+        <note priority="1" from="description">Validation rule</note>
       </trans-unit>
       <trans-unit id="1344890253006772785" datatype="html">
         <source>Attributtyp löschen</source>
@@ -612,7 +612,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">86,87</context>
         </context-group>
-        <note priority="1" from="description">delete attribute type</note>
+        <note priority="1" from="description">Delete attribute type</note>
       </trans-unit>
       <trans-unit id="4857789645110005702" datatype="html">
         <source>In Item-Typ konvertieren</source>
@@ -620,7 +620,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">93,94</context>
         </context-group>
-        <note priority="1" from="description">convert to item type</note>
+        <note priority="1" from="description">Convert to item type</note>
       </trans-unit>
       <trans-unit id="6178451060455518720" datatype="html">
         <source> Klicken, um Attributtyp in Item-Typ konvertieren </source>
@@ -628,7 +628,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">95,96</context>
         </context-group>
-        <note priority="1" from="description">click to convert attribute type to item type</note>
+        <note priority="1" from="description">Click to convert attribute type to item type</note>
       </trans-unit>
       <trans-unit id="1042461437709895483" datatype="html">
         <source> Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren </source>
@@ -648,7 +648,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/item-types.component.html</context>
           <context context-type="linenumber">82,84</context>
         </context-group>
-        <note priority="1" from="description">click to copy the attribute type id into the clipbaord</note>
+        <note priority="1" from="description">Click to copy the attribute type id into the clipbaord</note>
       </trans-unit>
       <trans-unit id="2854123663314832793" datatype="html">
         <source>Speichern</source>
@@ -680,7 +680,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/inputs/text-input/text-input.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
-        <note priority="1" from="description">save</note>
+        <note priority="1" from="description">Save</note>
       </trans-unit>
       <trans-unit id="7440903069173531627" datatype="html">
         <source> Neuen Attributtyp hinzufügen </source>
@@ -688,7 +688,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/attribute-types.component.html</context>
           <context context-type="linenumber">126,127</context>
         </context-group>
-        <note priority="1" from="description">add new attribute type</note>
+        <note priority="1" from="description">Add new attribute type</note>
       </trans-unit>
       <trans-unit id="8953033926734869941" datatype="html">
         <source>Name</source>
@@ -720,7 +720,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/export-items/export-items.component.html</context>
           <context context-type="linenumber">12,13</context>
         </context-group>
-        <note priority="1" from="description">name</note>
+        <note priority="1" from="description">Name</note>
       </trans-unit>
       <trans-unit id="2776857532051851547" datatype="html">
         <source> Die neuen Configuration Items werden mit den Configuration Items verbunden, deren Attribute sie bislang waren. </source>
@@ -728,7 +728,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">3,6</context>
         </context-group>
-        <note priority="1" from="description">the new configuration items will have connections to those configuration items, to which the attributes have belonged</note>
+        <note priority="1" from="description">The new configuration items will have connections to those configuration items, to which the attributes have belonged</note>
       </trans-unit>
       <trans-unit id="6988220281426291683" datatype="html">
         <source> Beim Umwandeln eines Attribut-Typen in einen Configuration Item Typen werden identische Attributwerte zu einem Configuration Item zusammengefasst. Folglich wird auf 5 Attributen mit dem Wert &apos;X&apos; nur ein Configuration Item mit dem Namen &apos;X&apos;, das mit den 5 bisherigen Configuration Items, die das Attribut besaßen, verbunden sind. </source>
@@ -744,7 +744,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">14,17</context>
         </context-group>
-        <note priority="1" from="description">set if the new item type will be above or below the connected items</note>
+        <note priority="1" from="description">Set if the new item type will be above or below the connected items</note>
       </trans-unit>
       <trans-unit id="2837141723084688425" datatype="html">
         <source> Weiterhin können zusätzliche Attribute zum neuen Configuration Item mitgenommen werden, sofern ihre Werte konsistent mit den zu übertragenden Attributwerten übereinstimmen. Lautet also zu einem Attribut vom Typ &apos;Modell&apos; der Wert &apos;Y&apos;, und beim zugehörigen Attribut &apos;Hersteller&apos; der Wert immer &apos;Z&apos;, so kann das Attribut &apos;Hersteller&apos; als Attribut zum neuen Configuration Item-Typ &apos;Modell&apos; mitgenommen werden. Bei den bisherigen Configuration Items wird dann das Attribut &apos;Hersteller&apos; entfernt. </source>
@@ -752,7 +752,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">18,29</context>
         </context-group>
-        <note priority="1" from="description">you may take additional attributes from the old configuration item to the new one, if their values are consistent with the converted attribute values. If you have an attribute of type &apos;model&apos; with the value &apos;Y&apos; and the attribute of type &apos;manufacturer&apos; is always &apos;Z&apos; for that, you can take the &apos;manufacturer&apos; attribute to the new &apos;model&apos; item type. Existing attributes of type &apos;manufacturer&apos; will be deleted in that case.</note>
+        <note priority="1" from="description">You may take additional attributes from the old configuration item to the new one, if their values are consistent with the converted attribute values. If you have an attribute of type &apos;model&apos; with the value &apos;Y&apos; and the attribute of type &apos;manufacturer&apos; is always &apos;Z&apos; for that, you can take the &apos;manufacturer&apos; attribute to the new &apos;model&apos; item type. Existing attributes of type &apos;manufacturer&apos; will be deleted in that case.</note>
       </trans-unit>
       <trans-unit id="3961017123771028286" datatype="html">
         <source> Ziehen Sie Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen, auf die andere Seite, oder klicken Sie darauf. </source>
@@ -760,7 +760,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">27,30</context>
         </context-group>
-        <note priority="1" from="description">drag or click attribute types to be transferred from the old item to the new item type created from the attribute type</note>
+        <note priority="1" from="description">Drag or click attribute types to be transferred from the old item to the new item type created from the attribute type</note>
       </trans-unit>
       <trans-unit id="6027661187134141561" datatype="html">
         <source> Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern. </source>
@@ -768,7 +768,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">31,37</context>
         </context-group>
-        <note priority="1" from="description">depending on the number of attribute values to be converted, this operation may take multiple minutes.</note>
+        <note priority="1" from="description">Depending on the number of attribute values to be converted, this operation may take multiple minutes.</note>
       </trans-unit>
       <trans-unit id="5377590199915078360" datatype="html">
         <source>Konvertieren des Attributtyps </source>
@@ -776,7 +776,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">37,39</context>
         </context-group>
-        <note priority="1" from="description">converting attribute type</note>
+        <note priority="1" from="description">Converting attribute type</note>
       </trans-unit>
       <trans-unit id="1411920614848023761" datatype="html">
         <source> in einen Item-Typen</source>
@@ -792,7 +792,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">49,50</context>
         </context-group>
-        <note priority="1" from="description">all existing item types with the attribute</note>
+        <note priority="1" from="description">All existing item types with the attribute</note>
       </trans-unit>
       <trans-unit id="6717786559306047607" datatype="html">
         <source> befinden sich innerhalb der Verbindung </source>
@@ -836,7 +836,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">146</context>
         </context-group>
-        <note priority="1" from="description">the new item</note>
+        <note priority="1" from="description">The new item</note>
       </trans-unit>
       <trans-unit id="2540443962864676178" datatype="html">
         <source>Attribut-Typen</source>
@@ -848,7 +848,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">183,184</context>
         </context-group>
-        <note priority="1" from="description">attribute types</note>
+        <note priority="1" from="description">Attribute types</note>
       </trans-unit>
       <trans-unit id="8187994779656518970" datatype="html">
         <source> Klicken, um den Attributtyp zu übertragen: </source>
@@ -856,7 +856,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">79,80</context>
         </context-group>
-        <note priority="1" from="description">click to transfer attribute type</note>
+        <note priority="1" from="description">Click to transfer attribute type</note>
       </trans-unit>
       <trans-unit id="8548171928392947060" datatype="html">
         <source> Attributttyp wird übertragen: </source>
@@ -864,7 +864,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">85,86</context>
         </context-group>
-        <note priority="1" from="description">attribute type will be transferred</note>
+        <note priority="1" from="description">Attribute type will be transferred</note>
       </trans-unit>
       <trans-unit id="6826980627164269591" datatype="html">
         <source> Richtung der Verbindung ändern </source>
@@ -872,7 +872,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">110,111</context>
         </context-group>
-        <note priority="1" from="description">change connection direction</note>
+        <note priority="1" from="description">Change connection direction</note>
       </trans-unit>
       <trans-unit id="4068349800819273401" datatype="html">
         <source> Klicken, um Verbindungstyp zu ändern auf </source>
@@ -880,7 +880,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">117,118</context>
         </context-group>
-        <note priority="1" from="description">click to change connection type</note>
+        <note priority="1" from="description">Click to change connection type</note>
       </trans-unit>
       <trans-unit id="4916968345332220144" datatype="html">
         <source> Neuer Item-Typ </source>
@@ -888,7 +888,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">130,131</context>
         </context-group>
-        <note priority="1" from="description">new item type</note>
+        <note priority="1" from="description">New item type</note>
       </trans-unit>
       <trans-unit id="6943380442419754961" datatype="html">
         <source> befindet sich innerhalb der Verbindung </source>
@@ -944,7 +944,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">170,171</context>
         </context-group>
-        <note priority="1" from="description">new name for the item type</note>
+        <note priority="1" from="description">New name for the item type</note>
       </trans-unit>
       <trans-unit id="7721795727469574797" datatype="html">
         <source>Hintergrundfarbe des Item-Typs: </source>
@@ -952,7 +952,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">176,177</context>
         </context-group>
-        <note priority="1" from="description">item type background color</note>
+        <note priority="1" from="description">Item type background color</note>
       </trans-unit>
       <trans-unit id="871896965419104625" datatype="html">
         <source> Attribut-Typen, die mit zum neuen Item-Typen übernommen werden </source>
@@ -960,7 +960,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">185,187</context>
         </context-group>
-        <note priority="1" from="description">attribute types that are being transferred to the new item type</note>
+        <note priority="1" from="description">Attribute types that are being transferred to the new item type</note>
       </trans-unit>
       <trans-unit id="3389341604295005369" datatype="html">
         <source> Klicken, um den Attributtyp zu entfernen: </source>
@@ -968,7 +968,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">193,194</context>
         </context-group>
-        <note priority="1" from="description">click to remove attribute type</note>
+        <note priority="1" from="description">Click to remove attribute type</note>
       </trans-unit>
       <trans-unit id="6893532909257927729" datatype="html">
         <source> Umwandlung starten </source>
@@ -976,7 +976,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
           <context context-type="linenumber">205,206</context>
         </context-group>
-        <note priority="1" from="description">start converting</note>
+        <note priority="1" from="description">Start converting</note>
       </trans-unit>
       <trans-unit id="5073925477838399815" datatype="html">
         <source>Löschen des Attributtyps </source>
@@ -984,7 +984,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/delete-attribute-type/delete-attribute-type.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-        <note priority="1" from="description">delete attribute type</note>
+        <note priority="1" from="description">Delete attribute type</note>
       </trans-unit>
       <trans-unit id="4829392734999078778" datatype="html">
         <source> Wenn Sie den Attributtypen löschen, werden auch </source>
@@ -992,7 +992,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/delete-attribute-type/delete-attribute-type.component.html</context>
           <context context-type="linenumber">7,9</context>
         </context-group>
-        <note priority="1" from="description">if you delete the attribute type,</note>
+        <note priority="1" from="description">If you delete the attribute type,</note>
       </trans-unit>
       <trans-unit id="330980613018371769" datatype="html">
         <source> Attribute gelöscht, die einzelnen Configuration Items zugeordnet sind. </source>
@@ -1000,7 +1000,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/delete-attribute-type/delete-attribute-type.component.html</context>
           <context context-type="linenumber">11,13</context>
         </context-group>
-        <note priority="1" from="description">attributes, that are part of items, are also deleted. Are you sure you want to delete?</note>
+        <note priority="1" from="description">Attributes, that are part of items, are also deleted. Are you sure you want to delete?</note>
       </trans-unit>
       <trans-unit id="4351415177150787567" datatype="html">
         <source> Sind Sie sicher, dass Sie das wollen? </source>
@@ -1020,7 +1020,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/delete-attribute-type/delete-attribute-type.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
-        <note priority="1" from="description">delete</note>
+        <note priority="1" from="description">Delete</note>
       </trans-unit>
       <trans-unit id="8960884706797550250" datatype="html">
         <source> Verbindungsregeln steuern, welche Typen von Configuration Items miteinander verbunden werden dürfen. Nur da, wo explizit eine Regel existiert, ist eine Verbindung möglich. </source>
@@ -1028,7 +1028,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">3,7</context>
         </context-group>
-        <note priority="1" from="description">connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists</note>
+        <note priority="1" from="description">Connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists</note>
       </trans-unit>
       <trans-unit id="5304169563094011260" datatype="html">
         <source> Neben der reinen Möglichkeit der Verbindung werden einer Regel auch erlaubte Anzahlen von Verbindungen möglich. So sind Verbindungen 1:1, 1:n oder n:m denkbar. Die jeweils angegebene Zahl stellt dabei die Obergrenze dessen dar, was erlaubt ist. Die Untergrenze liegt immer bei 0, d. h. eine Verbindung kann angelegt werden muss es aber nicht. </source>
@@ -1036,7 +1036,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">8,21</context>
         </context-group>
-        <note priority="1" from="description">together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don&apos;t have to create a connection of that type</note>
+        <note priority="1" from="description">Together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don&apos;t have to create a connection of that type</note>
       </trans-unit>
       <trans-unit id="3204898464866793351" datatype="html">
         <source> Filter </source>
@@ -1044,7 +1044,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">17,18</context>
         </context-group>
-        <note priority="1" from="description">filter</note>
+        <note priority="1" from="description">Filter</note>
       </trans-unit>
       <trans-unit id="4294941562175471197" datatype="html">
         <source> Oberer Item-Typ </source>
@@ -1056,7 +1056,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">130,131</context>
         </context-group>
-        <note priority="1" from="description">upper item type</note>
+        <note priority="1" from="description">Upper item type</note>
       </trans-unit>
       <trans-unit id="6439762462037962617" datatype="html">
         <source> Kein Filter </source>
@@ -1072,7 +1072,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">95</context>
         </context-group>
-        <note priority="1" from="description">no filter</note>
+        <note priority="1" from="description">No filter</note>
       </trans-unit>
       <trans-unit id="1076512932267893730" datatype="html">
         <source> Klicken, um Filtermenü für oberen Item-Typ zu öffnen </source>
@@ -1080,7 +1080,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">34,35</context>
         </context-group>
-        <note priority="1" from="description">click to open filter menu for upper item type</note>
+        <note priority="1" from="description">Click to open filter menu for upper item type</note>
       </trans-unit>
       <trans-unit id="5101099539454322871" datatype="html">
         <source> Filter löschen </source>
@@ -1096,7 +1096,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">108</context>
         </context-group>
-        <note priority="1" from="description">clear filter</note>
+        <note priority="1" from="description">Clear filter</note>
       </trans-unit>
       <trans-unit id="6207001587269991127" datatype="html">
         <source> Verbindungstyp </source>
@@ -1112,7 +1112,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">13,14</context>
         </context-group>
-        <note priority="1" from="description">connection type</note>
+        <note priority="1" from="description">Connection type</note>
       </trans-unit>
       <trans-unit id="7577373012527084012" datatype="html">
         <source> Klicken, um Filtermenü für Verbindungstypzu öffnen </source>
@@ -1120,7 +1120,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">68,69</context>
         </context-group>
-        <note priority="1" from="description">click to open filter menu for connection type</note>
+        <note priority="1" from="description">Click to open filter menu for connection type</note>
       </trans-unit>
       <trans-unit id="5787941657788327394" datatype="html">
         <source> Unterer Item-Typ </source>
@@ -1132,7 +1132,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">138,139</context>
         </context-group>
-        <note priority="1" from="description">lower item type</note>
+        <note priority="1" from="description">Lower item type</note>
       </trans-unit>
       <trans-unit id="7949854622808042191" datatype="html">
         <source> Klicken, um Filtermenü für unter Item-Typ zu öffnen </source>
@@ -1140,7 +1140,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">102,103</context>
         </context-group>
-        <note priority="1" from="description">click to open filter menu for lower item type</note>
+        <note priority="1" from="description">Click to open filter menu for lower item type</note>
       </trans-unit>
       <trans-unit id="4481544987545247896" datatype="html">
         <source> Gültigkeitsregel für Beschreibung: </source>
@@ -1148,7 +1148,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">144,145</context>
         </context-group>
-        <note priority="1" from="description">validation rule for description</note>
+        <note priority="1" from="description">Validation rule for description</note>
       </trans-unit>
       <trans-unit id="3342564370797503803" datatype="html">
         <source> Anzahl Verbindungen </source>
@@ -1156,7 +1156,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">150,151</context>
         </context-group>
-        <note priority="1" from="description">connections count for connection rule</note>
+        <note priority="1" from="description">Connections count for connection rule</note>
       </trans-unit>
       <trans-unit id="5210251327981773328" datatype="html">
         <source> Befehle </source>
@@ -1164,7 +1164,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">156</context>
         </context-group>
-        <note priority="1" from="description">commands</note>
+        <note priority="1" from="description">Commands</note>
       </trans-unit>
       <trans-unit id="7742008130121928080" datatype="html">
         <source>Verbindungsregel bearbeiten</source>
@@ -1172,7 +1172,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">202,203</context>
         </context-group>
-        <note priority="1" from="description">edit connecion rule</note>
+        <note priority="1" from="description">Edit connecion rule</note>
       </trans-unit>
       <trans-unit id="1924443626864405211" datatype="html">
         <source>Verbindungsregel löschen</source>
@@ -1180,7 +1180,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">217,218</context>
         </context-group>
-        <note priority="1" from="description">delete connection rule</note>
+        <note priority="1" from="description">Delete connection rule</note>
       </trans-unit>
       <trans-unit id="4386776200070105087" datatype="html">
         <source> Gültigtkeitsregel (regulärer Ausdruck) für Verbindungsbeschreibungen </source>
@@ -1192,7 +1192,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/edit-rule/edit-rule.component.html</context>
           <context context-type="linenumber">29,31</context>
         </context-group>
-        <note priority="1" from="description">validation rule (RegEx) for connection description</note>
+        <note priority="1" from="description">Validation rule (RegEx) for connection description</note>
       </trans-unit>
       <trans-unit id="723482596330325042" datatype="html">
         <source> Neue Verbindungsregel hinzufügen </source>
@@ -1200,7 +1200,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/connection-rules.component.html</context>
           <context context-type="linenumber">261,262</context>
         </context-group>
-        <note priority="1" from="description">add new connection rule</note>
+        <note priority="1" from="description">Add new connection rule</note>
       </trans-unit>
       <trans-unit id="2370858365221278989" datatype="html">
         <source> Speichern </source>
@@ -1224,7 +1224,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">85</context>
         </context-group>
-        <note priority="1" from="description">save</note>
+        <note priority="1" from="description">Save</note>
       </trans-unit>
       <trans-unit id="2462567022892335115" datatype="html">
         <source> Abbrechen </source>
@@ -1232,7 +1232,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-rules/edit-rule/edit-rule.component.html</context>
           <context context-type="linenumber">43,44</context>
         </context-group>
-        <note priority="1" from="description">cancel</note>
+        <note priority="1" from="description">Cancel</note>
       </trans-unit>
       <trans-unit id="5390698203103441492" datatype="html">
         <source> Verbindungstypen sind die Beschriftungen auf dem Pfeil zwischen zwei Configuration Items. </source>
@@ -1240,7 +1240,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">3,6</context>
         </context-group>
-        <note priority="1" from="description">connection types are the labels on the arrow between two configuration items</note>
+        <note priority="1" from="description">Connection types are the labels on the arrow between two configuration items</note>
       </trans-unit>
       <trans-unit id="3978127725120401246" datatype="html">
         <source> Verbindungen sind immer &quot;gerichtet&quot;, d. h. es gibt ein oberes und ein untere Configuration Item. So lassen sich ganze Bäume von miteinander verbundenen Configuration Items realiseren, z. B. Raum zu Rack zu Server-Hardware. Es empfiehlt sich, am Anfang eine Systematik zur Befüllung festzulegen und diese dann konsequent durchzuhalten. </source>
@@ -1248,7 +1248,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">7,13</context>
         </context-group>
-        <note priority="1" from="description">connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time</note>
+        <note priority="1" from="description">Connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time</note>
       </trans-unit>
       <trans-unit id="8630781669152624654" datatype="html">
         <source> Eine Verbindung besitzt immer zwei Namen, um die Richtung widerzuspiegeln, aus der die Verbindung betrachtet wird. So lautet der Name der Verbindung aus Sicht einer Server-Hardware, die Server-Hardware &quot;ist eingebaut in&quot; ein Rack. Aus Sicht des Racks lautet der Rückwärts-Name für dieselbe Verbindung, das Rack &quot;enthält&quot; die Server-Hardware. </source>
@@ -1256,7 +1256,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">14,26</context>
         </context-group>
-        <note priority="1" from="description">every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is &apos;built into&apos; a rack. From the viewpoint of the rack, the reverse name of the same connection is &apos;contains&apos; the server hardware</note>
+        <note priority="1" from="description">Every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is &apos;built into&apos; a rack. From the viewpoint of the rack, the reverse name of the same connection is &apos;contains&apos; the server hardware</note>
       </trans-unit>
       <trans-unit id="8653026036152797833" datatype="html">
         <source>Name des Verbindungstyps</source>
@@ -1264,7 +1264,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">26,28</context>
         </context-group>
-        <note priority="1" from="description">connection type name</note>
+        <note priority="1" from="description">Connection type name</note>
       </trans-unit>
       <trans-unit id="506757386557159930" datatype="html">
         <source>Rückwärtsname</source>
@@ -1276,7 +1276,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">116</context>
         </context-group>
-        <note priority="1" from="description">connection type reverse name</note>
+        <note priority="1" from="description">Connection type reverse name</note>
       </trans-unit>
       <trans-unit id="5573598784059727779" datatype="html">
         <source>Verbindungstyp löschen</source>
@@ -1284,7 +1284,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">73,74</context>
         </context-group>
-        <note priority="1" from="description">delete connection type</note>
+        <note priority="1" from="description">Delete connection type</note>
       </trans-unit>
       <trans-unit id="1959928590490025033" datatype="html">
         <source> Neuen Verbindungstyp hinzufügen </source>
@@ -1292,7 +1292,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/connection-types/connection-types.component.html</context>
           <context context-type="linenumber">100,101</context>
         </context-group>
-        <note priority="1" from="description">add new connection type</note>
+        <note priority="1" from="description">Add new connection type</note>
       </trans-unit>
       <trans-unit id="2810525217059521254" datatype="html">
         <source>Zuordnungen zwischen dem Item-Typ </source>
@@ -1314,9 +1314,9 @@
         <source>Zurück zu den Item-Typen</source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/attribute-group-mappings/attribute-group-mappings.component.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">44,47</context>
         </context-group>
-        <note priority="1" from="description">back to item types</note>
+        <note priority="1" from="description">Go back to item types</note>
       </trans-unit>
       <trans-unit id="2737857142740609322" datatype="html">
         <source>Löschen des Item-Typs </source>
@@ -1324,7 +1324,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/delete-item-type/delete-item-type.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-        <note priority="1" from="description">delete item type</note>
+        <note priority="1" from="description">Delete item type</note>
       </trans-unit>
       <trans-unit id="6538264336333920084" datatype="html">
         <source> Lade Daten... </source>
@@ -1332,7 +1332,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/delete-item-type/delete-item-type.component.html</context>
           <context context-type="linenumber">6,8</context>
         </context-group>
-        <note priority="1" from="description">loading data...</note>
+        <note priority="1" from="description">Loading data...</note>
       </trans-unit>
       <trans-unit id="2966771469824421930" datatype="html">
         <source> Bevor Sie den Item-Typen löschen können, müssen Sie </source>
@@ -1356,7 +1356,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/delete-item-type/delete-item-type.component.html</context>
           <context context-type="linenumber">28,30</context>
         </context-group>
-        <note priority="1" from="description">if you continue, you are also deleting</note>
+        <note priority="1" from="description">If you continue, you are also deleting</note>
       </trans-unit>
       <trans-unit id="321861252946351113" datatype="html">
         <source> zugeordnete Attributgruppen mit </source>
@@ -1372,7 +1372,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/delete-item-type/delete-item-type.component.html</context>
           <context context-type="linenumber">50,51</context>
         </context-group>
-        <note priority="1" from="description">delete</note>
+        <note priority="1" from="description">Delete</note>
       </trans-unit>
       <trans-unit id="2733749325227427308" datatype="html">
         <source>Name des Item-Typs</source>
@@ -1380,7 +1380,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/item-types.component.html</context>
           <context context-type="linenumber">17,19</context>
         </context-group>
-        <note priority="1" from="description">item type name</note>
+        <note priority="1" from="description">Item type name</note>
       </trans-unit>
       <trans-unit id="4226888986803303658" datatype="html">
         <source>Hintergrundfarbe</source>
@@ -1388,7 +1388,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/item-types.component.html</context>
           <context context-type="linenumber">22,24</context>
         </context-group>
-        <note priority="1" from="description">background color</note>
+        <note priority="1" from="description">Go background color</note>
       </trans-unit>
       <trans-unit id="4589387106119105813" datatype="html">
         <source> Klicken, um den Namen zu ändern </source>
@@ -1396,7 +1396,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/item-types.component.html</context>
           <context context-type="linenumber">39,40</context>
         </context-group>
-        <note priority="1" from="description">click to change name</note>
+        <note priority="1" from="description">Click to change name</note>
       </trans-unit>
       <trans-unit id="5709799744521666780" datatype="html">
         <source>Item-Typ löschen</source>
@@ -1404,7 +1404,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/item-types.component.html</context>
           <context context-type="linenumber">68,69</context>
         </context-group>
-        <note priority="1" from="description">delete item type</note>
+        <note priority="1" from="description">Delete item type</note>
       </trans-unit>
       <trans-unit id="1976245476208123202" datatype="html">
         <source>Item-Typ erstellen</source>
@@ -1412,7 +1412,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/item-types/item-types.component.html</context>
           <context context-type="linenumber">91,92</context>
         </context-group>
-        <note priority="1" from="description">create new item type</note>
+        <note priority="1" from="description">Create new item type</note>
       </trans-unit>
       <trans-unit id="8998179362936748717" datatype="html">
         <source>OK</source>
@@ -1428,7 +1428,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/shared/color-picker/color-picker.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
-        <note priority="1" from="description">set background color of item type</note>
+        <note priority="1" from="description">Set background color of item type</note>
       </trans-unit>
       <trans-unit id="4019684265667778191" datatype="html">
         <source>Benutzer erstellen</source>
@@ -1440,7 +1440,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">56</context>
         </context-group>
-        <note priority="1" from="description">create user</note>
+        <note priority="1" from="description">Create user</note>
       </trans-unit>
       <trans-unit id="4541257274120119499" datatype="html">
         <source>Benutzername</source>
@@ -1448,7 +1448,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
-        <note priority="1" from="description">user name</note>
+        <note priority="1" from="description">User name</note>
       </trans-unit>
       <trans-unit id="933844849921058228" datatype="html">
         <source>Rolle (Rechte des Benutzers)</source>
@@ -1456,7 +1456,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
-        <note priority="1" from="description">user role</note>
+        <note priority="1" from="description">User role</note>
       </trans-unit>
       <trans-unit id="3546197034221701366" datatype="html">
         <source>Leseberechtigung</source>
@@ -1496,7 +1496,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
-        <note priority="1" from="description">password</note>
+        <note priority="1" from="description">Password</note>
       </trans-unit>
       <trans-unit id="7523238115900306582" datatype="html">
         <source>Kennwort wiederholen</source>
@@ -1508,7 +1508,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
-        <note priority="1" from="description">repeat password</note>
+        <note priority="1" from="description">Repeat password</note>
       </trans-unit>
       <trans-unit id="6224251545396242629" datatype="html">
         <source> Der Benutzername existiert schon bei einem anderen Benutzer. </source>
@@ -1516,7 +1516,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/new-user/new-user.component.html</context>
           <context context-type="linenumber">46,48</context>
         </context-group>
-        <note priority="1" from="description">cannot create a user with an already existing name</note>
+        <note priority="1" from="description">Cannot create a user with an already existing name</note>
       </trans-unit>
       <trans-unit id="489578717342114548" datatype="html">
         <source> Benutzer werden auf dem Server entweder aus dem lokalen Speicher oder einem Active Directory bezogen. Jeder hier konfigurierte Benutzer muss einer Rolle zugeordnet sein. Folgende Rollen existieren: </source>
@@ -1524,7 +1524,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">3,10</context>
         </context-group>
-        <note priority="1" from="description">users are stored on the server in the local store or come from an active directory. Every configured user must be aded to a role. Choose between the roles</note>
+        <note priority="1" from="description">Users are stored on the server in the local store or come from an active directory. Every configured user must be aded to a role. Choose between the roles</note>
       </trans-unit>
       <trans-unit id="5064243771566309628" datatype="html">
         <source>Leser:</source>
@@ -1532,7 +1532,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">9,10</context>
         </context-group>
-        <note priority="1" from="description">readers:</note>
+        <note priority="1" from="description">Readers:</note>
       </trans-unit>
       <trans-unit id="1279905617166694110" datatype="html">
         <source> Leser sind alle Benutzer, die keiner anderen Rolle zugewiesen sind. Sie können alle Daten lesen, aber nichts verändern. </source>
@@ -1540,7 +1540,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">11,16</context>
         </context-group>
-        <note priority="1" from="description">readers are all users that are not part of another role. they cannot change anything, but read everything.</note>
+        <note priority="1" from="description">Readers are all users that are not part of another role. they cannot change anything, but read everything.</note>
       </trans-unit>
       <trans-unit id="4015426539489072868" datatype="html">
         <source>Editoren:</source>
@@ -1548,7 +1548,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">16,17</context>
         </context-group>
-        <note priority="1" from="description">editors:</note>
+        <note priority="1" from="description">Editors:</note>
       </trans-unit>
       <trans-unit id="7794490361088501652" datatype="html">
         <source> Editoren können Items erstellen und ändern, wenn sie die Verantwortung für das Item übernehmen. Sie können dann auch Attribute und Verbindungen erstellen, ändern und löschen. </source>
@@ -1556,7 +1556,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">18,24</context>
         </context-group>
-        <note priority="1" from="description">editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.</note>
+        <note priority="1" from="description">Editors may create items and change only those items that they took responsibility for. Then they are able to create, change and delete attributes and connections.</note>
       </trans-unit>
       <trans-unit id="8379934349440338523" datatype="html">
         <source>Administratoren:</source>
@@ -1564,7 +1564,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">24,25</context>
         </context-group>
-        <note priority="1" from="description">administrators:</note>
+        <note priority="1" from="description">Administrators:</note>
       </trans-unit>
       <trans-unit id="2284701434240607616" datatype="html">
         <source> Administratoren können zusätzlich zu den Rechten der Editoren auch die Metadaten (Item-Typen, Verbindungsregeln usw.) bearbeiten und die Rollenzuordnung von Benutzern steuern. </source>
@@ -1572,7 +1572,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">26,33</context>
         </context-group>
-        <note priority="1" from="description">administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.</note>
+        <note priority="1" from="description">Administrators have all the rights of editors, but are additionally able to change meta data (item types, connection rules an so on) and user role mappings.</note>
       </trans-unit>
       <trans-unit id="4868688385623151225" datatype="html">
         <source>Wichtiger Hinweis:</source>
@@ -1580,7 +1580,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">33,34</context>
         </context-group>
-        <note priority="1" from="description">important notice:</note>
+        <note priority="1" from="description">Important notice:</note>
       </trans-unit>
       <trans-unit id="4243496691000624962" datatype="html">
         <source> Wenn kein Benutzer der Rolle Administrator zugeordnet ist, dann besitzt jeder angemeldete Benutzer die Rolle Administrator. Deshalb sollte diese Rolle zuerst vergeben werden. </source>
@@ -1588,7 +1588,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">35,44</context>
         </context-group>
-        <note priority="1" from="description">if no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.</note>
+        <note priority="1" from="description">If no user has the role administrator, then every authenticated user has this role. So this role should for security reasons be used first.</note>
       </trans-unit>
       <trans-unit id="8652500977276469504" datatype="html">
         <source>Benutzer / Gruppe</source>
@@ -1596,7 +1596,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">45,46</context>
         </context-group>
-        <note priority="1" from="description">user / group</note>
+        <note priority="1" from="description">User / group</note>
       </trans-unit>
       <trans-unit id="6256762269565740405" datatype="html">
         <source>Rolle</source>
@@ -1604,7 +1604,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">48,49</context>
         </context-group>
-        <note priority="1" from="description">role</note>
+        <note priority="1" from="description">Role</note>
       </trans-unit>
       <trans-unit id="1779238444083886020" datatype="html">
         <source>Befehle</source>
@@ -1612,7 +1612,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">51,52</context>
         </context-group>
-        <note priority="1" from="description">commands</note>
+        <note priority="1" from="description">Commands</note>
       </trans-unit>
       <trans-unit id="1016731893905072763" datatype="html">
         <source>Neues Kennwort: </source>
@@ -1620,7 +1620,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">67,68</context>
         </context-group>
-        <note priority="1" from="description">new password</note>
+        <note priority="1" from="description">New password</note>
       </trans-unit>
       <trans-unit id="372086451460850654" datatype="html">
         <source>Kennwort wiederholen: </source>
@@ -1628,7 +1628,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">69,70</context>
         </context-group>
-        <note priority="1" from="description">repeat password</note>
+        <note priority="1" from="description">Repeat password</note>
       </trans-unit>
       <trans-unit id="4990304934270347566" datatype="html">
         <source> Administrator </source>
@@ -1636,7 +1636,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">93</context>
         </context-group>
-        <note priority="1" from="description">administrator</note>
+        <note priority="1" from="description">Administrator</note>
       </trans-unit>
       <trans-unit id="227841772707398258" datatype="html">
         <source> Editor (Schreibberechtigung) </source>
@@ -1644,7 +1644,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">98</context>
         </context-group>
-        <note priority="1" from="description">editor</note>
+        <note priority="1" from="description">Editor</note>
       </trans-unit>
       <trans-unit id="4628111845786547113" datatype="html">
         <source> Leseberechtigung </source>
@@ -1652,7 +1652,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">103</context>
         </context-group>
-        <note priority="1" from="description">reader</note>
+        <note priority="1" from="description">Reader</note>
       </trans-unit>
       <trans-unit id="7581561334095153779" datatype="html">
         <source> Berechtigung löschen </source>
@@ -1660,7 +1660,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">121,122</context>
         </context-group>
-        <note priority="1" from="description">delete user and keep all responsibilities</note>
+        <note priority="1" from="description">Delete user and keep all responsibilities</note>
       </trans-unit>
       <trans-unit id="3544031682416934892" datatype="html">
         <source> Berechtigung/Verantwortlichkeiten löschen </source>
@@ -1668,7 +1668,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">128,129</context>
         </context-group>
-        <note priority="1" from="description">delete user and all responsibilities</note>
+        <note priority="1" from="description">Delete user and all responsibilities</note>
       </trans-unit>
       <trans-unit id="8796809389901840399" datatype="html">
         <source> Neuen Benutzer anlegen </source>
@@ -1676,7 +1676,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/admin/users/users.component.html</context>
           <context context-type="linenumber">137,138</context>
         </context-group>
-        <note priority="1" from="description">create new user</note>
+        <note priority="1" from="description">Create new user</note>
       </trans-unit>
       <trans-unit id="5895891175281745213" datatype="html">
         <source> Initialisiere die App
@@ -1685,7 +1685,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/app.component.html</context>
           <context context-type="linenumber">2,4</context>
         </context-group>
-        <note priority="1" from="description">initializing app</note>
+        <note priority="1" from="description">Initializing app</note>
       </trans-unit>
       <trans-unit id="454422234559292052" datatype="html">
         <source>Fehler beim Laden von Daten</source>
@@ -1693,7 +1693,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/app.component.html</context>
           <context context-type="linenumber">8,9</context>
         </context-group>
-        <note priority="1" from="description">error loading data</note>
+        <note priority="1" from="description">Error loading data</note>
       </trans-unit>
       <trans-unit id="526405622741878006" datatype="html">
         <source> Es konnten keine Daten aus der Datenbank geladen werden. Bitte informieren Sie ihren Administrator. </source>
@@ -1709,7 +1709,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/app.component.html</context>
           <context context-type="linenumber">15,16</context>
         </context-group>
-        <note priority="1" from="description">fatal error</note>
+        <note priority="1" from="description">Fatal error</note>
       </trans-unit>
       <trans-unit id="7304519553379759838" datatype="html">
         <source> Es ist ein schwerwiegender Fehler aufgetreten. Das Programm kann nicht fortgesetzt werden. Bitte informieren Sie ihren Administrator. </source>
@@ -1729,7 +1729,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">264,265</context>
         </context-group>
-        <note priority="1" from="description">error</note>
+        <note priority="1" from="description">Error</note>
       </trans-unit>
       <trans-unit id="1321417330374460652" datatype="html">
         <source> Lade Daten des Configuration Items...
@@ -1742,7 +1742,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">1,3</context>
         </context-group>
-        <note priority="1" from="description">loading data for configuration item</note>
+        <note priority="1" from="description">Loading data for configuration item</note>
       </trans-unit>
       <trans-unit id="7583365089698032900" datatype="html">
         <source>Eigenschaft</source>
@@ -1762,7 +1762,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">8,9</context>
         </context-group>
-        <note priority="1" from="description">property</note>
+        <note priority="1" from="description">Property</note>
       </trans-unit>
       <trans-unit id="5422814021855947257" datatype="html">
         <source>Wert</source>
@@ -1782,7 +1782,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">9,10</context>
         </context-group>
-        <note priority="1" from="description">value</note>
+        <note priority="1" from="description">Value</note>
       </trans-unit>
       <trans-unit id="2733491196256834330" datatype="html">
         <source>Item-Typ</source>
@@ -1830,7 +1830,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/export-items/export-items.component.html</context>
           <context context-type="linenumber">13,14</context>
         </context-group>
-        <note priority="1" from="description">item-type</note>
+        <note priority="1" from="description">Item-type</note>
       </trans-unit>
       <trans-unit id="1650073357556875190" datatype="html">
         <source>Attribute</source>
@@ -1842,7 +1842,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">28,29</context>
         </context-group>
-        <note priority="1" from="description">attributes</note>
+        <note priority="1" from="description">Attributes</note>
       </trans-unit>
       <trans-unit id="59568176026415190" datatype="html">
         <source>Verantwortliche</source>
@@ -1850,7 +1850,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/configuration-item/configuration-item.component.html</context>
           <context context-type="linenumber">43,45</context>
         </context-group>
-        <note priority="1" from="description">responsible persons</note>
+        <note priority="1" from="description">Responsible persons</note>
       </trans-unit>
       <trans-unit id="8778616811237742446" datatype="html">
         <source> Name </source>
@@ -1858,7 +1858,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/configuration-item/configuration-item.component.html</context>
           <context context-type="linenumber">47</context>
         </context-group>
-        <note priority="1" from="description">name</note>
+        <note priority="1" from="description">Name</note>
       </trans-unit>
       <trans-unit id="2010027840213847099" datatype="html">
         <source> (Sie)</source>
@@ -1882,7 +1882,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">6,7</context>
         </context-group>
-        <note priority="1" from="description">connections to lower</note>
+        <note priority="1" from="description">Connections to lower</note>
       </trans-unit>
       <trans-unit id="5834228357451905334" datatype="html">
         <source> Hyperlinks </source>
@@ -1890,7 +1890,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/configuration-item/configuration-item.component.html</context>
           <context context-type="linenumber">120</context>
         </context-group>
-        <note priority="1" from="description">links</note>
+        <note priority="1" from="description">Links</note>
       </trans-unit>
       <trans-unit id="2680967218350089055" datatype="html">
         <source> Suche
@@ -1899,7 +1899,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/display.component.html</context>
           <context context-type="linenumber">2,4</context>
         </context-group>
-        <note priority="1" from="description">searching</note>
+        <note priority="1" from="description">Searching</note>
       </trans-unit>
       <trans-unit id="8013009660349605206" datatype="html">
         <source>Filter hinzufügen</source>
@@ -1927,7 +1927,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">92,93</context>
         </context-group>
-        <note priority="1" from="description">add filter</note>
+        <note priority="1" from="description">Add filter</note>
       </trans-unit>
       <trans-unit id="7867831069910287346" datatype="html">
         <source> Name oder Attributwert </source>
@@ -1939,7 +1939,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">34,35</context>
         </context-group>
-        <note priority="1" from="description">name or attribute value</note>
+        <note priority="1" from="description">Name or attribute value</note>
       </trans-unit>
       <trans-unit id="1065933615998881844" datatype="html">
         <source> Attribut-Typ </source>
@@ -1951,7 +1951,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">39,40</context>
         </context-group>
-        <note priority="1" from="description">attribute type</note>
+        <note priority="1" from="description">Attribute type</note>
       </trans-unit>
       <trans-unit id="4541558608936849676" datatype="html">
         <source> Verbindungen nach oben (↑) </source>
@@ -1963,7 +1963,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">44,45</context>
         </context-group>
-        <note priority="1" from="description">connections upward</note>
+        <note priority="1" from="description">Connections upward</note>
       </trans-unit>
       <trans-unit id="8758467595883551753" datatype="html">
         <source> Verbindungen nach unten (↓) </source>
@@ -1975,7 +1975,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">49,50</context>
         </context-group>
-        <note priority="1" from="description">connections downward</note>
+        <note priority="1" from="description">Connections downward</note>
       </trans-unit>
       <trans-unit id="1638245155815866201" datatype="html">
         <source> Letzte Änderung vor </source>
@@ -1987,7 +1987,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">54,55</context>
         </context-group>
-        <note priority="1" from="description">changed before</note>
+        <note priority="1" from="description">Changed before</note>
       </trans-unit>
       <trans-unit id="442479109267467143" datatype="html">
         <source> Letzte Änderung nach </source>
@@ -1999,7 +1999,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">59,60</context>
         </context-group>
-        <note priority="1" from="description">changed after</note>
+        <note priority="1" from="description">Changed after</note>
       </trans-unit>
       <trans-unit id="1584117261879116508" datatype="html">
         <source> Nur eigene Configuration Items </source>
@@ -2011,7 +2011,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">64,65</context>
         </context-group>
-        <note priority="1" from="description">show only owned items</note>
+        <note priority="1" from="description">Show only owned items</note>
       </trans-unit>
       <trans-unit id="1340458706563076469" datatype="html">
         <source>Suchtext</source>
@@ -2023,7 +2023,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">69,70</context>
         </context-group>
-        <note priority="1" from="description">search text</note>
+        <note priority="1" from="description">Search text</note>
       </trans-unit>
       <trans-unit id="2066773754935828935" datatype="html">
         <source>Attribut-Typ</source>
@@ -2035,7 +2035,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">84,85</context>
         </context-group>
-        <note priority="1" from="description">attribute type</note>
+        <note priority="1" from="description">Attribute type</note>
       </trans-unit>
       <trans-unit id="8576533864755548512" datatype="html">
         <source>Attribut-Wert</source>
@@ -2047,7 +2047,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">90,91</context>
         </context-group>
-        <note priority="1" from="description">attribute value</note>
+        <note priority="1" from="description">Attribute value</note>
       </trans-unit>
       <trans-unit id="5390145313556533662" datatype="html">
         <source> Filtern nach Configuration Items, die bestimmte Attribute besitzen </source>
@@ -2059,7 +2059,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">95,97</context>
         </context-group>
-        <note priority="1" from="description">filter for configuration item that have given attributes</note>
+        <note priority="1" from="description">Filter for configuration item that have given attributes</note>
       </trans-unit>
       <trans-unit id="2584180194611795651" datatype="html">
         <source>Verbindungstyp ↓</source>
@@ -2079,7 +2079,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">133,134</context>
         </context-group>
-        <note priority="1" from="description">connection type</note>
+        <note priority="1" from="description">Connection type</note>
       </trans-unit>
       <trans-unit id="4251346445155624879" datatype="html">
         <source> (beliebigen Typ) </source>
@@ -2099,7 +2099,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">143</context>
         </context-group>
-        <note priority="1" from="description">any type</note>
+        <note priority="1" from="description">Any type</note>
       </trans-unit>
       <trans-unit id="8183813933364286913" datatype="html">
         <source> Filter hinzufügen </source>
@@ -2135,7 +2135,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">185</context>
         </context-group>
-        <note priority="1" from="description">add filter</note>
+        <note priority="1" from="description">Add filter</note>
       </trans-unit>
       <trans-unit id="5440597024381357728" datatype="html">
         <source> Filtern nach Configuration Items, die bestimmte Verbindungen nach unten besitzen </source>
@@ -2147,7 +2147,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">128,131</context>
         </context-group>
-        <note priority="1" from="description">filter for configuration items that have given connections to lower items</note>
+        <note priority="1" from="description">Filter for configuration items that have given connections to lower items</note>
       </trans-unit>
       <trans-unit id="5004559899258142020" datatype="html">
         <source> Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen </source>
@@ -2159,7 +2159,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">161,164</context>
         </context-group>
-        <note priority="1" from="description">filter for configuration items that have given connections to upper items</note>
+        <note priority="1" from="description">Filter for configuration items that have given connections to upper items</note>
       </trans-unit>
       <trans-unit id="1641094026106803682" datatype="html">
         <source> Datum </source>
@@ -2179,7 +2179,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">181</context>
         </context-group>
-        <note priority="1" from="description">date</note>
+        <note priority="1" from="description">Date</note>
       </trans-unit>
       <trans-unit id="8900291609274023864" datatype="html">
         <source> Filtern nach Configuration Items, die vor dem gegebenen Datum zuletzt geändert wurden </source>
@@ -2191,7 +2191,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">175,178</context>
         </context-group>
-        <note priority="1" from="description">filter for configurations items that have been changed before the given date</note>
+        <note priority="1" from="description">Filter for configurations items that have been changed before the given date</note>
       </trans-unit>
       <trans-unit id="4203607574985791167" datatype="html">
         <source> Filtern nach Configuration Items, die nach dem gegebenen Datum zuletzt geändert wurden </source>
@@ -2203,7 +2203,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">189,192</context>
         </context-group>
-        <note priority="1" from="description">filter for configurations items that have been changed after the given date</note>
+        <note priority="1" from="description">Filter for configurations items that have been changed after the given date</note>
       </trans-unit>
       <trans-unit id="8749219455298066790" datatype="html">
         <source>Name oder Attributwert: </source>
@@ -2215,7 +2215,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">196,197</context>
         </context-group>
-        <note priority="1" from="description">name or value</note>
+        <note priority="1" from="description">Name or value</note>
       </trans-unit>
       <trans-unit id="6731806206307852350" datatype="html">
         <source>(leer)</source>
@@ -2251,7 +2251,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">233</context>
         </context-group>
-        <note priority="1" from="description">changed before</note>
+        <note priority="1" from="description">Changed before</note>
       </trans-unit>
       <trans-unit id="6557739094110904319" datatype="html">
         <source> geändert nach: </source>
@@ -2263,7 +2263,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">240</context>
         </context-group>
-        <note priority="1" from="description">changed after</note>
+        <note priority="1" from="description">Changed after</note>
       </trans-unit>
       <trans-unit id="3861564092754235569" datatype="html">
         <source> verantwortlich: </source>
@@ -2275,7 +2275,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">247,248</context>
         </context-group>
-        <note priority="1" from="description">responsible</note>
+        <note priority="1" from="description">Responsible</note>
       </trans-unit>
       <trans-unit id="6687803763163059409" datatype="html">
         <source> Dieses Configuration Item zentrieren </source>
@@ -2283,7 +2283,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/graph-item/graph-item.component.html</context>
           <context context-type="linenumber">22,23</context>
         </context-group>
-        <note priority="1" from="description">center on this item</note>
+        <note priority="1" from="description">Center on this item</note>
       </trans-unit>
       <trans-unit id="6210884871401481718" datatype="html">
         <source> Attribute </source>
@@ -2303,7 +2303,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">65</context>
         </context-group>
-        <note priority="1" from="description">attributes</note>
+        <note priority="1" from="description">Attributes</note>
       </trans-unit>
       <trans-unit id="6754576137638494893" datatype="html">
         <source>Item-Name</source>
@@ -2315,7 +2315,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">260,261</context>
         </context-group>
-        <note priority="1" from="description">item name</note>
+        <note priority="1" from="description">Item name</note>
       </trans-unit>
       <trans-unit id="7100595315216851765" datatype="html">
         <source>Letzte Änderung</source>
@@ -2327,7 +2327,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">262,263</context>
         </context-group>
-        <note priority="1" from="description">last change</note>
+        <note priority="1" from="description">Last change</note>
       </trans-unit>
       <trans-unit id="8465999594411088413" datatype="html">
         <source> Keine Items gefunden, die den Suchkriterien entsprechen.
@@ -2336,7 +2336,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/item-list/item-list.component.html</context>
           <context context-type="linenumber">48,50</context>
         </context-group>
-        <note priority="1" from="description">no items found that match the search criteria</note>
+        <note priority="1" from="description">No items found that match the search criteria</note>
       </trans-unit>
       <trans-unit id="3218541143677482670" datatype="html">
         <source> Auswahl </source>
@@ -2344,7 +2344,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/multi-selector/multi-selector.component.html</context>
           <context context-type="linenumber">5,7</context>
         </context-group>
-        <note priority="1" from="description">selection</note>
+        <note priority="1" from="description">Selection</note>
       </trans-unit>
       <trans-unit id="3295040332390623879" datatype="html">
         <source> Alle Items </source>
@@ -2352,7 +2352,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/multi-selector/multi-selector.component.html</context>
           <context context-type="linenumber">11,13</context>
         </context-group>
-        <note priority="1" from="description">select all items</note>
+        <note priority="1" from="description">Select all items</note>
       </trans-unit>
       <trans-unit id="7725256424640834225" datatype="html">
         <source> Auswahl aufheben </source>
@@ -2360,7 +2360,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/multi-selector/multi-selector.component.html</context>
           <context context-type="linenumber">16,18</context>
         </context-group>
-        <note priority="1" from="description">select no items</note>
+        <note priority="1" from="description">Select no items</note>
       </trans-unit>
       <trans-unit id="5582922752398766985" datatype="html">
         <source> Auswahl umkehren </source>
@@ -2368,7 +2368,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/multi-selector/multi-selector.component.html</context>
           <context context-type="linenumber">22,24</context>
         </context-group>
-        <note priority="1" from="description">invert selection</note>
+        <note priority="1" from="description">Invert selection</note>
       </trans-unit>
       <trans-unit id="1786818131124061769" datatype="html">
         <source> Meine Items </source>
@@ -2376,7 +2376,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/multi-selector/multi-selector.component.html</context>
           <context context-type="linenumber">28,30</context>
         </context-group>
-        <note priority="1" from="description">my items</note>
+        <note priority="1" from="description">My items</note>
       </trans-unit>
       <trans-unit id="7138596091615111657" datatype="html">
         <source> Fremde Items </source>
@@ -2384,7 +2384,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/multi-selector/multi-selector.component.html</context>
           <context context-type="linenumber">34,36</context>
         </context-group>
-        <note priority="1" from="description">foreign items</note>
+        <note priority="1" from="description">Foreign items</note>
       </trans-unit>
       <trans-unit id="5213085849748193652" datatype="html">
         <source>Ausgehend von </source>
@@ -2400,7 +2400,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">8,9</context>
         </context-group>
-        <note priority="1" from="description">item type</note>
+        <note priority="1" from="description">Item type</note>
       </trans-unit>
       <trans-unit id="1591940790103342933" datatype="html">
         <source>Richtung, in die gesucht wird: </source>
@@ -2408,7 +2408,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">16,17</context>
         </context-group>
-        <note priority="1" from="description">search direction</note>
+        <note priority="1" from="description">Search direction</note>
       </trans-unit>
       <trans-unit id="5652249932327798521" datatype="html">
         <source>Aufwärts</source>
@@ -2416,7 +2416,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
-        <note priority="1" from="description">up</note>
+        <note priority="1" from="description">Up</note>
       </trans-unit>
       <trans-unit id="194409124541441735" datatype="html">
         <source>Beide</source>
@@ -2424,7 +2424,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">19,20</context>
         </context-group>
-        <note priority="1" from="description">both</note>
+        <note priority="1" from="description">Both</note>
       </trans-unit>
       <trans-unit id="8347516001274853139" datatype="html">
         <source>Abwärts</source>
@@ -2432,7 +2432,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">20,21</context>
         </context-group>
-        <note priority="1" from="description">down</note>
+        <note priority="1" from="description">Down</note>
       </trans-unit>
       <trans-unit id="6986388803747819378" datatype="html">
         <source>Maximale Anzahl von Ebenen, die gesucht wird: </source>
@@ -2440,7 +2440,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">24,25</context>
         </context-group>
-        <note priority="1" from="description">max levels zu search</note>
+        <note priority="1" from="description">Maximum number of levels to search:</note>
       </trans-unit>
       <trans-unit id="5125258061310852143" datatype="html">
         <source> Keine Items gefunden, die den Suchkriterien entsprechen. </source>
@@ -2448,7 +2448,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/neighbor-list/neighbor-list.component.html</context>
           <context context-type="linenumber">301,304</context>
         </context-group>
-        <note priority="1" from="description">no items found that match the search criteria</note>
+        <note priority="1" from="description">No items found that match the search criteria</note>
       </trans-unit>
       <trans-unit id="1612941881576627602" datatype="html">
         <source> Lade Daten...
@@ -2465,7 +2465,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">2,4</context>
         </context-group>
-        <note priority="1" from="description">loading data...</note>
+        <note priority="1" from="description">Loading data...</note>
       </trans-unit>
       <trans-unit id="6784714151464546363" datatype="html">
         <source>Zeitpunkt</source>
@@ -2473,7 +2473,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
-        <note priority="1" from="description">date</note>
+        <note priority="1" from="description">Date</note>
       </trans-unit>
       <trans-unit id="4168403937648853047" datatype="html">
         <source> Bezug </source>
@@ -2481,7 +2481,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">10,12</context>
         </context-group>
-        <note priority="1" from="description">subject</note>
+        <note priority="1" from="description">Subject</note>
       </trans-unit>
       <trans-unit id="8956959635409390756" datatype="html">
         <source> Alle Bezüge </source>
@@ -2489,7 +2489,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">15,17</context>
         </context-group>
-        <note priority="1" from="description">all subjects</note>
+        <note priority="1" from="description">All subjects</note>
       </trans-unit>
       <trans-unit id="3456043446432412036" datatype="html">
         <source> Configuration Items </source>
@@ -2497,7 +2497,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">20,22</context>
         </context-group>
-        <note priority="1" from="description">configuration items</note>
+        <note priority="1" from="description">Configuration items</note>
       </trans-unit>
       <trans-unit id="5339034780592091531" datatype="html">
         <source> Verbindungen </source>
@@ -2505,7 +2505,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">30,32</context>
         </context-group>
-        <note priority="1" from="description">connections</note>
+        <note priority="1" from="description">Connections</note>
       </trans-unit>
       <trans-unit id="6855205738028903133" datatype="html">
         <source>Aktion</source>
@@ -2517,7 +2517,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">10,11</context>
         </context-group>
-        <note priority="1" from="description">action</note>
+        <note priority="1" from="description">Action</note>
       </trans-unit>
       <trans-unit id="366738974946889175" datatype="html">
         <source>Durchgeführt von</source>
@@ -2525,7 +2525,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/display/show-history/show-history.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
-        <note priority="1" from="description">who did this</note>
+        <note priority="1" from="description">Who did this</note>
       </trans-unit>
       <trans-unit id="4194157151483069761" datatype="html">
         <source> Verbindung nach unten zu einem anderen Configuration Item hinzufügen </source>
@@ -2533,7 +2533,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/add-connection/add-connection.component.html</context>
           <context context-type="linenumber">4,7</context>
         </context-group>
-        <note priority="1" from="description">add connection to another configuration item below</note>
+        <note priority="1" from="description">Add connection to another configuration item below</note>
       </trans-unit>
       <trans-unit id="3282235563480269560" datatype="html">
         <source>Beschreibung</source>
@@ -2553,7 +2553,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">81,82</context>
         </context-group>
-        <note priority="1" from="description">description</note>
+        <note priority="1" from="description">Description</note>
       </trans-unit>
       <trans-unit id="3301232607780328453" datatype="html">
         <source>Vorgabe</source>
@@ -2561,7 +2561,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/add-connection/add-connection.component.html</context>
           <context context-type="linenumber">14,15</context>
         </context-group>
-        <note priority="1" from="description">validation rule</note>
+        <note priority="1" from="description">Validation rule</note>
       </trans-unit>
       <trans-unit id="3410258354478046536" datatype="html">
         <source>Es konnten keine geeigneten Configuration Items gefunden werden.</source>
@@ -2569,7 +2569,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/add-connection/add-connection.component.html</context>
           <context context-type="linenumber">34,36</context>
         </context-group>
-        <note priority="1" from="description">no available configuration items were found</note>
+        <note priority="1" from="description">No available configuration items were found</note>
       </trans-unit>
       <trans-unit id="4973707492693226458" datatype="html">
         <source> Die Beschreibung entspricht nicht den Vorgaben. </source>
@@ -2577,7 +2577,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/add-connection/add-connection.component.html</context>
           <context context-type="linenumber">38,42</context>
         </context-group>
-        <note priority="1" from="description">the description does not match the validation rule</note>
+        <note priority="1" from="description">The description does not match the validation rule</note>
       </trans-unit>
       <trans-unit id="8856040924785218302" datatype="html">
         <source>Configuration Item kopieren</source>
@@ -2585,7 +2585,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">2,3</context>
         </context-group>
-        <note priority="1" from="description">copy configuration item</note>
+        <note priority="1" from="description">Copy configuration item</note>
       </trans-unit>
       <trans-unit id="7408506587772004901" datatype="html">
         <source> Item-Typ </source>
@@ -2597,7 +2597,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">16,17</context>
         </context-group>
-        <note priority="1" from="description">item type</note>
+        <note priority="1" from="description">Item type</note>
       </trans-unit>
       <trans-unit id="5046911484834275346" datatype="html">
         <source>Name des neuen Items</source>
@@ -2605,7 +2605,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">23,24</context>
         </context-group>
-        <note priority="1" from="description">new item name</note>
+        <note priority="1" from="description">New item name</note>
       </trans-unit>
       <trans-unit id="809146698627302415" datatype="html">
         <source>Attribute übernehmen</source>
@@ -2613,7 +2613,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">32,33</context>
         </context-group>
-        <note priority="1" from="description">copy attributes</note>
+        <note priority="1" from="description">Copy attributes</note>
       </trans-unit>
       <trans-unit id="5098162068169483484" datatype="html">
         <source> Verbindungen nach unten übernehmen </source>
@@ -2621,7 +2621,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">53,54</context>
         </context-group>
-        <note priority="1" from="description">copy downward connections</note>
+        <note priority="1" from="description">Copy downward connections</note>
       </trans-unit>
       <trans-unit id="4699960219384720206" datatype="html">
         <source> Links übernehmen </source>
@@ -2629,7 +2629,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">81</context>
         </context-group>
-        <note priority="1" from="description">copy links</note>
+        <note priority="1" from="description">Copy links</note>
       </trans-unit>
       <trans-unit id="6185470592116419058" datatype="html">
         <source>URL des Links</source>
@@ -2637,7 +2637,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">89</context>
         </context-group>
-        <note priority="1" from="description">link URL</note>
+        <note priority="1" from="description">Link URL</note>
       </trans-unit>
       <trans-unit id="1074900678575663287" datatype="html">
         <source>Beschreibung des Links</source>
@@ -2645,7 +2645,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">92</context>
         </context-group>
-        <note priority="1" from="description">link description</note>
+        <note priority="1" from="description">Link description</note>
       </trans-unit>
       <trans-unit id="5271514785665294347" datatype="html">
         <source> Item kopieren </source>
@@ -2653,7 +2653,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/copy-item/copy-item.component.html</context>
           <context context-type="linenumber">103,104</context>
         </context-group>
-        <note priority="1" from="description">copy item</note>
+        <note priority="1" from="description">Copy item</note>
       </trans-unit>
       <trans-unit id="7117544671703348462" datatype="html">
         <source> Item-Typ auswählen </source>
@@ -2661,7 +2661,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/create-item/create-item.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
-        <note priority="1" from="description">choose item type</note>
+        <note priority="1" from="description">Choose item type</note>
       </trans-unit>
       <trans-unit id="7565716024468232322" datatype="html">
         <source>Links</source>
@@ -2673,7 +2673,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">81,82</context>
         </context-group>
-        <note priority="1" from="description">links</note>
+        <note priority="1" from="description">Links</note>
       </trans-unit>
       <trans-unit id="4870192964100752484" datatype="html">
         <source> Link hinzufügen </source>
@@ -2685,7 +2685,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">84</context>
         </context-group>
-        <note priority="1" from="description">add link</note>
+        <note priority="1" from="description">Add link</note>
       </trans-unit>
       <trans-unit id="6349036100536481200" datatype="html">
         <source> Beschreibung: </source>
@@ -2693,7 +2693,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/create-item/create-item.component.html</context>
           <context context-type="linenumber">80</context>
         </context-group>
-        <note priority="1" from="description">link description</note>
+        <note priority="1" from="description">Link description</note>
       </trans-unit>
       <trans-unit id="5582447865625409899" datatype="html">
         <source> URL: </source>
@@ -2705,7 +2705,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">97</context>
         </context-group>
-        <note priority="1" from="description">link uri</note>
+        <note priority="1" from="description">Link uri</note>
       </trans-unit>
       <trans-unit id="3293172859470018212" datatype="html">
         <source> Link löschen </source>
@@ -2717,7 +2717,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">104</context>
         </context-group>
-        <note priority="1" from="description">delete link</note>
+        <note priority="1" from="description">Delete link</note>
       </trans-unit>
       <trans-unit id="3180559322105898665" datatype="html">
         <source> Neues Item erstellen </source>
@@ -2725,7 +2725,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/create-item/create-item.component.html</context>
           <context context-type="linenumber">103,104</context>
         </context-group>
-        <note priority="1" from="description">create item</note>
+        <note priority="1" from="description">Create item</note>
       </trans-unit>
       <trans-unit id="4468127510205050770" datatype="html">
         <source> Item </source>
@@ -2733,7 +2733,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
-        <note priority="1" from="description">item</note>
+        <note priority="1" from="description">Item</note>
       </trans-unit>
       <trans-unit id="9084576958556250367" datatype="html">
         <source> Beschreibung </source>
@@ -2741,7 +2741,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">22,23</context>
         </context-group>
-        <note priority="1" from="description">description</note>
+        <note priority="1" from="description">Description</note>
       </trans-unit>
       <trans-unit id="3945620876766392910" datatype="html">
         <source>Beschreibung bearbeiten</source>
@@ -2749,7 +2749,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">56,57</context>
         </context-group>
-        <note priority="1" from="description">edit description</note>
+        <note priority="1" from="description">Edit description</note>
       </trans-unit>
       <trans-unit id="5698295408373466303" datatype="html">
         <source>Verbindung löschen</source>
@@ -2757,7 +2757,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">59,60</context>
         </context-group>
-        <note priority="1" from="description">delete connection type</note>
+        <note priority="1" from="description">Delete connection type</note>
       </trans-unit>
       <trans-unit id="6958220698615173661" datatype="html">
         <source> Verbindung hinzufügen </source>
@@ -2765,7 +2765,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item-connections/edit-item-connections.component.html</context>
           <context context-type="linenumber">90</context>
         </context-group>
-        <note priority="1" from="description">add connection</note>
+        <note priority="1" from="description">Add connection</note>
       </trans-unit>
       <trans-unit id="6971430927422853938" datatype="html">
         <source> Item löschen </source>
@@ -2773,7 +2773,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
-        <note priority="1" from="description">delete item</note>
+        <note priority="1" from="description">Delete item</note>
       </trans-unit>
       <trans-unit id="7333478218767432942" datatype="html">
         <source> Verantwortung für das Configuration Item übernehmen </source>
@@ -2789,7 +2789,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">42</context>
         </context-group>
-        <note priority="1" from="description">last change</note>
+        <note priority="1" from="description">Last change</note>
       </trans-unit>
       <trans-unit id="6358432723197175305" datatype="html">
         <source> Änderungen speichern </source>
@@ -2797,7 +2797,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">50</context>
         </context-group>
-        <note priority="1" from="description">save changes</note>
+        <note priority="1" from="description">Save changes</note>
       </trans-unit>
       <trans-unit id="5088286317508582496" datatype="html">
         <source> Version </source>
@@ -2805,7 +2805,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">56</context>
         </context-group>
-        <note priority="1" from="description">version</note>
+        <note priority="1" from="description">Version</note>
       </trans-unit>
       <trans-unit id="2244437853640244268" datatype="html">
         <source> <x id="INTERPOLATION" equiv-text="{{i + 1}}"/>) Beschreibung: </source>
@@ -2813,7 +2813,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">91,92</context>
         </context-group>
-        <note priority="1" from="description">link description</note>
+        <note priority="1" from="description">Link description</note>
       </trans-unit>
       <trans-unit id="1875133196984159186" datatype="html">
         <source> Verantwortliche </source>
@@ -2821,7 +2821,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">111,112</context>
         </context-group>
-        <note priority="1" from="description">responsible persons</note>
+        <note priority="1" from="description">Responsible persons</note>
       </trans-unit>
       <trans-unit id="2386340790446359561" datatype="html">
         <source> Verantwortung für das Configuration Item aufgeben </source>
@@ -2829,7 +2829,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">120,121</context>
         </context-group>
-        <note priority="1" from="description">abandon responsibility</note>
+        <note priority="1" from="description">Abandon responsibility</note>
       </trans-unit>
       <trans-unit id="3906072246624224754" datatype="html">
         <source>Löschen eines Configuration Items</source>
@@ -2837,7 +2837,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">129,131</context>
         </context-group>
-        <note priority="1" from="description">deleting configuration item</note>
+        <note priority="1" from="description">Deleting configuration item</note>
       </trans-unit>
       <trans-unit id="3376536806392861221" datatype="html">
         <source> Sie sind dabei, das Configuration Item </source>
@@ -2845,7 +2845,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">132,134</context>
         </context-group>
-        <note priority="1" from="description">you are about to delete the following configuration item</note>
+        <note priority="1" from="description">You are about to delete the following configuration item</note>
       </trans-unit>
       <trans-unit id="7717514525770107070" datatype="html">
         <source> zu löschen, zusammen mit allen </source>
@@ -2853,7 +2853,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">136,137</context>
         </context-group>
-        <note priority="1" from="description">together with all of its</note>
+        <note priority="1" from="description">Together with all of its</note>
       </trans-unit>
       <trans-unit id="2322224568388415699" datatype="html">
         <source> Attributen,</source>
@@ -2861,7 +2861,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">141,142</context>
         </context-group>
-        <note priority="1" from="description">attributes</note>
+        <note priority="1" from="description">Attributes</note>
       </trans-unit>
       <trans-unit id="8716025254397860667" datatype="html">
         <source> Verbindungen zu anderen Configuration Items, </source>
@@ -2869,7 +2869,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">145,147</context>
         </context-group>
-        <note priority="1" from="description">connections to other configuration items</note>
+        <note priority="1" from="description">Connections to other configuration items</note>
       </trans-unit>
       <trans-unit id="5090139842240581748" datatype="html">
         <source> Links auf externe Websites und </source>
@@ -2877,7 +2877,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">151,152</context>
         </context-group>
-        <note priority="1" from="description">links to external sites and</note>
+        <note priority="1" from="description">Links to external sites and</note>
       </trans-unit>
       <trans-unit id="4979787843499411748" datatype="html">
         <source> Verantwortlichkeiten. </source>
@@ -2885,7 +2885,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">157,158</context>
         </context-group>
-        <note priority="1" from="description">responsibilities</note>
+        <note priority="1" from="description">Responsibilities</note>
       </trans-unit>
       <trans-unit id="5847173010227304284" datatype="html">
         <source>Sind Sie sicher, dass Sie fortfahren möchten?</source>
@@ -2901,7 +2901,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/edit-item/edit-item.component.html</context>
           <context context-type="linenumber">164,165</context>
         </context-group>
-        <note priority="1" from="description">yes, delete</note>
+        <note priority="1" from="description">Yes, delete</note>
       </trans-unit>
       <trans-unit id="4825581491451955879" datatype="html">
         <source>Analysiere...</source>
@@ -2917,7 +2917,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">2,3</context>
         </context-group>
-        <note priority="1" from="description">import configuration items</note>
+        <note priority="1" from="description">Import configuration items</note>
       </trans-unit>
       <trans-unit id="2476543336317668661" datatype="html">
         <source>Allgemeine Einstellungen</source>
@@ -2925,7 +2925,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">7,9</context>
         </context-group>
-        <note priority="1" from="description">common settings</note>
+        <note priority="1" from="description">Common settings</note>
       </trans-unit>
       <trans-unit id="8153132323517044181" datatype="html">
         <source>Typ der zu importierenden Items: </source>
@@ -2933,7 +2933,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">13,14</context>
         </context-group>
-        <note priority="1" from="description">item type to import</note>
+        <note priority="1" from="description">Item type to import</note>
       </trans-unit>
       <trans-unit id="6954206488918018307" datatype="html">
         <source>Welche weiteren Elemente sollen importiert werden?</source>
@@ -2941,7 +2941,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">24,26</context>
         </context-group>
-        <note priority="1" from="description">additional elements to import</note>
+        <note priority="1" from="description">Additional elements to import</note>
       </trans-unit>
       <trans-unit id="6060375002597572530" datatype="html">
         <source>Verbindungen nach unten</source>
@@ -2949,7 +2949,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">36,38</context>
         </context-group>
-        <note priority="1" from="description">downward connections</note>
+        <note priority="1" from="description">Downward connections</note>
       </trans-unit>
       <trans-unit id="929347632836970123" datatype="html">
         <source>Verbindungen nach oben</source>
@@ -2957,7 +2957,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">44,46</context>
         </context-group>
-        <note priority="1" from="description">downward connections</note>
+        <note priority="1" from="description">Downward connections</note>
       </trans-unit>
       <trans-unit id="356157915347018183" datatype="html">
         <source>Hyperlinks</source>
@@ -2965,7 +2965,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">52,53</context>
         </context-group>
-        <note priority="1" from="description">links</note>
+        <note priority="1" from="description">Links</note>
       </trans-unit>
       <trans-unit id="8716386446397974831" datatype="html">
         <source>Weitere Einstellungen</source>
@@ -2997,7 +2997,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">80,81</context>
         </context-group>
-        <note priority="1" from="description">the first line of the file contains column headers</note>
+        <note priority="1" from="description">The first line of the file contains column headers</note>
       </trans-unit>
       <trans-unit id="9021434798589421767" datatype="html">
         <source> Die Spaltenüberschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei Übereinstimmung zugeordnet. So kann eine exportierte Datei schnell wieder importiert werden. </source>
@@ -3005,7 +3005,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">83,88</context>
         </context-group>
-        <note priority="1" from="description">the column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file</note>
+        <note priority="1" from="description">The column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file</note>
       </trans-unit>
       <trans-unit id="4640835075491779548" datatype="html">
         <source> Datei auswählen </source>
@@ -3013,7 +3013,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">96</context>
         </context-group>
-        <note priority="1" from="description">choose file</note>
+        <note priority="1" from="description">Choose file</note>
       </trans-unit>
       <trans-unit id="8051017100200977295" datatype="html">
         <source>Tabellenblatt auswählen</source>
@@ -3021,7 +3021,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">117,118</context>
         </context-group>
-        <note priority="1" from="description">select sheet</note>
+        <note priority="1" from="description">Select sheet</note>
       </trans-unit>
       <trans-unit id="9195138584445037255" datatype="html">
         <source>Tabellenblatt</source>
@@ -3029,7 +3029,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">121,122</context>
         </context-group>
-        <note priority="1" from="description">sheet</note>
+        <note priority="1" from="description">Sheet</note>
       </trans-unit>
       <trans-unit id="6792956869296562857" datatype="html">
         <source>Vorschau auf die Daten</source>
@@ -3037,7 +3037,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">131,132</context>
         </context-group>
-        <note priority="1" from="description">data preview</note>
+        <note priority="1" from="description">Data preview</note>
       </trans-unit>
       <trans-unit id="3925622437724618690" datatype="html">
         <source>Spaltenzuordnungen</source>
@@ -3045,7 +3045,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">148,150</context>
         </context-group>
-        <note priority="1" from="description">column mappings</note>
+        <note priority="1" from="description">Column mappings</note>
       </trans-unit>
       <trans-unit id="8930526198656004715" datatype="html">
         <source>Zurück</source>
@@ -3057,7 +3057,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">232,233</context>
         </context-group>
-        <note priority="1" from="description">back</note>
+        <note priority="1" from="description">Go back</note>
       </trans-unit>
       <trans-unit id="2678158162232364941" datatype="html">
         <source> Weiter </source>
@@ -3065,7 +3065,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">169</context>
         </context-group>
-        <note priority="1" from="description">continue</note>
+        <note priority="1" from="description">Continue</note>
       </trans-unit>
       <trans-unit id="3521430707469082551" datatype="html">
         <source>Zu importierende Elemente</source>
@@ -3073,7 +3073,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">177,180</context>
         </context-group>
-        <note priority="1" from="description">elements that can be imported</note>
+        <note priority="1" from="description">Elements that can be imported</note>
       </trans-unit>
       <trans-unit id="7151283574602080407" datatype="html">
         <source> Erkannte Probleme </source>
@@ -3093,7 +3093,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">246,247</context>
         </context-group>
-        <note priority="1" from="description">line</note>
+        <note priority="1" from="description">Line</note>
       </trans-unit>
       <trans-unit id="7830153185687502601" datatype="html">
         <source>Fehlermeldung</source>
@@ -3101,7 +3101,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">199,200</context>
         </context-group>
-        <note priority="1" from="description">error message</note>
+        <note priority="1" from="description">Error message</note>
       </trans-unit>
       <trans-unit id="6772532880556383536" datatype="html">
         <source> Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert. </source>
@@ -3109,7 +3109,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">210</context>
         </context-group>
-        <note priority="1" from="description">existing item ignored</note>
+        <note priority="1" from="description">Existing item ignored</note>
       </trans-unit>
       <trans-unit id="328321683098657660" datatype="html">
         <source> Der Name des Items darf nicht leer sein. Die Zeile wird ignoriert. </source>
@@ -3133,7 +3133,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">219,220</context>
         </context-group>
-        <note priority="1" from="description">no item matches this name and type</note>
+        <note priority="1" from="description">No item matches this name and type</note>
       </trans-unit>
       <trans-unit id="5414304951745426958" datatype="html">
         <source> Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen. </source>
@@ -3153,7 +3153,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">76,77</context>
         </context-group>
-        <note priority="1" from="description">import items</note>
+        <note priority="1" from="description">Import items</note>
       </trans-unit>
       <trans-unit id="5983601387067907355" datatype="html">
         <source> Es sind Fehler aufgetreten. Bitte prüfen Sie das Protokoll. </source>
@@ -3161,7 +3161,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">241,243</context>
         </context-group>
-        <note priority="1" from="description">errors encountered. Please check log</note>
+        <note priority="1" from="description">Errors encountered. Please check log</note>
       </trans-unit>
       <trans-unit id="893384344968694218" datatype="html">
         <source>Betroffenes Item</source>
@@ -3169,7 +3169,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">247,248</context>
         </context-group>
-        <note priority="1" from="description">subject</note>
+        <note priority="1" from="description">Subject</note>
       </trans-unit>
       <trans-unit id="8729559752409102379" datatype="html">
         <source>Kategorie</source>
@@ -3177,7 +3177,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">248,249</context>
         </context-group>
-        <note priority="1" from="description">severity</note>
+        <note priority="1" from="description">Severity</note>
       </trans-unit>
       <trans-unit id="3927314272285950105" datatype="html">
         <source>Meldung</source>
@@ -3193,7 +3193,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">250,251</context>
         </context-group>
-        <note priority="1" from="description">details</note>
+        <note priority="1" from="description">Details</note>
       </trans-unit>
       <trans-unit id="7676902564109268672" datatype="html">
         <source>Warnhinweis</source>
@@ -3201,7 +3201,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">263,264</context>
         </context-group>
-        <note priority="1" from="description">warning</note>
+        <note priority="1" from="description">Warning</note>
       </trans-unit>
       <trans-unit id="6143049740487485147" datatype="html">
         <source>Abbruch</source>
@@ -3209,7 +3209,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">265,266</context>
         </context-group>
-        <note priority="1" from="description">fatal</note>
+        <note priority="1" from="description">Fatal</note>
       </trans-unit>
       <trans-unit id="5037437391296624618" datatype="html">
         <source>Information</source>
@@ -3217,7 +3217,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">266,267</context>
         </context-group>
-        <note priority="1" from="description">info</note>
+        <note priority="1" from="description">Info</note>
       </trans-unit>
       <trans-unit id="5384541068344565364" datatype="html">
         <source> Die Tabelle entät keine Zeilen. </source>
@@ -3233,7 +3233,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">274,275</context>
         </context-group>
-        <note priority="1" from="description">server error</note>
+        <note priority="1" from="description">Server error</note>
       </trans-unit>
       <trans-unit id="7217085759240151697" datatype="html">
         <source>Allgemeiner Fehler</source>
@@ -3249,7 +3249,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">277,278</context>
         </context-group>
-        <note priority="1" from="description">updated existing item</note>
+        <note priority="1" from="description">Updated existing item</note>
       </trans-unit>
       <trans-unit id="1010205529776120578" datatype="html">
         <source> Ein neues Configuration Item wurde erzeugt. </source>
@@ -3257,7 +3257,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">280</context>
         </context-group>
-        <note priority="1" from="description">created new item</note>
+        <note priority="1" from="description">Created new item</note>
       </trans-unit>
       <trans-unit id="8599361883778249943" datatype="html">
         <source> Der Attributwert entspricht nicht den Validierungsregeln. </source>
@@ -3265,7 +3265,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">283,285</context>
         </context-group>
-        <note priority="1" from="description">attribute value does not comply to the validation rule</note>
+        <note priority="1" from="description">Attribute value does not comply to the validation rule</note>
       </trans-unit>
       <trans-unit id="996702720180753013" datatype="html">
         <source> Der Attributtyp darf für diesen Item-Typ nicht verwendet werden. </source>
@@ -3273,7 +3273,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">286,287</context>
         </context-group>
-        <note priority="1" from="description">attribute type is not allowed for this item type</note>
+        <note priority="1" from="description">Attribute type is not allowed for this item type</note>
       </trans-unit>
       <trans-unit id="5933678048561599839" datatype="html">
         <source> Die Beschreibung der Verbindung wurde aktualisiert. </source>
@@ -3281,7 +3281,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">289,290</context>
         </context-group>
-        <note priority="1" from="description">updated connection description</note>
+        <note priority="1" from="description">Updated connection description</note>
       </trans-unit>
       <trans-unit id="561204986953099890" datatype="html">
         <source> Die Beschreibung entspricht nicht den Validierungsregeln. </source>
@@ -3289,7 +3289,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">292,294</context>
         </context-group>
-        <note priority="1" from="description">the description does not match the validation criteria</note>
+        <note priority="1" from="description">The description does not match the validation criteria</note>
       </trans-unit>
       <trans-unit id="1842695062992622767" datatype="html">
         <source> Die Verbindung wurde angelegt. </source>
@@ -3305,7 +3305,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">299,301</context>
         </context-group>
-        <note priority="1" from="description">the maximum number of connections is reached. No more connections for the upper item are allowed</note>
+        <note priority="1" from="description">The maximum number of connections is reached. No more connections for the upper item are allowed</note>
       </trans-unit>
       <trans-unit id="7918306795312801693" datatype="html">
         <source> Die maximale Anzahl an Verbindungen für das untere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt. </source>
@@ -3313,7 +3313,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">303,305</context>
         </context-group>
-        <note priority="1" from="description">the maximum number of connections is reached. No more connections for the lower item are allowed</note>
+        <note priority="1" from="description">The maximum number of connections is reached. No more connections for the lower item are allowed</note>
       </trans-unit>
       <trans-unit id="5327967722325070107" datatype="html">
         <source> Die angegebene URL ist nicht gültig. </source>
@@ -3321,7 +3321,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">306</context>
         </context-group>
-        <note priority="1" from="description">no valid url given</note>
+        <note priority="1" from="description">No valid url given</note>
       </trans-unit>
       <trans-unit id="7935955286502203683" datatype="html">
         <source>Hyperlink erzeugt</source>
@@ -3337,7 +3337,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">310,311</context>
         </context-group>
-        <note priority="1" from="description">error while creating hyperlink</note>
+        <note priority="1" from="description">Error while creating hyperlink</note>
       </trans-unit>
       <trans-unit id="892252428910719531" datatype="html">
         <source>Verbindung erzeugt</source>
@@ -3345,7 +3345,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">312,313</context>
         </context-group>
-        <note priority="1" from="description">connection created</note>
+        <note priority="1" from="description">Connection created</note>
       </trans-unit>
       <trans-unit id="799383232718906543" datatype="html">
         <source> Fehler beim Erzeugen der Verbindung </source>
@@ -3353,7 +3353,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">314,315</context>
         </context-group>
-        <note priority="1" from="description">error creating connection</note>
+        <note priority="1" from="description">Error creating connection</note>
       </trans-unit>
       <trans-unit id="2961512079449522218" datatype="html">
         <source> Die bereits existierende Verbindung wurde nicht verändert. </source>
@@ -3361,7 +3361,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">317,318</context>
         </context-group>
-        <note priority="1" from="description">skipping existing connection</note>
+        <note priority="1" from="description">Skipping existing connection</note>
       </trans-unit>
       <trans-unit id="8537914803974817757" datatype="html">
         <source> Verbindungsbeschreibung wurde geändert. </source>
@@ -3369,7 +3369,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">320,321</context>
         </context-group>
-        <note priority="1" from="description">changed connection description</note>
+        <note priority="1" from="description">Changed connection description</note>
       </trans-unit>
       <trans-unit id="1115782302466859947" datatype="html">
         <source> Fehler beim Verändern der Verbindung </source>
@@ -3377,7 +3377,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">323,324</context>
         </context-group>
-        <note priority="1" from="description">error while changing connection</note>
+        <note priority="1" from="description">Error while changing connection</note>
       </trans-unit>
       <trans-unit id="6318748125752337007" datatype="html">
         <source>Fehlermeldung: </source>
@@ -3385,15 +3385,15 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
           <context context-type="linenumber">326,327</context>
         </context-group>
-        <note priority="1" from="description">error message</note>
+        <note priority="1" from="description">Error message</note>
       </trans-unit>
       <trans-unit id="6142836747624290540" datatype="html">
         <source>Neuer Import</source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/import-items/import-items.component.html</context>
-          <context context-type="linenumber">337,338</context>
+          <context context-type="linenumber">337,339</context>
         </context-group>
-        <note priority="1" from="description">back</note>
+        <note priority="1" from="description">Go back</note>
       </trans-unit>
       <trans-unit id="3112413432553183817" datatype="html">
         <source>Mehrere Configuration Items gleichzeitig bearbeiten</source>
@@ -3401,7 +3401,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">1,3</context>
         </context-group>
-        <note priority="1" from="description">edit multiple items</note>
+        <note priority="1" from="description">Edit multiple items</note>
       </trans-unit>
       <trans-unit id="6034842429587097101" datatype="html">
         <source> Configuration Item </source>
@@ -3409,7 +3409,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">5,7</context>
         </context-group>
-        <note priority="1" from="description">configuration item</note>
+        <note priority="1" from="description">Configuration item</note>
       </trans-unit>
       <trans-unit id="3289407400562910673" datatype="html">
         <source> Alle Werte löschen </source>
@@ -3417,7 +3417,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
-        <note priority="1" from="description">delete all values</note>
+        <note priority="1" from="description">Delete all values</note>
       </trans-unit>
       <trans-unit id="8822458112161316268" datatype="html">
         <source>Eigener Wert</source>
@@ -3425,7 +3425,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">22,23</context>
         </context-group>
-        <note priority="1" from="description">custom value</note>
+        <note priority="1" from="description">Custom value</note>
       </trans-unit>
       <trans-unit id="5051130087665717374" datatype="html">
         <source>Vorhandene Werte</source>
@@ -3433,7 +3433,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">30,31</context>
         </context-group>
-        <note priority="1" from="description">existing values</note>
+        <note priority="1" from="description">Existing values</note>
       </trans-unit>
       <trans-unit id="4345288508428557220" datatype="html">
         <source>Lösche Verbindung zu </source>
@@ -3441,7 +3441,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">40,41</context>
         </context-group>
-        <note priority="1" from="description">delete connection to</note>
+        <note priority="1" from="description">Delete connection to</note>
       </trans-unit>
       <trans-unit id="8075168556531069883" datatype="html">
         <source>Item</source>
@@ -3449,7 +3449,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">45,46</context>
         </context-group>
-        <note priority="1" from="description">item</note>
+        <note priority="1" from="description">Item</note>
       </trans-unit>
       <trans-unit id="1204571731613133449" datatype="html">
         <source> Externe Links </source>
@@ -3457,7 +3457,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">62,63</context>
         </context-group>
-        <note priority="1" from="description">external links</note>
+        <note priority="1" from="description">External links</note>
       </trans-unit>
       <trans-unit id="4181129536062781025" datatype="html">
         <source> Alle Links löschen </source>
@@ -3465,7 +3465,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">67</context>
         </context-group>
-        <note priority="1" from="description">delete all links</note>
+        <note priority="1" from="description">Delete all links</note>
       </trans-unit>
       <trans-unit id="9053377112969662941" datatype="html">
         <source> löschen </source>
@@ -3473,7 +3473,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">74</context>
         </context-group>
-        <note priority="1" from="description">delete</note>
+        <note priority="1" from="description">Delete</note>
       </trans-unit>
       <trans-unit id="2375260419993138758" datatype="html">
         <source>URL</source>
@@ -3489,7 +3489,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
           <context context-type="linenumber">101,102</context>
         </context-group>
-        <note priority="1" from="description">remove item from list</note>
+        <note priority="1" from="description">Remove item from list</note>
       </trans-unit>
       <trans-unit id="4179805415751581862" datatype="html">
         <source>Configuration Management System</source>
@@ -3521,7 +3521,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/header/header.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
-        <note priority="1" from="description">user name</note>
+        <note priority="1" from="description">User name</note>
       </trans-unit>
       <trans-unit id="7816006343218134782" datatype="html">
         <source> Kennwort ändern </source>
@@ -3529,7 +3529,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/header/header.component.html</context>
           <context context-type="linenumber">23,24</context>
         </context-group>
-        <note priority="1" from="description">change password</note>
+        <note priority="1" from="description">Change password</note>
       </trans-unit>
       <trans-unit id="5180342668087654036" datatype="html">
         <source> Abmelden </source>
@@ -3537,7 +3537,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/header/header.component.html</context>
           <context context-type="linenumber">28</context>
         </context-group>
-        <note priority="1" from="description">logout</note>
+        <note priority="1" from="description">Logout</note>
       </trans-unit>
       <trans-unit id="8306348547423586410" datatype="html">
         <source> Administration </source>
@@ -3545,7 +3545,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">12,13</context>
         </context-group>
-        <note priority="1" from="description">administration</note>
+        <note priority="1" from="description">Administration</note>
       </trans-unit>
       <trans-unit id="1117227704129270933" datatype="html">
         <source> Gemeinsam editieren </source>
@@ -3557,7 +3557,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">36,37</context>
         </context-group>
-        <note priority="1" from="description">edit multiple items</note>
+        <note priority="1" from="description">Edit multiple items</note>
       </trans-unit>
       <trans-unit id="2687934542714352858" datatype="html">
         <source> Liste exportieren </source>
@@ -3565,7 +3565,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">28,29</context>
         </context-group>
-        <note priority="1" from="description">export list</note>
+        <note priority="1" from="description">Export list</note>
       </trans-unit>
       <trans-unit id="1013801683234737533" datatype="html">
         <source> Neues Item hinzufügen </source>
@@ -3573,7 +3573,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">41,42</context>
         </context-group>
-        <note priority="1" from="description">create new item</note>
+        <note priority="1" from="description">Create new item</note>
       </trans-unit>
       <trans-unit id="8421747777906229614" datatype="html">
         <source> Bearbeiten </source>
@@ -3581,7 +3581,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">46,47</context>
         </context-group>
-        <note priority="1" from="description">edit item</note>
+        <note priority="1" from="description">Edit item</note>
       </trans-unit>
       <trans-unit id="6645469676644999969" datatype="html">
         <source> Kopieren </source>
@@ -3589,7 +3589,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">51,52</context>
         </context-group>
-        <note priority="1" from="description">copy item</note>
+        <note priority="1" from="description">Copy item</note>
       </trans-unit>
       <trans-unit id="2904458867379760373" datatype="html">
         <source> Item ansehen </source>
@@ -3597,7 +3597,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">56,57</context>
         </context-group>
-        <note priority="1" from="description">view item</note>
+        <note priority="1" from="description">View item</note>
       </trans-unit>
       <trans-unit id="2573516431146291223" datatype="html">
         <source> Grafik ansehen </source>
@@ -3605,7 +3605,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">61,62</context>
         </context-group>
-        <note priority="1" from="description">view graph</note>
+        <note priority="1" from="description">View graph</note>
       </trans-unit>
       <trans-unit id="8981596137973820790" datatype="html">
         <source> Versionsverlauf ansehen </source>
@@ -3613,7 +3613,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">66,67</context>
         </context-group>
-        <note priority="1" from="description">view history</note>
+        <note priority="1" from="description">View history</note>
       </trans-unit>
       <trans-unit id="6011349536224937762" datatype="html">
         <source> Nachbarn suchen </source>
@@ -3621,7 +3621,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/action-list/action-list.component.html</context>
           <context context-type="linenumber">71,72</context>
         </context-group>
-        <note priority="1" from="description">search neighbors</note>
+        <note priority="1" from="description">Search neighbors</note>
       </trans-unit>
       <trans-unit id="3384213210014722209" datatype="html">
         <source>Export-Format: </source>
@@ -3629,7 +3629,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/export-items/export-items.component.html</context>
           <context context-type="linenumber">2,3</context>
         </context-group>
-        <note priority="1" from="description">choose export format:</note>
+        <note priority="1" from="description">Choose export format:</note>
       </trans-unit>
       <trans-unit id="5323231108109170943" datatype="html">
         <source>Excel</source>
@@ -3645,7 +3645,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/export-items/export-items.component.html</context>
           <context context-type="linenumber">5,6</context>
         </context-group>
-        <note priority="1" from="description">csv</note>
+        <note priority="1" from="description">CSV</note>
       </trans-unit>
       <trans-unit id="8696865147554603290" datatype="html">
         <source>Zwischenablage</source>
@@ -3653,7 +3653,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/export-items/export-items.component.html</context>
           <context context-type="linenumber">6,7</context>
         </context-group>
-        <note priority="1" from="description">clipboard</note>
+        <note priority="1" from="description">Clipboard</note>
       </trans-unit>
       <trans-unit id="1554339525671560484" datatype="html">
         <source>Exportieren</source>
@@ -3661,7 +3661,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/export-items/export-items.component.html</context>
           <context context-type="linenumber">8,9</context>
         </context-group>
-        <note priority="1" from="description">export</note>
+        <note priority="1" from="description">Export</note>
       </trans-unit>
       <trans-unit id="788556463939586418" datatype="html">
         <source>Hilfe einblenden</source>
@@ -3669,7 +3669,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/help/help.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-        <note priority="1" from="description">show help</note>
+        <note priority="1" from="description">Show help</note>
       </trans-unit>
       <trans-unit id="7962099078482397985" datatype="html">
         <source>Rolle: </source>
@@ -3677,7 +3677,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/inputs/role-display/role-display.component.html</context>
           <context context-type="linenumber">1</context>
         </context-group>
-        <note priority="1" from="description">role</note>
+        <note priority="1" from="description">Role</note>
       </trans-unit>
       <trans-unit id="3742657416068781599" datatype="html">
         <source>Editor</source>
@@ -3685,7 +3685,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/inputs/role-display/role-display.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-        <note priority="1" from="description">editor</note>
+        <note priority="1" from="description">Editor</note>
       </trans-unit>
       <trans-unit id="8022684452981881720" datatype="html">
         <source>Leser</source>
@@ -3693,7 +3693,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/shared/inputs/role-display/role-display.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
-        <note priority="1" from="description">reader</note>
+        <note priority="1" from="description">Reader</note>
       </trans-unit>
     </body>
   </file>

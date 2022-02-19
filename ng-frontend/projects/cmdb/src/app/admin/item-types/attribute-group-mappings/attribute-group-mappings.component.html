@@ -1,5 +1,5 @@
 <div class="box">
-    <h1 i18n="manage mappings">Verwalten der Zuordnungen</h1>
+    <h1 i18n="Manage mappings">Verwalten der Zuordnungen</h1>
     <p>
         <ng-container i18n="between the item type">Zuordnungen zwischen dem Item-Typ </ng-container>
         {{itemType?.name}}<br/>
@@ -14,7 +14,7 @@
             <ng-container *ngIf="attributeGroup === selectedAttributeGroup">
                 <p>
                     <ng-container i18n="You want to delete the mapping of the">Sie wollen eine Zuordnung der</ng-container>
-                    <ng-container i18n="attribute group">Attributgruppe </ng-container>
+                    <ng-container i18n="Attribute group">Attributgruppe </ng-container>
                     <b>
                         {{ attributeGroup.name }}
                     </b>
@@ -26,14 +26,14 @@
                     <b>
                         {{ mappingsCount }}
                     </b>
-                    <ng-container i18n="attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>
+                    <ng-container i18n="Attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>
                 </p>
                 <p i18n="Are you sure you want to delete the mapping?">Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>
                 <p>
-                    <button type="button" class="selectable" i18n="no" (click)="cancelUpdate()">
+                    <button type="button" class="selectable" i18n="No" (click)="cancelUpdate()">
                         Nein
                     </button>
-                    <button type="button" class="selectable" i18n="yes, delete" (click)="removeMapping()">
+                    <button type="button" class="selectable" i18n="Yes, delete" (click)="removeMapping()">
                         Ja, l&ouml;schen
                     </button>
                 </p>
@@ -41,6 +41,6 @@
         </li>
     </ul>
     <p>
-        <button i18n="back to item types" (click)="returnToItemTypes()">Zur&uuml;ck zu den Item-Typen</button>
+        <button i18n="Go back to item types" (click)="returnToItemTypes()">Zur&uuml;ck zu den Item-Typen</button>
     </p>
 </div>

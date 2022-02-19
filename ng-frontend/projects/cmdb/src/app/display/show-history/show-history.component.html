@@ -1,40 +1,40 @@
-<app-busy *ngIf="!history" i18n="loading data for configuration item">
+<app-busy *ngIf="!history" i18n="Loading data for configuration item">
     Lade Daten des Configuration Items...
 </app-busy>
 <ng-container *ngIf="history">
     <table class="table">
         <thead>
             <tr>
-                <th i18n="date">Zeitpunkt</th>
+                <th i18n="Date">Zeitpunkt</th>
                 <th class="position-relative" appClickOpen>
-                    <button type="menu" i18n="subject">
+                    <button type="menu" i18n="Subject">
                         Bezug
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button type="button" (click)="history.filter = ''" i18n="all subjects">
+                            <button type="button" (click)="history.filter = ''" i18n="All subjects">
                                 Alle Bez&uuml;ge
                             </button>
                         </li>
                         <li *ngIf="history.allowedFilters.includes('I')">
-                            <button type="button" (click)="history.filter = 'I'" i18n="configuration items">
+                            <button type="button" (click)="history.filter = 'I'" i18n="Configuration items">
                                 Configuration Items
                             </button>
                         </li>
                         <li *ngIf="history.allowedFilters.includes('A')">
-                            <button type="button" (click)="history.filter = 'A'" i18n="attributes">
+                            <button type="button" (click)="history.filter = 'A'" i18n="Attributes">
                                 Attribute
                             </button>
                         </li>
                         <li *ngIf="history.allowedFilters.includes('C')">
-                            <button type="button" (click)="history.filter = 'C'" i18n="connections">
+                            <button type="button" (click)="history.filter = 'C'" i18n="Connections">
                                 Verbindungen
                             </button>
                         </li>
                     </ul>
                 </th>
-                <th i18n="action">Aktion</th>
-                <th i18n="who did this">Durchgef&uuml;hrt von</th>
+                <th i18n="Action">Aktion</th>
+                <th i18n="Who did this">Durchgef&uuml;hrt von</th>
             </tr>
         </thead>
         <tbody>

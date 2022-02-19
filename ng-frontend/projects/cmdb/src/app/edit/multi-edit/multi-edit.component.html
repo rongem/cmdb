@@ -1,7 +1,7 @@
-<h3 i18n="edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
+<h3 i18n="Edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h3>
 <table class="table">
     <thead>
-        <th i18n="configuration item">
+        <th i18n="Configuration item">
             Configuration Item
         </th>
         <th *ngFor="let ob of (resultColumns | async)" class="position-relative" appClickOpen>
@@ -14,20 +14,20 @@
             </ng-template>
             <ul class="dropdown-menu" *ngIf="ob.key.startsWith('a:')" [formGroup]="attributeForm">
                 <li>
-                    <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(ob.key), undefined)" i18n="delete all values">
+                    <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(ob.key), undefined)" i18n="Delete all values">
                         Alle Werte l&ouml;schen
                     </button>
                 </li>
                 <li>
-                    <label for="newAttributeValue" i18n="custom value">Eigener Wert</label>
+                    <label for="newAttributeValue" i18n="Custom value">Eigener Wert</label>
                     <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(ob.key)">
                     <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), newAtt.value)"
-                        [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="save">
+                        [disabled]="attributeForm.get(clearKey(ob.key)).invalid" i18n="Save">
                         Speichern
                     </button>
                 </li>
                 <ng-container *ngIf="(getValuesForAttributeType(clearKey(ob.key)) | async).length > 1">
-                    <li i18n="existing values">Vorhandene Werte</li>
+                    <li i18n="Existing values">Vorhandene Werte</li>
                     <li *ngFor="let value of (getValuesForAttributeType(clearKey(ob.key)) | async)">
                         <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(ob.key), value)">{{value}}</button>
                     </li>
@@ -37,20 +37,20 @@
                 *ngIf="ob.key.startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(ob.key)).length > 0 || getConnectionRuleAllowsAdding(clearKey(ob.key)))">
                 <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(ob.key))">
                     <button type="button" class="red-button selectable" (click)="onDeleteConnections(connection)">
-                        <ng-container i18n="delete connection to ">L&ouml;sche Verbindung zu </ng-container>
+                        <ng-container i18n="Delete connection to ">L&ouml;sche Verbindung zu </ng-container>
                         {{connection.targetName}}
                     </button>
                 </li>
                 <li class="flex-vertical__full-width" *ngIf="getConnectionRuleAllowsAdding(clearKey(ob.key))" [formGroupName]="clearKey(ob.key)">
-                    <label [for]="ob.key" i18n="item">Item</label>
+                    <label [for]="ob.key" i18n="Item">Item</label>
                     <select [id]="ob.key" (click)="stopPropagation($event)" formControlName="targetId">
                         <option *ngFor="let item of (getAvailableItems(clearKey(ob.key), (items | async)) | async)" [value]="item.id">
                             {{item.name}}
                         </option>
                     </select>
-                    <label [for]="'d' + ob.key" i18n="description" class="selectable">Beschreibung</label>
+                    <label [for]="'d' + ob.key" i18n="Description" class="selectable">Beschreibung</label>
                     <input [id]="'d' + ob.key" type="text" class="selectable" (click)="stopPropagation($event)" formControlName="description">
-                    <button type="button" class="selectable" i18n="save" (click)="onAddConnection(clearKey(ob.key))"
+                    <button type="button" class="selectable" i18n="Save" (click)="onAddConnection(clearKey(ob.key))"
                         [disabled]="connectionForm.get(clearKey(ob.key)).invalid">
                         Speichern
                     </button>
@@ -58,19 +58,19 @@
             </ul>
         </th>
         <th class="position-relative" appClickOpen>
-            <button type="menu" class="dropdown-toggle selectable" i18n="external links">
+            <button type="menu" class="dropdown-toggle selectable" i18n="External links">
                 Externe Links
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <button type="button" class="red-button selectable" (click)="onDeleteAllLinks()" i18n="delete all links">
+                    <button type="button" class="red-button selectable" (click)="onDeleteAllLinks()" i18n="Delete all links">
                         Alle Links l&ouml;schen
                     </button>
                 </li>
                 <li *ngFor="let uri of (uniqueLinks | async)">
                     <button type="button" class="red-button selectable" (click)="onDeleteLink(uri)">
                         {{uri}}
-                        <ng-container i18n="delete">
+                        <ng-container i18n="Delete">
                             l&ouml;schen
                         </ng-container>
                     </button>
@@ -78,10 +78,10 @@
                 <li [formGroup]="linkForm">
                     <label for="newUri" i18n="URI">URL</label>
                     <input id="newUri" type="text" (click)="stopPropagation($event)" formControlName="uri">
-                    <label for="newDescription" i18n="description">Beschreibung</label>
+                    <label for="newDescription" i18n="Description">Beschreibung</label>
                     <input id="newDescription" type="text" (click)="stopPropagation($event)" formControlName="description">
                     <button type="button" class="selectable" (click)="onAddLink()"
-                        [disabled]="linkForm.invalid" i18n="save">
+                        [disabled]="linkForm.invalid" i18n="Save">
                         Speichern
                     </button>
                 </li>
@@ -97,7 +97,7 @@
                 <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
                 <button class="red-button selectable smaller-font" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
                     X
-                    <span class="visually-hidden" i18n="remove item from list">
+                    <span class="visually-hidden" i18n="Remove item from list">
                         Item aus der Liste entfernen
                     </span>
                 </button>

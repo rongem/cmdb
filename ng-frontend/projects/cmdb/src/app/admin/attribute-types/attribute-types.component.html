@@ -1,13 +1,13 @@
 <app-help>
-        <p i18n="attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.">
+        <p i18n="Attributes are text information stored along with a configuration item. Every attribute needs a distinct attribute type.">
             Attribute sind Textinformationen, die zu einem Configuration Item gespeichert werden.
             Jedes Attribut besitzt einen eindeutigen Attribut-Typen.</p>
-        <p i18n="every attribute of that type will be validated by the given regular expression">
+        <p i18n="Every attribute of that type will be validated by the given regular expression">
             Jedes Attribut dieses Typs wird mit dem angegebenen regul&auml;ren Ausdruck auf G&uuml;ltigkeit &uuml;berpr&uuml;ft.</p>
-        <p i18n="attribute types are being merged into attribute groups">
+        <p i18n="Attribute types are being merged into attribute groups">
             Attribut-Typen werden in Attributgruppen zusammengefasst.
         </p>
-        <p i18n="any attribute type may only be used once per configuration item">
+        <p i18n="Any attribute type may only be used once per configuration item">
             Jeder Attribut-Typ kann nur einmal pro Configuration Item vergeben werden.
         </p>
 </app-help>
@@ -16,19 +16,19 @@
         <tr>
             <th class="table-cell table-header">
                 <span class="mobile-only">1: </span>
-                <span i18n="attribute type name">Name des Attributtyps</span>
+                <span i18n="Attribute type name">Name des Attributtyps</span>
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">2: </span>
-                <span i18n="attribute group">Attributgruppe</span>
+                <span i18n="Attribute group">Attributgruppe</span>
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">3: </span>
-                <span i18n="validation rule">G&uuml;ltigkeitsregel</span>
+                <span i18n="Validation rule">G&uuml;ltigkeitsregel</span>
             </th>
             <th class="table-cell table-header">
                 <span class="mobile-only">4: </span>
-                <span i18n="actions">Aktionen</span>
+                <span i18n="Actions">Aktionen</span>
             </th>
         </tr>
     </thead>
@@ -75,7 +75,7 @@
                     <span class="mobile-only">4: </span>
                     <button type="button" class="dropdown-toggle">
                         ...
-                        <span class="visually-hidden" i18n="click to open action menu">
+                        <span class="visually-hidden" i18n="Click to open action menu">
                             Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                         </span>
                     </button>
@@ -83,15 +83,15 @@
                         <li>
                             <button type="button" class="red-button selectable"
                                 [routerLink]="['delete', attributeType.id]">
-                                <ng-container i18n="delete attribute type">Attributtyp l&ouml;schen</ng-container>
+                                <ng-container i18n="Delete attribute type">Attributtyp l&ouml;schen</ng-container>
                             </button>
                         </li>
                         <li>
                             <button type="button" class="selectable"
                                 *ngIf="(connectionTypes | async).length > 0"
                                 [routerLink]="['convert', attributeType.id]">
-                                <ng-container i18n="convert to item type">In Item-Typ konvertieren</ng-container>
-                                <span class="visually-hidden" i18n="click to convert attribute type to item type">
+                                <ng-container i18n="Convert to item type">In Item-Typ konvertieren</ng-container>
+                                <span class="visually-hidden" i18n="Click to convert attribute type to item type">
                                     Klicken, um Attributtyp in Item-Typ konvertieren
                                 </span>
                             </button>
@@ -100,7 +100,7 @@
                             <button type="button" class="selectable"
                                 [cdkCopyToClipboard]="attributeType.id">
                                 <ng-container i18n="Copy Id">Id kopieren</ng-container>
-                                <span class="visually-hidden" i18n="click to copy the attribute type id into the clipbaord">
+                                <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
                                     Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                                 </span>
                             </button>
@@ -111,10 +111,10 @@
                     <button class="btn-ok selectable" type="button"
                         [disabled]="form.pristine || form.invalid"
                         (click)="onChangeAttributeType()">
-                        <ng-container i18n="save">Speichern</ng-container>
+                        <ng-container i18n="Save">Speichern</ng-container>
                     </button>
                     <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                        <ng-container i18n="cancel">Abbrechen</ng-container>
+                        <ng-container i18n="Cancel">Abbrechen</ng-container>
                     </button>
                 </ng-container>
            </td>
@@ -122,7 +122,7 @@
         <tr *ngIf=" activeLine === -1 && !createMode">
             <td class="table-cell" colspan="4">
                 <button type="button" class="selectable" (click)="onCreate()">
-                    <ng-container i18n="add new attribute type">
+                    <ng-container i18n="Add new attribute type">
                         Neuen Attributtyp hinzuf&uuml;gen
                     </ng-container>
                 </button>
@@ -132,7 +132,7 @@
             <td class="table-cell">
                 <input autofocus type="text" formControlName="name" class="selectable"
                     (keyup.escape)="onCancel()"
-                    placeholder="Name" i18n-placeholder="name" />
+                    placeholder="Name" i18n-placeholder="Name" />
             </td>
             <td class="table-cell">
                 <select formControlName="attributeGroupId" required class="selectable">
@@ -143,16 +143,16 @@
             <td class="table-cell">
                 <input type="text" formControlName="validationExpression" class="selectable"
                     (keyup.escape)="onCancel()"
-                    placeholder="G&uuml;ltigkeitsregel" i18n-placeholder="validation rule" />
+                    placeholder="G&uuml;ltigkeitsregel" i18n-placeholder="Validation rule" />
             </td>
             <td class="table-cell">
                 <button class="btn-ok selectable" type="button"
                     [disabled]="form.pristine || form.invalid"
                     (click)="onCreateAttributeType()">
-                    <ng-container i18n="save">Speichern</ng-container>
+                    <ng-container i18n="Save">Speichern</ng-container>
                 </button>
                 <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                    <ng-container i18n="cancel">Abbrechen</ng-container>
+                    <ng-container i18n="Cancel">Abbrechen</ng-container>
                 </button>
             </td>
         </tr>

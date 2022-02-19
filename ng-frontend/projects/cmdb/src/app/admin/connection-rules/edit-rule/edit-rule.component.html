@@ -25,7 +25,7 @@
             <span>&uarr;</span>
         </p>
         <div>
-            <label for="validation" i18n="validation rule (RegEx) for connection description">
+            <label for="validation" i18n="Validation rule (RegEx) for connection description">
                 G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen
             </label>
             <input type="text" id="validation" formControlName="validationExpression" class="selectable"
@@ -35,11 +35,11 @@
         </div>
         <div>
             <button class="btn-ok" type="submit" [disabled]="ruleForm.invalid" class="selectable"
-                i18n="save" (click)="onSubmit()">
+                i18n="Save" (click)="onSubmit()">
                 Speichern
             </button>
             <button class="btn-cancel" type="button" (click)="onCancel()" class="selectable"
-                i18n="cancel">
+                i18n="Cancel">
                 Abbrechen
             </button>
         </div>

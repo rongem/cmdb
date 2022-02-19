@@ -1,8 +1,8 @@
 <div class="box">
     <h1>
-        <ng-container i18n="delete item type">L&ouml;schen des Item-Typs </ng-container>{{itemType.name}}
+        <ng-container i18n="Delete item type">L&ouml;schen des Item-Typs </ng-container>{{itemType.name}}
     </h1>
-    <app-busy *ngIf="!items" i18n="loading data...">
+    <app-busy *ngIf="!items" i18n="Loading data...">
         Lade Daten...
     </app-busy>
     <div *ngIf="items && items.length > 0">
@@ -24,7 +24,7 @@
         </ul>
     </div>
     <div *ngIf="items && items.length === 0">
-        <p i18n="if you continue, you are also deleting">
+        <p i18n="If you continue, you are also deleting">
             Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
         </p>
         <ul>
@@ -32,12 +32,12 @@
                 {{attributeGroups?.length}}
                 <ng-container i18n="mapped attribute groups with "> zugeordnete Attributgruppen mit </ng-container>
                 {{(attributeTypes | async)?.length}}
-                <ng-container i18n="attribute types">Attributtypen</ng-container>
+                <ng-container i18n="Attribute types">Attributtypen</ng-container>
             </li>
             <li *ngIf="countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0">
                     {{countRules((connectionRulesToLower | async), 
                         (connectionRulesToUpper | async))}} 
-                <ng-container i18n="connection rules">Verbindungsregeln</ng-container>
+                <ng-container i18n="Connection rules">Verbindungsregeln</ng-container>
             </li>
         </ul>
         <p i18n="Are you sure you want to proceed?">
@@ -45,8 +45,8 @@
         </p>
     </div>
     <div *ngIf="items">
-        <button type="button" i18n="cancel" class="selectable" (click)="routeToItemTypes()">Abbrechen</button>
-        <button type="button" i18n="delete" class="selectable red" *ngIf="items?.length === 0" (click)="onDeleteItemType()">
+        <button type="button" i18n="Cancel" class="selectable" (click)="routeToItemTypes()">Abbrechen</button>
+        <button type="button" i18n="Delete" class="selectable red" *ngIf="items?.length === 0" (click)="onDeleteItemType()">
             L&ouml;schen
         </button>
     </div>

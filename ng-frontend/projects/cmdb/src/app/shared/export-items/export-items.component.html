@@ -1,16 +1,16 @@
 <div class="flex-vertical__full-width" style="padding-left: 0.5rem;">
-    <label for="exportType" i18n="choose export format: ">Export-Format: </label>
+    <label for="exportType" i18n="Choose export format: ">Export-Format: </label>
     <select id="exportType" [(ngModel)]="exportType">
         <option value="excel" i18n="Excel">Excel</option>
-        <option value="csv" i18n="csv">CSV</option>
-        <option value="clipboard" i18n="clipboard">Zwischenablage</option>
+        <option value="csv" i18n="CSV">CSV</option>
+        <option value="clipboard" i18n="Clipboard">Zwischenablage</option>
     </select>
-    <button i18n="export" (click)="exportFile()" class="selectable">Exportieren</button>
+    <button i18n="Export" (click)="exportFile()" class="selectable">Exportieren</button>
     <table #table style="display: none;">
         <thead>
             <tr>
-                <th i18n="name">Name</th>
-                <th i18n="item type">Item-Typ</th>
+                <th i18n="Name">Name</th>
+                <th i18n="Item type">Item-Typ</th>
                 <th *ngFor="let attributeType of (attributeTypes | async)">
                     {{attributeType.name}}
                 </th>

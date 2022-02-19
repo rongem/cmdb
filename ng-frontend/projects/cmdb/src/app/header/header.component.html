@@ -13,18 +13,18 @@
         </button>
         <ul class="dropdown-menu">
             <li>
-              <ng-container i18n="user name">Benutzer: </ng-container><b> {{(userName | async)}}</b>
+              <ng-container i18n="User name">Benutzer: </ng-container><b> {{(userName | async)}}</b>
             </li>
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
             <ng-container *ngIf="logoutPossible">
               <li>{{(remainingTime | async)}} </li>
               <li>
-                <button role="button" (click)="onChangePassword()" [routerLink]="['account', 'password']" i18n="change password" class="selectable">
+                <button role="button" (click)="onChangePassword()" [routerLink]="['account', 'password']" i18n="Change password" class="selectable">
                   Kennwort &auml;ndern
                 </button>
               </li>
               <li>
-                <button role="button" (click)="logout()" i18n="logout" class="selectable">
+                <button role="button" (click)="logout()" i18n="Logout" class="selectable">
                   Abmelden
                 </button>
               </li>

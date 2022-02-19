@@ -17,13 +17,13 @@
         </a>
         <ul class="dropdown-menu" style="left: unset;">
             <li>
-                <button type="button" [ngClass]="{vanished: item.level === 0, selectable: item.level !== 0}" i18n="center on this item"
+                <button type="button" [ngClass]="{vanished: item.level === 0, selectable: item.level !== 0}" i18n="Center on this item"
                     [routerLink]="['/display', 'configuration-item', item.id, 'graph']">
                     Dieses Configuration Item zentrieren
                 </button>
             </li>
             <li [ngClass]="{vanished: item.attributesLength === 0}">
-                <ng-container i18n="attributes">
+                <ng-container i18n="Attributes">
                     Attribute
                 </ng-container>
                 <ul>

@@ -1,5 +1,5 @@
 <app-help>
-    <p i18n="the new configuration items will have connections to those configuration items, to which the attributes have belonged">
+    <p i18n="The new configuration items will have connections to those configuration items, to which the attributes have belonged">
         Die neuen Configuration Items werden mit den Configuration Items verbunden, 
         deren Attribute sie bislang waren.
     </p>
@@ -10,11 +10,11 @@
         dem Namen 'X', das mit den 5 bisherigen Configuration Items,
         die das Attribut besa&szlig;en, verbunden sind.
     </p>
-    <p i18n="set if the new item type will be above or below the connected items">
+    <p i18n="Set if the new item type will be above or below the connected items">
         Sie k&ouml;nnen festlegen, ob der neue Item-Typ in den Verbindungen oberhalb oder unterhalb der existierenden
         Items erscheint.
     </p>
-    <p i18n="you may take additional attributes from the old configuration item to the new one, if their values are consistent with the converted attribute values. If you have an attribute of type 'model' with the value 'Y' and the attribute of type 'manufacturer' is always 'Z' for that, you can take the 'manufacturer' attribute to the new 'model' item type. Existing attributes of type 'manufacturer' will be deleted in that case.">
+    <p i18n="You may take additional attributes from the old configuration item to the new one, if their values are consistent with the converted attribute values. If you have an attribute of type 'model' with the value 'Y' and the attribute of type 'manufacturer' is always 'Z' for that, you can take the 'manufacturer' attribute to the new 'model' item type. Existing attributes of type 'manufacturer' will be deleted in that case.">
         Weiterhin k&ouml;nnen zus&auml;tzliche Attribute zum neuen Configuration Item mitgenommen 
         werden, sofern ihre Werte konsistent mit den zu &uuml;bertragenden 
         Attributwerten &uuml;bereinstimmen. Lautet also zu einem Attribut vom Typ 'Modell' 
@@ -23,18 +23,18 @@
         Configuration Item-Typ 'Modell' mitgenommen werden.
         Bei den bisherigen Configuration Items wird dann das Attribut 'Hersteller' entfernt.
     </p>
-    <p i18n="drag or click attribute types to be transferred from the old item to the new item type created from the attribute type">
+    <p i18n="Drag or click attribute types to be transferred from the old item to the new item type created from the attribute type">
         Ziehen Sie Attribut-Typen, die vom alten Item zum aus dem Attribut-Typ neu erstellten Item-Typ transferiert werden sollen, 
         auf die andere Seite, oder klicken Sie darauf.
     </p>
-    <p i18n="depending on the number of attribute values to be converted, this operation may take multiple minutes.">
+    <p i18n="Depending on the number of attribute values to be converted, this operation may take multiple minutes.">
         Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern.
     </p>
 </app-help>
 <div class="box grid">
     <div class="table-cell">
         <h3>
-            <ng-container i18n="converting attribute type ">Konvertieren des Attributtyps </ng-container>
+            <ng-container i18n="Converting attribute type ">Konvertieren des Attributtyps </ng-container>
             <i>
                 {{ attributeTypeToConvert?.name }}
             </i>
@@ -45,7 +45,7 @@
         <div class="flex" [ngClass]="{ backward: newPosition === 'above' }">
             <div class="item-type" [@swapDirectionOfUpper]="newPosition" (dragover)="onDragOverExistingType($event)" (drop)="onDropOnExistingType($event)">
                 <div draggable="true" class="draggable" (dragstart)="onDragStartExistingTypes($event)" (dragend)="onDragEndType($event)">
-                    <ng-container i18n="all existing item types with the attribute">
+                    <ng-container i18n="All existing item types with the attribute">
                         Alle bisherigen Item-Typen mit dem Attribut
                     </ng-container>
                     <b>
@@ -61,12 +61,12 @@
                         <ng-container *ngIf="newPosition === 'below'" i18n="above">
                             oberhalb
                         </ng-container>
-                        <ng-container i18n="the new item">
+                        <ng-container i18n="The new item">
                             des neuen Item-Typen
                         </ng-container>
                     </span>
                 </div>
-                <h3 i18n="attribute types">Attribut-Typen</h3>
+                <h3 i18n="Attribute types">Attribut-Typen</h3>
                 <ul>
                     <li class="strikethrough" disabled="true">
                         {{ attributeTypeToConvert?.name }}
@@ -75,13 +75,13 @@
                         <button type="button" (click)="onChangeAttributeToTransfer(transferrableAttributeType.id, true)"
                             *ngIf="!isAttributeTypeSelected(transferrableAttributeType)"
                             draggable="true" class="draggable" (dragstart)="onDragStartAttributeType($event, transferrableAttributeType, false)">
-                            <span class="visually-hidden" i18n="click to transfer attribute type">
+                            <span class="visually-hidden" i18n="Click to transfer attribute type">
                                 Klicken, um den Attributtyp zu &uuml;bertragen:
                             </span>
                             {{ transferrableAttributeType.name }}
                         </button>
                         <span class="strikethrough" *ngIf="isAttributeTypeSelected(transferrableAttributeType)">
-                            <span class="visually-hidden" i18n="attribute type will be transferred">
+                            <span class="visually-hidden" i18n="Attribute type will be transferred">
                                 Attributttyp wird &uuml;bertragen:
                             </span>
                             {{ transferrableAttributeType.name }}
@@ -100,20 +100,20 @@
                     </span>
                     <button type="button" class="dropdown-toggle">
                         ...
-                        <span class="visually-hidden" i18n="click to open action menu">
+                        <span class="visually-hidden" i18n="Click to open action menu">
                             Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                         </span>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="selectable" role="button" i18n="change connection direction" (click)="toggleDirection()">
+                            <a class="selectable" role="button" i18n="Change connection direction" (click)="toggleDirection()">
                                 Richtung der Verbindung &auml;ndern
                             </a>
                         </li>
                         <li *ngFor="let connectionType of (connectionTypes | async)">
                             <a class="selectable" role="button" (click)="onChangeConnectionType(connectionType)">
                                 &rarr;
-                                <span class="visually-hidden" i18n="click to change connection type">
+                                <span class="visually-hidden" i18n="Click to change connection type">
                                     Klicken, um Verbindungstyp zu &auml;ndern auf
                                 </span>
                                 {{ connectionType.name }} &darr;&nbsp;&uarr; {{ connectionType.reverseName }}
@@ -126,7 +126,7 @@
                 [@swapDirectionOfLower]="newPosition">
                 <div class="text-on-background" [ngClass]="{ strikethrough: !!itemType && conversionMethod === 'rename' }"
                     (dragstart)="onDragStartNewType($event)" (dragend)="onDragEndType($event)">
-                    <ng-container i18n="new item type">
+                    <ng-container i18n="New item type">
                         Neuer Item-Typ
                     </ng-container>
                     <b draggable="true" class="draggable">
@@ -142,7 +142,7 @@
                         <ng-container *ngIf="newPosition === 'below'" i18n="below">
                             unterhalb
                         </ng-container>
-                        <ng-container i18n="the new item">
+                        <ng-container i18n="The new item">
                             des neuen Item-Typen
                         </ng-container>
                     </span>
@@ -166,22 +166,22 @@
                         </ng-container>
                     </button>
                     <div *ngIf="conversionMethod === 'rename'">
-                        <label for="newname" i18n="new name for the item type">
+                        <label for="newname" i18n="New name for the item type">
                             Neuer Name f&uuml;r den Item-Typ: 
                         </label>
                         <input type="text" id="newname" name="newname" [(ngModel)]="newName" class="selectable" />
                     </div>
                 </div>
                 <div class="item-type__color">
-                    <span i18n="item type background color">Hintergrundfarbe des Item-Typs: </span>
+                    <span i18n="Item type background color">Hintergrundfarbe des Item-Typs: </span>
                     <app-color-picker [color]="itemType ? itemType.backColor : newColor"
                         (colorChange)="onChangeItemBackgroundColor($event)"
                         [disabled]="!!itemType && conversionMethod === 'merge'">
                     </app-color-picker>
                 </div>
                 <ng-container *ngIf="transferAttributeTypes.length > 0">
-                    <h3 i18n="attribute types">Attribut-Typen</h3>
-                    <p i18n="attribute types that are being transferred to the new item type">
+                    <h3 i18n="Attribute types">Attribut-Typen</h3>
+                    <p i18n="Attribute types that are being transferred to the new item type">
                         Attribut-Typen, die mit zum neuen Item-Typen &uuml;bernommen werden
                     </p>
                 </ng-container>
@@ -189,7 +189,7 @@
                     <li *ngFor="let attributeType of transferAttributeTypes">
                         <button type="button" (click)="onChangeAttributeToTransfer(attributeType.id, false)"
                             draggable="true" class="draggable" (dragstart)="onDragStartAttributeType($event, attributeType, true)">
-                            <span class="visually-hidden" i18n="click to remove attribute type">
+                            <span class="visually-hidden" i18n="Click to remove attribute type">
                                 Klicken, um den Attributtyp zu entfernen:
                             </span>
                             {{ attributeType.name }}
@@ -201,7 +201,7 @@
     </div>
     <div class="table-cell">
         <div class="input__elements">
-            <button class="red selectable" type="button" (click)="onSubmit()" i18n="start converting">
+            <button class="red selectable" type="button" (click)="onSubmit()" i18n="Start converting">
                 Umwandlung starten
             </button>
         </div>
