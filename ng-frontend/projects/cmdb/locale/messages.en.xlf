@@ -352,10 +352,10 @@
 					</context>
 				</context-group>
 				<note priority="1" from="description">
-					Do login
+					Log in
 				</note>
 				<target>
-					Do login
+					Log in
 				</target>
 			</trans-unit>
 			<trans-unit id="520376386642516307" datatype="html">

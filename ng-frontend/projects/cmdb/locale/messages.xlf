@@ -160,7 +160,7 @@
           <context context-type="sourcefile">projects/cmdb/src/app/account/login-form/login-form.component.html</context>
           <context context-type="linenumber">9,11</context>
         </context-group>
-        <note priority="1" from="description">Do login</note>
+        <note priority="1" from="description">Log in</note>
       </trans-unit>
       <trans-unit id="520376386642516307" datatype="html">
         <source> Suchen / Ergebnisse </source>
