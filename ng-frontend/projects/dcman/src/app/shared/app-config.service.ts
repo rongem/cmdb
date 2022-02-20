@@ -142,7 +142,7 @@ export class ExtendedAppConfigService extends AppConfigService {
     static statusCodes: StatusCodes;
 
     loadSettings() {
-        return Promise.all([this.load(environment.name), this.loadLanguageSettings()]);
+        return Promise.all([this.load(), this.loadLanguageSettings()]);
     }
 
     private loadLanguageSettings() {
