@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
-    "build:all": "ng build --configuration production backend-access && ng build --configuration production cmdb && ng build --configuration production dcman",
+    "build:all": "ng build --configuration production backend-access && ng build --configuration=production,en cmdb && ng build --configuration production dcman",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

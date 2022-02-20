@@ -25,6 +25,7 @@
             ],
             "outputPath": "dist/cmdb",
             "index": "projects/cmdb/src/index.html",
+            "localize": true,
             "main": "projects/cmdb/src/main.ts",
             "polyfills": "projects/cmdb/src/polyfills.ts",
             "tsConfig": "projects/cmdb/tsconfig.app.json",
@@ -68,6 +69,12 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "en": {
+              "localize": ["en"]
+            },
+            "de": {
+              "localize": ["de"]
             }
           },
           "defaultConfiguration": "production"
@@ -81,6 +88,9 @@
             "development": {
               "browserTarget": "cmdb:build:development",
               "proxyConfig": "projects/proxy.config.js"
+            },
+            "en": {
+              "browserTarget": "cmdb:build:en"
             }
           },
           "defaultConfiguration": "development"
@@ -117,6 +127,14 @@
               "projects/cmdb/**/*.ts",
               "projects/cmdb/**/*.html"
             ]
+          }
+        }
+      },
+      "i18n": {
+        "sourceLocale":"de",
+        "locales": {
+          "en": {
+            "translation": "projects/cmdb/locale/messages.en.xlf"
           }
         }
       }
