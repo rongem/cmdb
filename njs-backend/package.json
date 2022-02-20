@@ -8,7 +8,7 @@
     "ct": "tsc && mocha --timeout 5000",
     "prep": "tsc --declaration && mocha --timeout 5000 && grunt bump",
     "comp": "tsc --declaration",
-    "dev": "ts-node-dev -r dotenv/config --respawn --transpile-only ./src/app.ts",
+    "dev": "nodemon -r dotenv/config ./src/app.ts",
     "prod": "tsc && node ./build/app.js",
     "docker": "docker build -t rongem/cmdb-backend .",
     "start": "node dist/app.js"
