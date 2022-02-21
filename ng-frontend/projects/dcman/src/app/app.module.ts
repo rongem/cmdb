@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { AuthInterceptor, MetaDataEffects, ValidatorModule } from 'backend-access';
+import { AuthInterceptor, EnvServiceProvider, MetaDataEffects, ValidatorModule } from 'backend-access';
 
 import { registerLocaleData } from '@angular/common';
 import localeEn from '@angular/common/locales/en';
@@ -59,6 +59,7 @@ registerLocaleData(localeEn);
   ],
   providers: [
     Title,
+    EnvServiceProvider,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
