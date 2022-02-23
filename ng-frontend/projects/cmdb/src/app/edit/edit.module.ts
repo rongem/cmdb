@@ -16,6 +16,7 @@ import { EditRoutingModule } from './edit-routing.module';
 import { EditServiceModule } from './edit-service.module';
 import { ImportItemsComponent } from './import-items/import-items.component';
 import { MultiEditComponent } from './multi-edit/multi-edit.component';
+import { MultiDeleteComponent } from './multi-delete/multi-delete.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { MultiEditComponent } from './multi-edit/multi-edit.component';
         EditItemConnectionsComponent,
         ImportItemsComponent,
         MultiEditComponent,
+        MultiDeleteComponent,
     ],
     imports: [
         EditRoutingModule,

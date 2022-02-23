@@ -35,7 +35,6 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient,
               private store: Store,
               private router: Router,
-              private route: ActivatedRoute,
               private fb: FormBuilder,
               private val: ValidatorService,
               private mes: MultiEditService) { }

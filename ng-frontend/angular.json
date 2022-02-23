@@ -68,13 +68,11 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "localize": false
             },
             "en": {
               "localize": ["en"]
-            },
-            "de": {
-              "localize": ["de"]
             }
           },
           "defaultConfiguration": "production"

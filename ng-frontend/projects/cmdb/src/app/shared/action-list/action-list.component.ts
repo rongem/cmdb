@@ -112,4 +112,15 @@ export class ActionListComponent implements OnInit, OnDestroy {
       this.router.navigate(['edit', 'multiple-items']);
     });
   }
+
+  onMultiDeleteItems() {
+    this.store.select(MultiEditSelectors.selectedIds).pipe(
+      withLatestFrom(this.resultList),
+      map(([itemIds, items]) => items.filter(item => itemIds.includes(item.id))),
+      take(1),
+    ).subscribe(items => {
+      this.store.dispatch(MultiEditActions.setSelectedItems({items}));
+      this.router.navigate(['edit', 'delete-multiple-items']);
+    });
+  }
 }

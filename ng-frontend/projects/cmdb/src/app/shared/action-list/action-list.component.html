@@ -23,6 +23,11 @@
                 Gemeinsam editieren
             </button>
         </li>
+        <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (areMultipleItemsSelected | async) === true">
+            <button type="button" class="no-wrap" [@showButton] (click)="onMultiDeleteItems()" i18n="Delete items">
+                Items l&ouml;schen
+            </button>
+        </li>
         <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (resultList | async).length > 0">
             <button type="button" class="no-wrap" (click)="showExport = !showExport" i18n="Export list">
                 Liste exportieren
