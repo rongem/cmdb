@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { switchMap} from 'rxjs';
+import { switchMap, take} from 'rxjs';
 import { Connection, EditFunctions, ErrorActions, FullConfigurationItem, ItemLink, ReadFunctions } from 'backend-access';
 import { MultiEditActions } from '../../shared/store/store.api';
 import { EditServiceModule } from '../edit-service.module';
@@ -88,6 +88,17 @@ export class MultiEditService {
         }));
         this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
         items.forEach(item => this.updateAndReadItem(item));
+    }
+
+    deleteItems(items: FullConfigurationItem[]) {
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        items.forEach(item => {
+            console.log(item.id, item.name);
+            EditFunctions.deleteConfigurationItem(this.http, this.store, item.id).pipe(take(1)).subscribe(deletedItem => {
+                this.store.dispatch(MultiEditActions.removeItemId({itemId: deletedItem.id}));
+                this.store.dispatch(MultiEditActions.removeSelectedItem({item}));
+            });
+        });
     }
 
     private updateAndReadItem(item: FullConfigurationItem) {

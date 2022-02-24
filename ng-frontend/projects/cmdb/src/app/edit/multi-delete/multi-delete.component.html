@@ -1,8 +1,21 @@
 <h3 i18n="Delete multiple items">Mehrere Configuration Items gleichzeitig l&ouml;schen</h3>
+<div class="box" *ngIf="(working | async) === 0">
+    <button type="button" (click)="onDeleteItems()" i18n="delete now">
+        Jetzt l&ouml;schen
+    </button>
+</div>
 <table class="table">
     <thead>
         <th i18n="Configuration item">
             Configuration Item
         </th>
     </thead>
+    <tbody>
+        <tr *ngFor="let item of (items | async)" [@vanishingRow]>
+            <td>
+                {{item.name}}
+                <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
+            </td>
+        </tr>
+    </tbody>
 </table>
