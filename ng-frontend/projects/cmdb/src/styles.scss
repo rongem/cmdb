@@ -294,6 +294,12 @@ em {
 .fixed-height__layout {
     height: calc(100vh - 2.8rem);
     overflow: auto;
+
+    h3 {
+        background-color: $element-background-color;
+        margin-block: 0;
+        padding: 0.5rem;
+    }
 }
 
 .flex {
