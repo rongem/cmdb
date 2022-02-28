@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, Observable, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
 import {
@@ -23,14 +23,24 @@ import { TargetConnections } from '../objects/target-connections.model';
   styleUrls: ['./multi-edit.component.scss']
 })
 export class MultiEditComponent implements OnInit, OnDestroy {
+  // forms to edit items via header menu
   attributeForm: FormGroup;
   connectionForm: FormGroup;
   linkForm: FormGroup;
+  // index of column that is being dragged
+  sourceIndex: number | undefined;
+  // index of column that dragged column is hovering on
+  presumedTargetIndex: number | undefined;
+  // columns for drag and drop column order change
+  columns: number[] = [];
+  // what data should be shown with column
+  columnContents: string[] = [];
   private itemTypeId: string;
   private subscriptions: Subscription[] = [];
   private deletableConnectionsByRule: Map<string, TargetConnections[]> = new Map();
   private addableConnectionRules: ConnectionRule[] = [];
   private availableItemsForRule = new Map<string, Observable<ConfigurationItem[]>>();
+
 
   constructor(private http: HttpClient,
               private store: Store,
@@ -76,8 +86,9 @@ export class MultiEditComponent implements OnInit, OnDestroy {
       withLatestFrom(
         this.store.select(SearchFormSelectors.searchItemType),
         this.store.select(SearchFormSelectors.connectionRulesForCurrentIsUpperSearchItemType),
+        this.attributeTypes,
       ),
-    ).subscribe(([items, itemType, connectionRules]) => {
+    ).subscribe(([items, itemType, connectionRules, attributeTypes]) => {
       // check if there are items and are all of the same type
       if (!itemType || !items || items.length === 0 || [...new Set(items.map(i => i.typeId))].length !== 1) {
         const target = ['display'];
@@ -87,6 +98,11 @@ export class MultiEditComponent implements OnInit, OnDestroy {
         this.router.navigate(target);
       } else {
         this.itemTypeId = itemType?.id ?? items[0].typeId;
+        // set columns if not yet done
+        if (this.columns.length === 0) {
+          this.columnContents = ['name', ...attributeTypes.map(a => 'a:' + a.id), ...connectionRules.map(r => 'ctl:' + r.id), 'links'];
+          this.columns = this.columnContents.map((c, index) => index);
+        }
         // extract all target ids from connections
         const targetIds = [...new Set(items.map(item => item.connectionsToLower.map(c => c.targetId)).flat())];
         // check if target is connected to all items and place it into new array if so
@@ -158,6 +174,12 @@ export class MultiEditComponent implements OnInit, OnDestroy {
       this.subscriptions.forEach(s => s.unsubscribe());
   }
 
+  getResultColumn(key: string) {
+    return this.resultColumns.pipe(
+      map(resultcolumns => resultcolumns.find(rc => rc.key === key).value),
+    );
+  }
+
   getValue(ci: FullConfigurationItem, attributeTypeId: string) {
     const att = ci.attributes.find(a => a.typeId === attributeTypeId);
     return att ? att.value : '-';
@@ -218,6 +240,14 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   stopPropagation(event: Event) {
     event.stopPropagation();
   }
+
+  onDragStart() {}
+
+  onDragEnd() {}
+
+  onDragOver() {}
+
+  onDrop() {}
 
   onChangeAttribute(typeId: string, value?: string) {
     if (value) { // set new value
