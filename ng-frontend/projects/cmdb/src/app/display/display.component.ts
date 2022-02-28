@@ -14,8 +14,13 @@ export class DisplayComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private store: Store, private route: ActivatedRoute) { }
+
   get searching() {
     return this.store.select(SearchFormSelectors.searching);
+  }
+
+  get userRole() {
+    return this.store.select(MetaDataSelectors.selectUserRole);
   }
 
   ngOnInit(): void {

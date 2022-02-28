@@ -2,6 +2,14 @@
     Lade Daten...
 </app-busy>
 <ng-container *ngIf="(itemReady | async) && !deleteRequest">
+    <h3 i18n="Edit configuration item">
+        Configuration Item bearbeiten
+    </h3>
+    <app-help>
+        <p i18n="Edit configuration item and save it afterwards.">
+            Bearbeiten Sie das Configuration Item und speichern Sie es nach Abschluss der Bearbeitung.
+        </p>
+    </app-help>
     <table class="table" [formGroup]="form">
         <thead>
             <tr>
