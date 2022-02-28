@@ -35,6 +35,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   columns: number[] = [];
   // what data should be shown with column
   columnContents: string[] = [];
+  // id of the search item type
   private itemTypeId: string;
   private subscriptions: Subscription[] = [];
   private deletableConnectionsByRule: Map<string, TargetConnections[]> = new Map();
@@ -241,13 +242,43 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     event.stopPropagation();
   }
 
-  onDragStart() {}
+  onDragStart(event: DragEvent, index: number) {
+    // set index when starting drag&drop
+    this.sourceIndex = index;
+    // firefox needs this
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', index.toString());
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
 
-  onDragEnd() {}
+  onDragEnd() {
+    // cancel drag&drop
+    this.sourceIndex = undefined;
+    this.presumedTargetIndex = undefined;
+  }
 
-  onDragOver() {}
+  onDragOver(event: DragEvent, targetIndex: number) {
+    if (this.sourceIndex !== undefined && this.sourceIndex !== targetIndex) {
+      this.presumedTargetIndex = targetIndex;
+      // enable drop
+      event.preventDefault();
+    } else {
+      this.presumedTargetIndex = undefined;
+    }
+  }
 
-  onDrop() {}
+  onDrop(targetIndex: number) {
+    if (this.sourceIndex !== undefined) {
+      // remove source index
+      const val = this.columns.splice(this.sourceIndex, 1)[0];
+      // put it into new place
+      this.columns.splice(targetIndex, 0, val);
+    }
+    // clean up temporary variables
+    this.presumedTargetIndex = undefined;
+    this.sourceIndex = undefined;
+  }
 
   onChangeAttribute(typeId: string, value?: string) {
     if (value) { // set new value

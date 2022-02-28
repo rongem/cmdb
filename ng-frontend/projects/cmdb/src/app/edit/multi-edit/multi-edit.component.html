@@ -2,7 +2,14 @@
 <table class="table">
     <thead>
         <tr>
-            <th *ngFor="let column of columns" class="position-relative" appClickOpen>
+            <th *ngFor="let column of columns; let i = index"
+                draggable="true"
+                (dragstart)="onDragStart($event, i)"
+                (dragend)="onDragEnd()"
+                (dragover)="onDragOver($event, i)"
+                (drop)="onDrop(i)"
+                [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i}"
+                class="position-relative" appClickOpen>
                 <ng-container *ngIf="columnContents[column] === 'name'" i18n="Configuration item">
                     Configuration Item
                 </ng-container>
@@ -107,8 +114,15 @@
                         </span>
                     </button>
                 </div>
+                <div *ngIf="columnContents[column] === 'links'" class="link-list">
+                    <div *ngFor="let link of item.links">
+                        <a [href]="link.uri">
+                            {{link.description}}
+                        </a>
+                    </div>
+                </div>
                 <ng-container *ngIf="columnContents[column].startsWith('a:')">
-                    {{ getValue(item, columnContents[column].substring(2)) }}
+                    {{ getValue(item, clearKey(columnContents[column])) }}
                 </ng-container>
                 <div *ngIf="columnContents[column].startsWith('ctl:') || columnContents[column].startsWith('ctu:')" class="link-list">
                     <div *ngFor="let connection of getConnections(item, columnContents[column])" class="link-list__item">
