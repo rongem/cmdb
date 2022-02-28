@@ -1,5 +1,5 @@
 <app-busy *ngIf="busy" i18n="analyzing">Analysiere...</app-busy>
-<h3 i18n="Import configuration items">Configuration Items importieren</h3>
+<h1 class="page-title" i18n="Import configuration items">Configuration Items importieren</h1>
 <form [formGroup]="form" (submit)="onSubmit()" *ngIf="!resultList">
     <table class="table" *ngIf="!fileContent">
         <thead>

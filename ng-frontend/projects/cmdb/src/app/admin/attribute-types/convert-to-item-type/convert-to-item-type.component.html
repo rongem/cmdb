@@ -33,13 +33,13 @@
 </app-help>
 <div class="box grid">
     <div class="table-cell">
-        <h3>
+        <h1 class="page-title">
             <ng-container i18n="Converting attribute type ">Konvertieren des Attributtyps </ng-container>
             <i>
                 {{ attributeTypeToConvert?.name }}
             </i>
             <ng-container i18n=" to an item type"> in einen Item-Typen</ng-container>
-        </h3>
+        </h1>
     </div>
     <div class="table-cell">
         <div class="flex" [ngClass]="{ backward: newPosition === 'above' }">

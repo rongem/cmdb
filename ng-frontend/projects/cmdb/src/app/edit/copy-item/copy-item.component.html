@@ -1,5 +1,5 @@
 <app-busy *ngIf="(itemReady | async) !== true || working"></app-busy>
-<h3 i18n="Copy configuration item">Configuration Item kopieren</h3>
+<h1 class="page-title" i18n="Copy configuration item">Configuration Item kopieren</h1>
 <ng-container *ngIf="(itemReady | async) && formReady">
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
         <table class="table">

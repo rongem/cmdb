@@ -294,12 +294,13 @@ em {
 .fixed-height__layout {
     height: calc(100vh - 2.8rem);
     overflow: auto;
+}
 
-    h3 {
-        background-color: $element-background-color;
-        margin-block: 0;
-        padding: 0.5rem;
-    }
+h1.page-title {
+    background-color: $element-background-color;
+    margin-block: 0;
+    padding: 0.5rem;
+    font-size: 1.5rem;
 }
 
 .flex {
@@ -599,10 +600,7 @@ button.input__content-button {
 .filter-box {
     padding: 0.5rem;
     margin: 0;
-    border-radius: 0 0.3rem 0.3rem 0;
-    border: $medium-border-style;
     background-color: $element-background-color;
-    border-left: none;
     label, input, select, button {
         margin: 0.5rem;
     }

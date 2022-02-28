@@ -2,9 +2,9 @@
     Lade Daten...
 </app-busy>
 <ng-container *ngIf="(itemReady | async) && !deleteRequest">
-    <h3 i18n="Edit configuration item">
+    <h1 class="page-title" i18n="Edit configuration item">
         Configuration Item bearbeiten
-    </h3>
+    </h1>
     <app-help>
         <p i18n="Edit configuration item and save it afterwards.">
             Bearbeiten Sie das Configuration Item und speichern Sie es nach Abschluss der Bearbeitung.
@@ -134,7 +134,7 @@
     <app-edit-item-connections *ngIf="(connectionTypes | async).length > 0 && (configurationItem | async).userIsResponsible"></app-edit-item-connections>
 </ng-container>
 <div class="box" *ngIf="deleteRequest">
-    <h3 i18n="Deleting configuration item">L&ouml;schen eines Configuration Items</h3>
+    <h1 class="page-title" i18n="Deleting configuration item">L&ouml;schen eines Configuration Items</h1>
     <p>
         <ng-container i18n="You are about to delete the following configuration item">
             Sie sind dabei, das Configuration Item
