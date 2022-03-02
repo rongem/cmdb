@@ -2,6 +2,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>&nbsp;</th>
             <th *ngFor="let column of columns; let i = index"
                 draggable="true"
                 (dragstart)="onDragStart($event, i)"
@@ -100,19 +101,24 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let item of (items | async)">
-            <td *ngFor="let column of columns">
+        <tr *ngFor="let item of (items | async); let row = index">
+            <td>
+                <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
+                <button class="red-button selectable smaller-font" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
+                    X
+                    <span class="visually-hidden" i18n="Remove item from list">
+                        Item aus der Liste entfernen
+                    </span>
+                </button>
+            </td>
+            <td *ngFor="let column of columns; let col = index" (focus)="onCellClick($event)"
+                (focusout)="onCellClick($event)" (keyup)="onCellKeyPress($event)" tabindex="0"
+                [ngClass]="{highlighted: isInsideSelection(col, row), 'upper-border': isOnUpperBorder(col, row), 'lower-border': isOnLowerBorder(col, row), 'left-border': isOnLeftBorder(col, row), 'right-border': isOnRightBorder(col, row)}"
+                #td>
                 <div *ngIf="columnContents[column] === 'name'" class="flex__space-between">
                     <a [routerLink]="['/display', 'configuration-item', item.id]">
                         {{item.name}}
                     </a>
-                    <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
-                    <button class="red-button selectable smaller-font" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
-                        X
-                        <span class="visually-hidden" i18n="Remove item from list">
-                            Item aus der Liste entfernen
-                        </span>
-                    </button>
                 </div>
                 <div *ngIf="columnContents[column] === 'links'" class="link-list">
                     <div *ngFor="let link of item.links">

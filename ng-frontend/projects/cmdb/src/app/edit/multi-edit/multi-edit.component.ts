@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -23,6 +23,8 @@ import { TargetConnections } from '../objects/target-connections.model';
   styleUrls: ['./multi-edit.component.scss']
 })
 export class MultiEditComponent implements OnInit, OnDestroy {
+  // table cells for selection
+  @ViewChildren('td') cells: QueryList<ElementRef<HTMLTableCellElement>>;
   // forms to edit items via header menu
   attributeForm: FormGroup;
   connectionForm: FormGroup;
@@ -35,6 +37,11 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   columns: number[] = [];
   // what data should be shown with column
   columnContents: string[] = [];
+  // Selection information
+  selectedRowStart = -1;
+  selectedColStart = -1;
+  selectedRowCount = 0;
+  selectedColCount = 0;
   // id of the search item type
   private itemTypeId: string;
   private subscriptions: Subscription[] = [];
@@ -236,6 +243,27 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     return this.availableItemsForRule.get(ruleId);
   }
 
+  isInsideSelection(colIndex: number, rowIndex: number) {
+    return colIndex >= this.selectedColStart && colIndex < this.selectedColCount + this.selectedColStart &&
+      rowIndex >= this.selectedRowStart && rowIndex < this.selectedRowStart + this.selectedRowCount;
+  }
+
+  isOnUpperBorder(colIndex: number, rowIndex: number) {
+    return this.isInsideSelection(colIndex, rowIndex) && rowIndex === this.selectedRowStart;
+  }
+
+  isOnLowerBorder(colIndex: number, rowIndex: number) {
+    return this.isInsideSelection(colIndex, rowIndex) && rowIndex === this.selectedRowStart + this.selectedRowCount - 1;
+  }
+
+  isOnLeftBorder(colIndex: number, rowIndex: number) {
+    return this.isInsideSelection(colIndex, rowIndex) && colIndex === this.selectedColStart;
+  }
+
+  isOnRightBorder(colIndex: number, rowIndex: number) {
+    return this.isInsideSelection(colIndex, rowIndex) && colIndex === this.selectedColStart + this.selectedColCount -1;
+  }
+
   clearKey = (key: string) =>  key.includes(':') ? key.split(':')[1] : key;
 
   stopPropagation(event: Event) {
@@ -280,6 +308,85 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     this.sourceIndex = undefined;
   }
 
+  onCellClick(event: FocusEvent) {
+    let colIndex = -1;
+    let rowIndex = -1;
+    if (event.type === 'focus' && event.target instanceof HTMLTableCellElement) {
+      colIndex = event.target.cellIndex - 1;
+      rowIndex = (event.target.parentElement as HTMLTableRowElement).rowIndex -1;
+    }
+    this.selectedColStart = colIndex;
+    this.selectedRowStart = rowIndex;
+    this.selectedColCount = colIndex > -1 ? 1 : 0;
+    this.selectedRowCount = rowIndex > -1 ? 1 : 0;
+    console.log({
+      colStart: this.selectedColStart,
+      colCount: this.selectedColCount,
+      rowStart: this.selectedRowStart,
+      rowCount: this.selectedRowCount,
+    });
+  }
+
+  onCellKeyPress(event: KeyboardEvent) {
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key) || event.altKey || event.ctrlKey) {
+      return;
+    }
+    const idx = this.cells.toArray().findIndex(z => z.nativeElement === event.target);
+    switch (event.key) {
+      case 'ArrowUp':
+        if (event.shiftKey) {
+          if (this.selectedRowCount > 1) {
+            this.selectedRowCount--;
+          }
+        } else {
+          const cell = this.cells.get(idx).nativeElement;
+          const rowIndex = this.getRowIndex(cell);
+          if (rowIndex > 1) {
+            const nextCell = this.cells.find(z => z.nativeElement.cellIndex === cell.cellIndex && this.getRowIndex(z.nativeElement) === rowIndex - 1);
+            nextCell.nativeElement.focus();
+          }
+        }
+        break;
+      case 'ArrowDown':
+        const maxRowIndex = this.getRowIndex(this.cells.last.nativeElement);
+        if (event.shiftKey) {
+          if (this.selectedRowStart + this.selectedRowCount < maxRowIndex) {
+            this.selectedRowCount++;
+          }
+        } else {
+          const cell = this.cells.get(idx).nativeElement;
+          const rowIndex = this.getRowIndex(cell);
+          if (rowIndex < maxRowIndex) {
+            const nextCell = this.cells.find(z => z.nativeElement.cellIndex === cell.cellIndex && this.getRowIndex(z.nativeElement) === rowIndex + 1);
+            nextCell.nativeElement.focus();
+          }
+        }
+        break;
+      case 'ArrowLeft':
+        if (event.shiftKey) {
+          if (this.selectedColCount > 1) {
+            this.selectedColCount--;
+          }
+        } else {
+          if (idx > 0) {
+            this.cells.get(idx - 1).nativeElement.focus();
+          }
+        }
+        break;
+      case 'ArrowRight':
+        if (event.shiftKey) {
+          if (this.selectedColStart + this.selectedColCount < this.columns.length) {
+            this.selectedColCount++;
+          }
+        } else {
+          if (idx < this.cells.length - 1) {
+            this.cells.get(idx + 1).nativeElement.focus();
+          }
+        }
+        break;
+    }
+  }
+
   onChangeAttribute(typeId: string, value?: string) {
     if (value) { // set new value
       this.items.pipe(take(1)).subscribe(items => this.mes.setAttributeValues(items, typeId, value));
@@ -311,5 +418,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   onDeleteLink(uri: string) {
     this.items.pipe(take(1)).subscribe(items => this.mes.deleteLink(items, uri));
   }
+
+  private getRowIndex = (cell: HTMLTableCellElement) => (cell.parentElement as HTMLTableRowElement).rowIndex;
 
 }
