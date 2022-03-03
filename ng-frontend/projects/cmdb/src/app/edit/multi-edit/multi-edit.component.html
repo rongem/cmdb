@@ -111,8 +111,8 @@
                     </span>
                 </button>
             </td>
-            <td *ngFor="let column of columns; let col = index" (focus)="onCellClick($event)"
-                (focusout)="onCellClick($event)" (keyup)="onCellKeyPress($event)" tabindex="0"
+            <td *ngFor="let column of columns; let col = index" (paste)="onPaste($event)"
+                (focus)="onCellClick($event)" (focusout)="onCellClick($event)" (keyup)="onCellKeyPress($event)" tabindex="0"
                 [ngClass]="{highlighted: isInsideSelection(col, row), 'upper-border': isOnUpperBorder(col, row), 'lower-border': isOnLowerBorder(col, row), 'left-border': isOnLeftBorder(col, row), 'right-border': isOnRightBorder(col, row)}"
                 #td>
                 <div *ngIf="columnContents[column] === 'name'" class="flex__space-between">

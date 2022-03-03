@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -16,6 +16,7 @@ import {
 import { MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../../shared/store/store.api';
 import { MultiEditService } from '../services/multi-edit.service';
 import { TargetConnections } from '../objects/target-connections.model';
+import { ClipboardHelper } from '../objects/clipboard-helper.model';
 
 @Component({
   selector: 'app-multi-edit',
@@ -87,6 +88,19 @@ export class MultiEditComponent implements OnInit, OnDestroy {
 
   private get attributeTypes() {
     return this.store.select(SearchFormSelectors.attributeTypesForCurrentSearchItemType);
+  }
+
+  @HostListener('window:paste', ['$event'])
+  onPaste(event: ClipboardEvent) {
+    event.cancelBubble = true;
+    try {
+      if (event.clipboardData) {
+        const lines = ClipboardHelper.getTableContent(event.clipboardData);
+        console.log(lines);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   ngOnInit(): void {
@@ -328,7 +342,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   }
 
   onCellKeyPress(event: KeyboardEvent) {
-    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key) || event.altKey || event.ctrlKey) {
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code) || event.altKey || event.ctrlKey) {
       return;
     }
     const idx = this.cells.toArray().findIndex(z => z.nativeElement === event.target);
