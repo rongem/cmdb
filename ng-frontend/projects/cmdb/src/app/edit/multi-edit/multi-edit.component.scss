@@ -31,3 +31,7 @@
 .left-border {
     border-left: $medium-border-style;
 }
+
+.red-border {
+    outline: 2px solid red !important;
+}

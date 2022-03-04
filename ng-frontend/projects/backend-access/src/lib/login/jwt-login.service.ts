@@ -23,7 +23,6 @@ export class JwtLoginService {
         this.http.post<{token: string}>(url, { accountName, passphrase }).pipe(
             take(1),
             catchError(error => {
-                console.log('x', error);
                 this.store.dispatch(ErrorActions.error({error, fatal: true}));
                 this.validLogin.next(false);
                 return of(undefined);

@@ -1,4 +1,22 @@
 <h1 class="page-title" i18n="Edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h1>
+<app-help>
+    <p i18n="With this function you may edit multiple configuration items at once. If you click on the column header, a menu will open that will let you choose the desired change for all of the items.">
+        Mit dieser Funktion k&ouml;nnen Sie mehrere Configuration Items auf einmal editieren. Wenn Sie auf die Spaltenk&ouml;pfe klicken, &ouml;ffnet
+        sich ein Men&uuml;, in dem Sie die gew&uuml;nschte &Auml;nderung f&uuml;r alle Items durchf&uuml;hren k&ouml;nnen.
+    </p>
+    <p i18n="If you want to remove an item from the list, hit the button marked with a red x on the left side of each row. The item will not be deleted, but no longer shown for editing. This may result in changing the menu structure on the column headers.">
+        Falls Sie ein Item aus der Liste entfernen wollen, k&ouml;nnen Sie auf den Knopf mit dem roten X am Anfang der Zeile klicken. Das Item wird nicht gel&ouml;scht,
+        sondern nur nicht mehr zum editieren angezeigt. Dadurch k&ouml;nnen sich auch die Optionen im Men&uuml; im Spaltenkopf &auml;ndern.
+    </p>
+    <p i18n="As an alternative, you may select a cell by clicking it, and expand the selection with shift and the arrow keys. With Ctrl + V you may paste contents from the clipboard. Invalid values will result in a red border in the table. If only one row is found in the clipboard, and there are multiple rows selected, the row will be multiplied. The same is done with columns.">
+        Alternativ besteht auch die M&ouml;glichkeit, eine Zelle durch klicken auszuw&auml;hlen und mit den Shift + Pfeiltasten die Markierung zu erweitern.
+        Dort lassen sich mittels Strg + V Werte aus der Zwischenablage einf&uuml;gen. Dabei werden unzul&auml;ssige Werte in der Tabelle mit einem roten Rahmen versehen.
+        Wird nur eine Zeile in der Zwischenablage gefunden, aber mehrere sind ausgew&auml;hlt, wird die einzelne Zeile wiederholt. Dasselbe gilt f&uuml;r Spalten.
+    </p>
+    <p i18n="You can drag and drop column headers, so that the target structure of the table meets the content structure from the clipboard.">
+        Sie k&ouml;nnen die Spaltek&ouml;pfe auch per Drag and Drop tauschen, so dass das Einf&uuml;gen aus der Zwischenablage auf eine passende Tabellenstruktur trifft.
+    </p>
+</app-help>
 <table class="table">
     <thead>
         <tr>
@@ -113,7 +131,7 @@
             </td>
             <td *ngFor="let column of columns; let col = index" (paste)="onPaste($event)"
                 (focus)="onCellClick($event)" (focusout)="onCellClick($event)" (keyup)="onCellKeyPress($event)" tabindex="0"
-                [ngClass]="{highlighted: isInsideSelection(col, row), 'upper-border': isOnUpperBorder(col, row), 'lower-border': isOnLowerBorder(col, row), 'left-border': isOnLeftBorder(col, row), 'right-border': isOnRightBorder(col, row)}"
+                [ngClass]="{highlighted: isInsideSelection(col, row), 'upper-border': isOnUpperBorder(col, row), 'lower-border': isOnLowerBorder(col, row), 'left-border': isOnLeftBorder(col, row), 'right-border': isOnRightBorder(col, row), 'red-border': hasError(item.id, columnContents[column])}"
                 #td>
                 <div *ngIf="columnContents[column] === 'name'" class="flex__space-between">
                     <a [routerLink]="['/display', 'configuration-item', item.id]">

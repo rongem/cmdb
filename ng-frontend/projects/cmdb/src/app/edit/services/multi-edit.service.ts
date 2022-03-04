@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { switchMap, take} from 'rxjs';
-import { Connection, EditFunctions, ErrorActions, FullConfigurationItem, ItemLink, ReadFunctions } from 'backend-access';
+import { AttributeType, Connection, ConnectionRule, EditFunctions, ErrorActions, FullConfigurationItem, ItemLink, ReadFunctions } from 'backend-access';
 import { MultiEditActions } from '../../shared/store/store.api';
 import { EditServiceModule } from '../edit-service.module';
 import { TargetConnections } from '../objects/target-connections.model';
@@ -93,12 +93,72 @@ export class MultiEditService {
     deleteItems(items: FullConfigurationItem[]) {
         this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
         items.forEach(item => {
-            console.log(item.id, item.name);
             EditFunctions.deleteConfigurationItem(this.http, this.store, item.id).pipe(take(1)).subscribe(deletedItem => {
                 this.store.dispatch(MultiEditActions.removeItemId({itemId: deletedItem.id}));
                 this.store.dispatch(MultiEditActions.removeSelectedItem({item}));
             });
         });
+    }
+
+    updateItems(items: FullConfigurationItem[], columns: string[], lines: string[][], attributeTypes: AttributeType[], connectionRules: ConnectionRule[]) {
+        this.store.dispatch(MultiEditActions.setItemIdsToProcess({itemIds: items.map(item => item.id)}));
+        const errors = new Map<string, string[]>();
+        items.forEach((item, index) => {
+            const line = lines[index];
+            let changed = false;
+            let updatedItem = {...item};
+            columns.forEach((c, colIndex) => {
+                const value = line[colIndex].trim();
+                if (c === 'name') {
+                    if (updatedItem.name !== value) {
+                        updatedItem = {
+                            ...updatedItem,
+                            name: value,
+                        };
+                        changed = true;
+                    }
+                } else if (c.startsWith('a:')) {
+                    const typeId = c.split(':')[1];
+                    const attribute = updatedItem.attributes.find(a => a.typeId === typeId);
+                    const attributeType = attributeTypes.find(a => a.id === typeId);
+                    if (!!value) {
+                        if (!new RegExp(attributeType.validationExpression).test(value)) {
+                            if (!errors.has(item.id)) {
+                                errors.set(item.id, [c]);
+                            } else {
+                                errors.get(item.id).push(c);
+                            }
+                        } else if (!attribute) {
+                            updatedItem = {
+                                ...updatedItem,
+                                attributes: [...updatedItem.attributes, {typeId, value}],
+                            };
+                            changed = true;
+                        } else if (attribute.value !== value) {
+                            updatedItem = {
+                                ...updatedItem,
+                                attributes: [...updatedItem.attributes.filter(a => a.typeId !== typeId), {typeId, value}],
+                            };
+                            changed = true;
+                        }
+                    } else {
+                        if (!!attribute) {
+                            updatedItem = {
+                                ...updatedItem,
+                                attributes: updatedItem.attributes.filter(a => a.typeId !== typeId),
+                            };
+                            changed = true;
+                        }
+                    }
+                }
+            });
+            if (changed) {
+                this.updateAndReadItem(updatedItem);
+            } else {
+                this.store.dispatch(MultiEditActions.removeItemIdToProcess({itemId: item.id}));
+            }
+        });
+        return errors;
     }
 
     private updateAndReadItem(item: FullConfigurationItem) {

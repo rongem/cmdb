@@ -7,6 +7,7 @@ import { map, Observable, Subscription, switchMap, take, withLatestFrom } from '
 import {
   ConfigurationItem,
   ConnectionRule,
+  ErrorActions,
   FullConfigurationItem,
   FullConnection,
   MetaDataSelectors,
@@ -43,6 +44,8 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   selectedColStart = -1;
   selectedRowCount = 0;
   selectedColCount = 0;
+  // storage for errors while updating from clipboard
+  private errors = new Map<string, string[]>();
   // id of the search item type
   private itemTypeId: string;
   private subscriptions: Subscription[] = [];
@@ -96,10 +99,48 @@ export class MultiEditComponent implements OnInit, OnDestroy {
     try {
       if (event.clipboardData) {
         const lines = ClipboardHelper.getTableContent(event.clipboardData);
-        console.log(lines);
+        // if only one line given, and array contains not enough entries for selection, duplicate existing lines as often as necessary
+        if (lines.length === 1) {
+          const tmpLines = [...lines];
+          while (lines.length < this.selectedRowCount) {
+            lines.push(...tmpLines);
+          }
+        } else if (lines.length < this.selectedRowCount) {
+          // cut down selected lines if array contains not enough entries
+          this.selectedRowCount = lines.length;
+        }
+        // remove lines that are out of selection range
+        if (lines.length > this.selectedRowCount) {
+          lines.splice(this.selectedRowCount);
+        }
+        lines.forEach(line => {
+          // if only one column given, and array doesn't contain enough entries for selection, duplicate existing columns as often as necessary
+          if (line.length === 1) {
+            const tmpCols = [...line];
+            while (line.length < this.selectedColCount) {
+              line.push(...tmpCols);
+            }
+          } else if (line.length < this.selectedColCount) {
+            this.selectedColCount = line.length;
+          }
+          // remove columns that are out of selection range
+          if (line.length > this.selectedColCount) {
+            line.splice(this.selectedColCount);
+          }
+        });
+        this.items.pipe(
+          take(1),
+          withLatestFrom(this.attributeTypes, this.connectionRules)
+        ).subscribe(([items, attributeTypes, connectionRules]) => {
+          // get selected items
+          const updateableItems = items.slice(this.selectedRowStart, this.selectedRowStart + this.selectedRowCount);
+          // retrieve affected columns in correct order
+          const columns = this.columns.slice(this.selectedColStart, this.selectedColStart + this.selectedColCount).map(i => this.columnContents[i]);
+          this.errors = this.mes.updateItems(updateableItems, columns, lines, attributeTypes, connectionRules);
+        });
       }
     } catch (error) {
-      console.log(error);
+      this.store.dispatch(ErrorActions.error({error, fatal: false}));
     }
   }
 
@@ -205,6 +246,10 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   getValue(ci: FullConfigurationItem, attributeTypeId: string) {
     const att = ci.attributes.find(a => a.typeId === attributeTypeId);
     return att ? att.value : '-';
+  }
+
+  hasError(itemId: string, column: string) {
+    return this.errors.has(itemId) && this.errors.get(itemId).includes(column);
   }
 
   getValuesForAttributeType(typeId: string) {
