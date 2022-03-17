@@ -766,7 +766,7 @@
         <source> Je nach der zu verarbeitenden Datenmenge kann die Operation mehrere Minuten dauern. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/admin/attribute-types/convert-to-item-type/convert-to-item-type.component.html</context>
-          <context context-type="linenumber">31,37</context>
+          <context context-type="linenumber">31,36</context>
         </context-group>
         <note priority="1" from="description">Depending on the number of attribute values to be converted, this operation may take multiple minutes.</note>
       </trans-unit>
@@ -1214,15 +1214,15 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">60</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">84</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="linenumber">113</context>
         </context-group>
         <note priority="1" from="description">Save</note>
       </trans-unit>
@@ -2587,11 +2587,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">51,52</context>
+          <context context-type="linenumber">56,57</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">81,82</context>
+          <context context-type="linenumber">109,110</context>
         </context-group>
         <note priority="1" from="description">Description</note>
       </trans-unit>
@@ -3475,7 +3475,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">5,7</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
         <note priority="1" from="description">Configuration item</note>
       </trans-unit>
@@ -3487,51 +3487,43 @@
         </context-group>
         <note priority="1" from="description">Edit multiple items</note>
       </trans-unit>
-      <trans-unit id="3289407400562910673" datatype="html">
-        <source> Alle Werte löschen </source>
+      <trans-unit id="7684755638521033149" datatype="html">
+        <source> Mit dieser Funktion können Sie mehrere Configuration Items auf einmal editieren. Wenn Sie auf die Spaltenköpfe klicken, öffnet sich ein Menü, in dem Sie die gewünschte Änderung für alle Items durchführen können. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">4,7</context>
         </context-group>
-        <note priority="1" from="description">Delete all values</note>
+        <note priority="1" from="description">With this function you may edit multiple configuration items at once. If you click on the column header, a menu will open that will let you choose the desired change for all of the items.</note>
       </trans-unit>
-      <trans-unit id="8822458112161316268" datatype="html">
-        <source>Eigener Wert</source>
+      <trans-unit id="3539612519861773895" datatype="html">
+        <source> Falls Sie ein Item aus der Liste entfernen wollen, können Sie auf den Knopf mit dem roten X am Anfang der Zeile klicken. Das Item wird nicht gelöscht, sondern nur nicht mehr zum editieren angezeigt. Dadurch können sich auch die Optionen im Menü im Spaltenkopf ändern. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">22,23</context>
+          <context context-type="linenumber">8,11</context>
         </context-group>
-        <note priority="1" from="description">Custom value</note>
+        <note priority="1" from="description">If you want to remove an item from the list, hit the button marked with a red x on the left side of each row. The item will not be deleted, but no longer shown for editing. This may result in changing the menu structure on the column headers.</note>
       </trans-unit>
-      <trans-unit id="5051130087665717374" datatype="html">
-        <source>Vorhandene Werte</source>
+      <trans-unit id="8407032310618369320" datatype="html">
+        <source> Alternativ besteht auch die Möglichkeit, eine Zelle durch klicken auszuwählen und mit den Shift + Pfeiltasten die Markierung zu erweitern. Dort lassen sich mittels Strg + V Werte aus der Zwischenablage einfügen. Dabei werden unzulässige Werte in der Tabelle mit einem roten Rahmen versehen. Wird nur eine Zeile in der Zwischenablage gefunden, aber mehrere sind ausgewählt, wird die einzelne Zeile wiederholt. Dasselbe gilt für Spalten. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">30,31</context>
+          <context context-type="linenumber">12,17</context>
         </context-group>
-        <note priority="1" from="description">Existing values</note>
+        <note priority="1" from="description">As an alternative, you may select a cell by clicking it, and expand the selection with shift and the arrow keys. With Ctrl + V you may paste contents from the clipboard. Invalid values will result in a red border in the table. If only one row is found in the clipboard, and there are multiple rows selected, the row will be multiplied. The same is done with columns.</note>
       </trans-unit>
-      <trans-unit id="4345288508428557220" datatype="html">
-        <source>Lösche Verbindung zu </source>
+      <trans-unit id="1369606766705530967" datatype="html">
+        <source> Sie können die Spalteköpfe auch per Drag and Drop tauschen, so dass das Einfügen aus der Zwischenablage auf eine passende Tabellenstruktur trifft. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">40,41</context>
+          <context context-type="linenumber">17,24</context>
         </context-group>
-        <note priority="1" from="description">Delete connection to</note>
-      </trans-unit>
-      <trans-unit id="8075168556531069883" datatype="html">
-        <source>Item</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">45,46</context>
-        </context-group>
-        <note priority="1" from="description">Item</note>
+        <note priority="1" from="description">You can drag and drop column headers, so that the target structure of the table meets the content structure from the clipboard.</note>
       </trans-unit>
       <trans-unit id="1204571731613133449" datatype="html">
         <source> Externe Links </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">62,63</context>
+          <context context-type="linenumber">37,38</context>
         </context-group>
         <note priority="1" from="description">External links</note>
       </trans-unit>
@@ -3539,7 +3531,7 @@
         <source> Alle Links löschen </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">42</context>
         </context-group>
         <note priority="1" from="description">Delete all links</note>
       </trans-unit>
@@ -3547,7 +3539,7 @@
         <source> löschen </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">49</context>
         </context-group>
         <note priority="1" from="description">Delete</note>
       </trans-unit>
@@ -3555,15 +3547,55 @@
         <source>URL</source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">79,80</context>
+          <context context-type="linenumber">54,55</context>
         </context-group>
         <note priority="1" from="description">URI</note>
+      </trans-unit>
+      <trans-unit id="3289407400562910673" datatype="html">
+        <source> Alle Werte löschen </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">Delete all values</note>
+      </trans-unit>
+      <trans-unit id="8822458112161316268" datatype="html">
+        <source>Eigener Wert</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
+          <context context-type="linenumber">80,81</context>
+        </context-group>
+        <note priority="1" from="description">Custom value</note>
+      </trans-unit>
+      <trans-unit id="5051130087665717374" datatype="html">
+        <source>Vorhandene Werte</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
+          <context context-type="linenumber">88,89</context>
+        </context-group>
+        <note priority="1" from="description">Existing values</note>
+      </trans-unit>
+      <trans-unit id="4345288508428557220" datatype="html">
+        <source>Lösche Verbindung zu </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
+          <context context-type="linenumber">98,99</context>
+        </context-group>
+        <note priority="1" from="description">Delete connection to</note>
+      </trans-unit>
+      <trans-unit id="8075168556531069883" datatype="html">
+        <source>Item</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
+          <context context-type="linenumber">103,104</context>
+        </context-group>
+        <note priority="1" from="description">Item</note>
       </trans-unit>
       <trans-unit id="310919072680605391" datatype="html">
         <source> Item aus der Liste entfernen </source>
         <context-group purpose="location">
           <context context-type="sourcefile">projects/cmdb/src/app/edit/multi-edit/multi-edit.component.html</context>
-          <context context-type="linenumber">101,102</context>
+          <context context-type="linenumber">128,129</context>
         </context-group>
         <note priority="1" from="description">Remove item from list</note>
       </trans-unit>
