@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
+import express from 'express';
 import mongoose from 'mongoose';
 import ntlm from 'express-ntlm';
 import { body } from 'express-validator';
@@ -10,12 +10,12 @@ import restRouter from './routes/rest.route';
 import { error404 } from './controllers/error.controller';
 import { getAuthentication, issueToken } from './controllers/auth/authentication.controller';
 import { preventCORSError } from './controllers/cors.controller';
-import { HttpError } from './rest-api/httpError.model';
 import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg } from './util/messages.constants';
 import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
 import * as openApiDocumentation from './openApiDocumentation.json';
 import { HouseKeeping } from './models/abstraction-layer/housekeeping';
+import { errorHandler } from './controllers/error.controller';
 
 const app: express.Application = express();
 // mongoose.set('debug', true);
@@ -51,12 +51,7 @@ app.use('/rest', express.json(), getAuthentication, restRouter);
 
 app.use('/', error404);
 
-app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
-  const status = error instanceof HttpError ? error.httpStatusCode : 500;
-  const message = error instanceof HttpError ? error.message : error.toString();
-  const data = error instanceof HttpError && error.data ? error.data : undefined;
-  res.status(status).json({message, data});
-});
+app.use(errorHandler);
 
 let exp: any;
 

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 
 import { HttpError } from '../rest-api/httpError.model';
 import { MongoServerError } from 'mongodb';
@@ -25,3 +25,11 @@ export const serverError = (next: NextFunction, error: any) => {
         next(new HttpError(500, error));
     }
 }
+
+export const errorHandler = (error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
+    const status = error instanceof HttpError ? error.httpStatusCode : 500;
+    const message = error instanceof HttpError ? error.message : error.toString();
+    const data = error instanceof HttpError && error.data ? error.data : undefined;
+    res.status(status).json({ message, data });
+};
+  
