@@ -1,6 +1,6 @@
 {
   "name": "njs-backend",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "CMDB backend on NodeJS",
   "main": "./dist/app.ts",
   "scripts": {
