@@ -22,7 +22,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
-    "express": "^4.17.1",
+    "express": "^4.18.1",
     "express-ntlm": "^2.6.1",
     "express-validator": "^6.13.0",
     "jsonwebtoken": "^8.5.1",
