@@ -26,7 +26,7 @@
     "@angular/localize": "^13.3.7",
     "@angular/platform-browser": "^13.3.7",
     "@angular/platform-browser-dynamic": "^13.3.7",
-    "@angular/router": "^13.3.7",
+    "@angular/router": "^13.3.8",
     "@ngrx/effects": "^13.2.0",
     "@ngrx/router-store": "^13.2.0",
     "@ngrx/store": "^13.2.0",
