@@ -56,8 +56,8 @@ export const updateHistoricConnection = async (connection: IConnection, deleted:
     } else {
         hc.descriptions.push(connection.description);
     }
-    hc.deleted = deleted;
-    return await hc.save();
+    hc!.deleted = deleted;
+    return await hc!.save();
 }
 
 export const connectionModelFind = async (filter: FilterQuery<IConnection>) => {
