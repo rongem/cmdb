@@ -1,5 +1,5 @@
 echo Updating global libraries
-npm update -g
+npm update --location=global
 cd ng-frontend
 echo Updating @angular
 ng update @angular/cli @angular/core @angular/cdk @ngrx/store @angular-eslint/schematics --force
