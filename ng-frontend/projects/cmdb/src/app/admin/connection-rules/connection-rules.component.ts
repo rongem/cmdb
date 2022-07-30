@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { map, Observable, tap } from 'rxjs';
 import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemType, ConnectionType, ValidatorService } from 'backend-access';
@@ -17,13 +17,13 @@ export class ConnectionRulesComponent implements OnInit {
   selectedConnectionType?: ConnectionType;
   selectedConnectionRule?: ConnectionRule;
   activeLine = -1;
-  ruleForm: FormGroup;
+  ruleForm: UntypedFormGroup;
   private rulesCount = new Map<string, Observable<number>>();
 
   constructor(private store: Store,
               private http: HttpClient,
               private val: ValidatorService,
-              private fb: FormBuilder) { }
+              private fb: UntypedFormBuilder) { }
 
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);

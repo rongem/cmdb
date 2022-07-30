@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { tap } from 'rxjs';
 
@@ -20,10 +20,10 @@ import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 export class AssetFormComponent implements OnInit {
   @Input() asset: Asset;
   @Output() submitted = new EventEmitter<AssetValue>();
-  form: FormGroup;
+  form: UntypedFormGroup;
   private models$: Model[];
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private store: Store<AppState>) { }
 
   get models() {

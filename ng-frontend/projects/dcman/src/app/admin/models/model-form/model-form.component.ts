@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ItemType, EditFunctions, ValidatorService } from 'backend-access';
 
@@ -34,9 +34,9 @@ export class ModelFormComponent implements OnInit {
     n !== ExtendedAppConfigService.objectModel.ConfigurationItemTypeNames.SoftAppliance
   );
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder, private store: Store, private validator: ValidatorService, private http: HttpClient) { }
+  constructor(private fb: UntypedFormBuilder, private store: Store, private validator: ValidatorService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.createMode = false;

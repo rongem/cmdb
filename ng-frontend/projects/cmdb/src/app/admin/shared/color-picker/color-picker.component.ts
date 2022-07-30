@@ -23,16 +23,11 @@ export class ColorPickerComponent implements OnInit, ControlValueAccessor {
 
   constructor() { }
 
-  propagateChange = (_: any) => {};
-  propagateTouched = () => {};
-
-  ngOnInit() {
-  }
-
   get validColor() {
     return this.color && this.color.match('^#[A-F0-9]{6}$');
   }
 
+  get color() { return this.color$; }
   @Input() set color(color: string) {
     if (!color) {
       this.color$ = undefined;
@@ -46,7 +41,12 @@ export class ColorPickerComponent implements OnInit, ControlValueAccessor {
       this.color$ = color;
     }
   }
-  get color() { return this.color$; }
+
+  propagateChange = (_: any) => {};
+  propagateTouched = () => {};
+
+  ngOnInit() {
+  }
 
   writeValue(obj: any): void {
     if (typeof obj === 'string' || !obj) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import * as fromSelectBasics from '../../../shared/store/basics/basics.selectors';
@@ -18,9 +18,9 @@ import { AssetStatus } from '../../../shared/objects/asset/asset-status.enum';
 export class RackFormComponent implements OnInit {
   @Input() rack: Rack;
   @Output() submitted = new EventEmitter<RackValue>();
-  form: FormGroup;
+  form: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private store: Store<AppState>) { }
 
   get models() {

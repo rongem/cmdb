@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, Observable, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
@@ -28,9 +28,9 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   // table cells for selection
   @ViewChildren('td') cells: QueryList<ElementRef<HTMLTableCellElement>>;
   // forms to edit items via header menu
-  attributeForm: FormGroup;
-  connectionForm: FormGroup;
-  linkForm: FormGroup;
+  attributeForm: UntypedFormGroup;
+  connectionForm: UntypedFormGroup;
+  linkForm: UntypedFormGroup;
   // index of column that is being dragged
   sourceIndex: number | undefined;
   // index of column that dragged column is hovering on
@@ -57,7 +57,7 @@ export class MultiEditComponent implements OnInit, OnDestroy {
   constructor(private http: HttpClient,
               private store: Store,
               private router: Router,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private val: ValidatorService,
               private mes: MultiEditService) { }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, withLatestFrom, skipWhile, take } from 'rxjs';
@@ -12,7 +12,7 @@ import { AdminActions, ConnectionRule, MetaDataSelectors, ValidatorService } fro
   styleUrls: ['./edit-rule.component.scss']
 })
 export class EditRuleComponent implements OnInit {
-  ruleForm: FormGroup;
+  ruleForm: UntypedFormGroup;
   ruleId: string;
   rule: ConnectionRule;
 
@@ -20,7 +20,7 @@ export class EditRuleComponent implements OnInit {
               private router: Router,
               private store: Store,
               private validator: ValidatorService,
-              private fb: FormBuilder) { }
+              private fb: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     if (this.route.snapshot.params.id && this.route.snapshot.routeConfig.path.startsWith('connection-rule/:id')) {

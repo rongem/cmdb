@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -27,7 +27,7 @@ import { ItemSelectors } from '../../shared/store/store.api';
 })
 export class CopyItemComponent implements OnInit, OnDestroy {
   item = new FullConfigurationItem();
-  itemForm: FormGroup = new FormGroup({});
+  itemForm: UntypedFormGroup = new UntypedFormGroup({});
   formReady = false;
   working = false;
   error = false;
@@ -44,7 +44,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
               private router: Router,
               private store: Store,
               private actions$: Actions,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private validator: ValidatorService,
               private http: HttpClient) { }
 
@@ -171,7 +171,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
         return;
       }
       this.updatingForm = true;
-      const attributes = this.itemForm.get('attributes') as FormArray;
+      const attributes = this.itemForm.get('attributes') as UntypedFormArray;
       if (value.attributesEnabled && attributes.disabled) {
         attributes.enable();
       } else if (!value.attributesEnabled && attributes.enabled) {
@@ -187,7 +187,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
           }
         });
       }
-      const connectionsToLower = this.itemForm.get('connectionsToLower') as FormArray;
+      const connectionsToLower = this.itemForm.get('connectionsToLower') as UntypedFormArray;
       if (value.connectionsToLowerEnabled && connectionsToLower.disabled) {
         connectionsToLower.enable();
       } else if (!value.connectionsToLowerEnabled && connectionsToLower.enabled) {
@@ -203,7 +203,7 @@ export class CopyItemComponent implements OnInit, OnDestroy {
           }
         });
       }
-      const links = this.itemForm.get('links') as FormArray;
+      const links = this.itemForm.get('links') as UntypedFormArray;
       if (value.linksEnabled && links.disabled) {
         links.enable();
       } else if (!value.linksEnabled && links.disabled) {

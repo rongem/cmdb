@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, FormControl, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormControl, UntypedFormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { catchError, map, Observable, of, take } from 'rxjs';
 import {
@@ -25,7 +25,7 @@ import { ImportSettings } from '../../shared/objects/import-settings.model';
 })
 export class ImportItemsComponent implements OnInit {
   @ViewChild('file') file: ElementRef;
-  form: FormGroup;
+  form: UntypedFormGroup;
   fileContent: ImportResult;
   sheet: ImportSheet;
   sheetIndex = 0;
@@ -38,7 +38,7 @@ export class ImportItemsComponent implements OnInit {
   resultList: LineMessage[];
   busy = false;
 
-  constructor(private store: Store, private http: HttpClient, private fb: FormBuilder) { }
+  constructor(private store: Store, private http: HttpClient, private fb: UntypedFormBuilder) { }
 
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
@@ -128,7 +128,7 @@ export class ImportItemsComponent implements OnInit {
       // set numbers as headings
       this.sheet.lines[0].forEach((value, index) => this.columnNames.push('(' + index + ')'));
     }
-    const cols = this.form.get('columns') as FormArray;
+    const cols = this.form.get('columns') as UntypedFormArray;
     this.targetColumns.pipe(take(1)).subscribe(columns => {
       // set column values according to text values
       this.columnNames.forEach((value) => {
@@ -152,7 +152,7 @@ export class ImportItemsComponent implements OnInit {
     this.busy = true;
     this.targetColumns.pipe(
       map(allColumns => {
-        const columns = (this.form.get('columns') as FormArray).value as string[];
+        const columns = (this.form.get('columns') as UntypedFormArray).value as string[];
         const activeColumns: Column[] = [];
         columns.forEach((c, i) => {
           if (c !== '<ignore>') {
@@ -178,7 +178,7 @@ export class ImportItemsComponent implements OnInit {
     this.resultList = undefined;
     this.errorList = undefined;
     this.form.get('file').reset();
-    (this.form.get('columns') as FormArray).clear();
+    (this.form.get('columns') as UntypedFormArray).clear();
   }
 
   private postFile(file: File): Observable<ImportResult> {
@@ -222,7 +222,7 @@ export class ImportItemsComponent implements OnInit {
     this.dataTable = { columns: columns.map(c => c.columnMap), rows };
   }
 
-  private validateFile = (c: FormControl) => {
+  private validateFile = (c: UntypedFormControl) => {
     if (this.file && this.file.nativeElement) {
       const file = this.file.nativeElement as HTMLInputElement;
       if (file && file.files && file.files.length > 0 && (file.files[0].type === 'text/csv' ||

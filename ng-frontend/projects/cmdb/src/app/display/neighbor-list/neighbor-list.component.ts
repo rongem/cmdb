@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { iif, map, of, skipWhile, Subscription, switchMap, take, tap, withLatestFrom } from 'rxjs';
 import { ConfigurationItem, MetaDataSelectors, NeighborSearch, SearchActions, SearchConnection } from 'backend-access';
@@ -12,7 +12,7 @@ import { Actions, ofType } from '@ngrx/effects';
   styleUrls: ['./neighbor-list.component.scss']
 })
 export class NeighborListComponent implements OnInit, OnDestroy {
-  form: FormGroup;
+  form: UntypedFormGroup;
   newFilterType = '';
   newNameOrValue = '';
   newAttributeType = '';
@@ -27,7 +27,7 @@ export class NeighborListComponent implements OnInit, OnDestroy {
   newChangedAfter = this.getRelativeDate(0, -1);
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store, private fb: FormBuilder, private actions$: Actions) { }
+  constructor(private store: Store, private fb: UntypedFormBuilder, private actions$: Actions) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);

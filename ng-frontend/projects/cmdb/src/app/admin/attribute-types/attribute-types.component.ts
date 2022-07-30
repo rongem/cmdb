@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
@@ -12,7 +12,7 @@ export class AttributeTypesComponent implements OnInit {
   @ViewChild('nameInput') nameInput: ElementRef;
   @ViewChild('groupInput') groupInput: ElementRef;
   @ViewChild('valInput') valInput: ElementRef;
-  form: FormGroup;
+  form: UntypedFormGroup;
   readonly minLength = 4;
   activeLine = -1;
   createMode = false;
@@ -22,7 +22,7 @@ export class AttributeTypesComponent implements OnInit {
   private activeType?: AttributeType;
 
   constructor(private store: Store,
-              private fb: FormBuilder) { }
+              private fb: UntypedFormBuilder) { }
 
   get attributeTypes() {
     return this.store.select(MetaDataSelectors.selectAttributeTypes);
