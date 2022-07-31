@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { ValidatorService } from 'backend-access';
 
 import { Room } from '../../shared/objects/asset/room.model';
@@ -16,9 +16,9 @@ export class RoomFormComponent implements OnInit {
   @Output() submitted = new EventEmitter<Room>();
   @Output() deleted = new EventEmitter();
   createMode = false;
-  form: FormGroup;
+  form: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder, private validator: ValidatorService) { }
+  constructor(private fb: UntypedFormBuilder, private validator: ValidatorService) { }
 
   ngOnInit(): void {
     this.createMode = false;

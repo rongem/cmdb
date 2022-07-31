@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormArray } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -12,7 +12,7 @@ import { ConfigurationItem, EditActions, MetaDataSelectors, ReadActions, Validat
   styleUrls: ['./create-item.component.scss']
 })
 export class CreateItemComponent implements OnInit, OnDestroy {
-  form: FormGroup;
+  form: UntypedFormGroup;
   formReady = false;
   itemTypeId: string;
   private subscription: Subscription;
@@ -21,7 +21,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
               private actions$: Actions,
               private store: Store,
               private validator: ValidatorService,
-              private fb: FormBuilder) { }
+              private fb: UntypedFormBuilder) { }
 
   get itemTypes() {
     return this.store.select(MetaDataSelectors.selectItemTypes);
@@ -40,11 +40,11 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   }
 
   get attributes() {
-    return this.form.get('attributes') as FormArray;
+    return this.form.get('attributes') as UntypedFormArray;
   }
 
   get links() {
-    return this.form.get('links') as FormArray;
+    return this.form.get('links') as UntypedFormArray;
   }
 
   ngOnInit(): void {

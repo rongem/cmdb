@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, skipWhile, Subscription, withLatestFrom } from 'rxjs';
@@ -21,12 +21,12 @@ import { Actions, ofType } from '@ngrx/effects';
   styleUrls: ['./edit-item.component.scss']
 })
 export class EditItemComponent implements OnInit, OnDestroy {
-  form: FormGroup;
+  form: UntypedFormGroup;
   deleteRequest = false;
   private item: FullConfigurationItem;
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store, private fb: FormBuilder, private router: Router, private actions$: Actions, private val: ValidatorService) { }
+  constructor(private store: Store, private fb: UntypedFormBuilder, private router: Router, private actions$: Actions, private val: ValidatorService) { }
 
   get itemReady() {
     return this.store.select(ItemSelectors.itemReady);
@@ -59,7 +59,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   }
 
   get links() {
-    return this.form.get('links') as FormArray;
+    return this.form.get('links') as UntypedFormArray;
   }
 
   ngOnInit() {

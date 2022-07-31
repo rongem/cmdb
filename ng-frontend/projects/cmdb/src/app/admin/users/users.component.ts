@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { catchError, Observable, of, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { UserInfo, UserRole, AdminActions, AppConfigService, MetaDataSelectors, AdminFunctions } from 'backend-access';
@@ -18,10 +18,10 @@ export class UsersComponent implements OnInit {
   error: string;
   errorDetails: string;
   currentUser: UserInfo;
-  passwordForm: FormGroup;
+  passwordForm: UntypedFormGroup;
   userRole: UserRole;
   constructor(private store: Store,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private http: HttpClient) { }
 
   get users() {

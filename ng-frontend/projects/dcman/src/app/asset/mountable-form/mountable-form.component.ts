@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, AsyncValidatorFn, AbstractControl } from '@angular/forms';
 import { map, of, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
@@ -32,7 +32,7 @@ export class MountableFormComponent implements OnInit, OnDestroy {
     new EventEmitter<{provisionedSystem: ProvisionedSystem; serverHardware: RackServerHardware | BladeServerHardware}>();
   @Output() createProvisionableSystem = new EventEmitter<{name: string; typeName: string; status: AssetStatus}>();
   @Output() removeAsset = new EventEmitter<AssetStatus>();
-  form: FormGroup;
+  form: UntypedFormGroup;
   isServer = false;
   isBladeEnclosure = false;
   isEnclosureBacksideType = false;
@@ -41,7 +41,7 @@ export class MountableFormComponent implements OnInit, OnDestroy {
   private inValidation = false;
 
   constructor(private store: Store<fromApp.AppState>,
-              private fb: FormBuilder) { }
+              private fb: UntypedFormBuilder) { }
 
   get provisionedSystem() {
     if (this.isServer) {

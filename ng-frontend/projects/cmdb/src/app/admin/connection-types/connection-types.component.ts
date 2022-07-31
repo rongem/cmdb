@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
@@ -12,14 +12,14 @@ export class ConnectionTypesComponent implements OnInit {
   @ViewChild('nameInput') nameInput: ElementRef;
   @ViewChild('reverseNameInput') reverseNameInput: ElementRef;
   readonly minLength = 2;
-  form: FormGroup;
+  form: UntypedFormGroup;
   activeLine = -1;
   lastNameChange = -1;
   lastReverseNameChange = -1;
   createMode = false;
   private activeType: ConnectionType;
 
-  constructor(private store: Store, private fb: FormBuilder) { }
+  constructor(private store: Store, private fb: UntypedFormBuilder) { }
 
   ngOnInit() {
     this.createForm();

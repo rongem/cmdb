@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { of, tap, catchError, take, withLatestFrom, switchMap } from 'rxjs';
 import { AdminFunctions, AppConfigService, MetaDataSelectors, UserInfo } from 'backend-access';
@@ -13,14 +13,14 @@ import { GlobalActions, GlobalSelectors } from '../../shared/store/store.api';
   styleUrls: ['./change-password.component.scss']
 })
 export class ChangePasswordComponent implements OnInit {
-  userForm: FormGroup;
+  userForm: UntypedFormGroup;
   error: string;
   errorDetails: string[];
   changing = false;
   private user: UserInfo;
 
   constructor(private store: Store,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private router: Router,
               private http: HttpClient) { }
 
@@ -37,7 +37,7 @@ export class ChangePasswordComponent implements OnInit {
     });
   }
 
-  passwordsEqual = (c: FormControl) => {
+  passwordsEqual = (c: UntypedFormControl) => {
     if (this.userForm && this.userForm.value.password !== c.value) {
       return {passwordMismatchError: true};
     }

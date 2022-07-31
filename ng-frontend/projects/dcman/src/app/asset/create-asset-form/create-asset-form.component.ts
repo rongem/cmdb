@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormArray, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { Model } from '../../shared/objects/model.model';
@@ -17,9 +17,9 @@ export class CreateAssetFormComponent implements OnInit {
   @Input() existingNames: string[];
   @Output() submitted = new EventEmitter<AssetValue[]>();
   @ViewChild('addSerialToName', {static: true}) addSerialToName: ElementRef;
-  form: FormGroup;
+  form: UntypedFormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     if (!this.model) { throw new Error('model must not be empty'); }
@@ -33,7 +33,7 @@ export class CreateAssetFormComponent implements OnInit {
   }
 
   get assets() {
-    return (this.form.get('assets') as FormArray).controls;
+    return (this.form.get('assets') as UntypedFormArray).controls;
   }
 
   get modelName() {
@@ -58,7 +58,7 @@ export class CreateAssetFormComponent implements OnInit {
   }
 
   validateSerialsAndNames: ValidatorFn = (assets: AbstractControl) => {
-    if (assets instanceof FormArray) {
+    if (assets instanceof UntypedFormArray) {
       const serials: string[] = [...new Set(assets.controls.map(asset => llc(asset.value.serialNumber)))];
       if (assets.controls.length !== serials.length) {
         return {duplicateSerialError: true};
@@ -82,11 +82,11 @@ export class CreateAssetFormComponent implements OnInit {
   };
 
   onAddItem() {
-    (this.form.get('assets') as FormArray).push(this.createItem());
+    (this.form.get('assets') as UntypedFormArray).push(this.createItem());
   }
 
   onDeleteItem(index: number) {
-    const assets = this.form.get('assets') as FormArray;
+    const assets = this.form.get('assets') as UntypedFormArray;
     assets.removeAt(index);
     if (this.addSerialToName.nativeElement.checked && assets.length < 2) {
       assets.get('0').get('name').setValue(this.form.value.baseName);

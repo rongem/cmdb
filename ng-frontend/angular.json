@@ -72,7 +72,9 @@
               "localize": false
             },
             "en": {
-              "localize": ["en"]
+              "localize": [
+                "en"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -129,7 +131,7 @@
         }
       },
       "i18n": {
-        "sourceLocale":"de",
+        "sourceLocale": "de",
         "locales": {
           "en": {
             "translation": "projects/cmdb/locale/messages.en.xlf"
@@ -156,8 +158,7 @@
         "@schematics/angular:guard": {
           "skipTests": true
         },
-        "@schematics/angular:module": {
-        },
+        "@schematics/angular:module": {},
         "@schematics/angular:pipe": {
           "skipTests": true
         },
@@ -310,6 +311,5 @@
         }
       }
     }
-  },
-  "defaultProject": "cmdb"
+  }
 }
