@@ -7,12 +7,14 @@ echo Updating other libraries
 npm update
 npm audit fix
 grunt bump
+npm prune
 ng build backend-access
 ng build
 cd ../njs-backend/
 echo Updating backend
 npm update
 grunt bump
+npm prune
 tsc --declaration && npm run test
 npm outdate
 read -n 1
