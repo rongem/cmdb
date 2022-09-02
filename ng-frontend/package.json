@@ -1,6 +1,6 @@
 {
   "name": "ng-frontend",
-  "version": "2.1.18",
+  "version": "2.1.19",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -37,12 +37,12 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^14.2.0",
+    "@angular-devkit/build-angular": "^14.2.1",
     "@angular-eslint/eslint-plugin": "^14.0.3",
     "@angular-eslint/eslint-plugin-template": "^14.0.3",
     "@angular-eslint/schematics": "14.0.3",
     "@angular-eslint/template-parser": "^14.0.3",
-    "@angular/cli": "^14.2.0",
+    "@angular/cli": "^14.2.1",
     "@angular/compiler-cli": "^14.2.0",
     "@angular/language-service": "^14.2.0",
     "@types/jasmine": "^3.10.2",

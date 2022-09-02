@@ -9,7 +9,7 @@ npm audit fix
 grunt bump
 npm prune
 ng build backend-access
-ng build
+ng build cmdb
 cd ../njs-backend/
 echo Updating backend
 npm update
