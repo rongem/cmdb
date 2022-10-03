@@ -45,8 +45,7 @@ function populate(this: Query<IAttributeType, IAttributeType>) {
 }
 
 attributeTypeSchema.pre('find', function() { this.populate({path: 'attributeGroup', select: 'name'}).sort('name'); });
-attributeTypeSchema.pre('findOne', populate);
-attributeTypeSchema.pre('findById', populate);
+attributeTypeSchema.pre(/find(One|ById)/, populate);
 
 attributeTypeSchema.statics.validateIdExists = (value: Types.ObjectId) => attributeTypeModel.findById(value).countDocuments()
   .then((docs: number) => Promise.resolve(docs > 0))
