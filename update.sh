@@ -8,6 +8,7 @@ npm update
 npm audit fix
 grunt bump
 npm prune
+npm outdated
 ng build backend-access
 ng build cmdb
 cd ../njs-backend/

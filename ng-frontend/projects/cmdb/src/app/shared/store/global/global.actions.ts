@@ -4,4 +4,4 @@ export const setUrl = createAction('[Global] Set the url the user wants to navig
     props<{ url: string }>()
 );
 
-export const clearUrl = createAction('[Global] Clear the url the user wants to navigate to before being logged in');
+export const clearUrl = createAction('[Global] Clear the url the user wanted to navigate to before being logged in');

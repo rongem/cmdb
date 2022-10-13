@@ -2,7 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { GlobalActions } from '../store.api';
 
 export interface State {
-    desiredUrl?: string;
+    desiredUrl: string | undefined;
 }
 
 const initialState: State = {
