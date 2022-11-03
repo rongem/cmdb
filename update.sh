@@ -1,4 +1,5 @@
 echo Updating global libraries
+npm outdated --location=global
 npm update --location=global
 cd ng-frontend
 echo Updating @angular
