@@ -274,6 +274,6 @@ export const connectionModelDelete = async (id: string, authentication: UserAcco
 
 export const logAndRemoveConnection = (connection: IConnection) => {
     updateHistoricConnection(connection, true);
-    return connection.remove() as Promise<IConnection>;
+    return connection.deleteOne() as Promise<IConnection>;
 }
 

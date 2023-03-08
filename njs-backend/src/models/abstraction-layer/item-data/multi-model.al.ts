@@ -247,7 +247,7 @@ export const modelGetCorrespondingValuesOfType = async (attributeType: string) =
 // }
 
 export const configurationItemModelDelete = async (id: string, authentication: UserAccount) => {
-    let itemToDelete = await configurationItemFindByIdPopulatedUsers(id);
+    const itemToDelete = await configurationItemFindByIdPopulatedUsers(id);
     if (!itemToDelete) {
         throw notFoundError;
     }
@@ -258,8 +258,8 @@ export const configurationItemModelDelete = async (id: string, authentication: U
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
     const historicItem = buildHistoricItemVersion(itemToDelete, authentication.accountName);
     updateItemHistory(itemToDelete._id, historicItem, true);
-    itemToDelete = await itemToDelete.remove();
-    const item = new ConfigurationItem(itemToDelete);
+    const deletedItem = await itemToDelete.deleteOne();
+    const item = new ConfigurationItem(deletedItem);
     return { item, connections };
 }
 

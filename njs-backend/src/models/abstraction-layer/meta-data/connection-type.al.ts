@@ -77,8 +77,8 @@ export const connectionTypeModelDelete = async (id: string) => {
     if (!canDelete) {
         throw new HttpError(400, disallowedDeletionOfConnectionTypeMsg);
     }
-    connectionType = await connectionType.remove();
-    return new ConnectionType(connectionType);
+    const deletedConnectionType = await connectionType.deleteOne();
+    return new ConnectionType(deletedConnectionType);
 }
 
 export const connectionTypeModelCanDelete = async (id: string) => {

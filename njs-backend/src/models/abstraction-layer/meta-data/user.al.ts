@@ -161,6 +161,7 @@ export const userModelDelete = async (name: string, withResponsibilities: boolea
     filter = adjustFilterToAuthMode(filter);
     let deleted = false;
     let user = await userModel.findOne(filter);
+    let deletedUser: any;
     if (!user) {
         throw notFoundError;
     }
@@ -170,7 +171,7 @@ export const userModelDelete = async (name: string, withResponsibilities: boolea
             { $pullAll: { responsibleUsers: user._id } }
         ).exec();
         deleted = true;
-        user = await user.remove();
+        deletedUser = await user.deleteOne();
     } else {
         const docCount = await configurationItemsCount({ responsibleUsers: [user._id] });
         if (docCount > 0) {
@@ -178,8 +179,8 @@ export const userModelDelete = async (name: string, withResponsibilities: boolea
             user = await user.save();
         } else {
             deleted = true;
-            user = await user.remove();
+            deletedUser = await user.deleteOne();
         }
     }
-    return { user: new UserAccount(user), deleted };
+    return { user: new UserAccount(deletedUser), deleted };
 }

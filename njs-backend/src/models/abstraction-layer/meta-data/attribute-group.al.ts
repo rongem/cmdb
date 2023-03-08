@@ -85,8 +85,8 @@ export const attributeGroupModelDelete = async (id: string) => {
     if (!canDelete) {
         throw new HttpError(400, disallowedDeletionOfAttributeGroupMsg);
     }
-    attributeGroup = await attributeGroup.remove();
-    return new AttributeGroup(attributeGroup);
+    const deletedAttributeGroup = await attributeGroup.deleteOne();
+    return new AttributeGroup(deletedAttributeGroup);
 }
 
 export const attributeGroupModelCanDelete = async (id: string) => {

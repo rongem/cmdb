@@ -33,9 +33,9 @@ export const attributeTypeSchema = new Schema<IAttributeType, IAttributeTypeMode
   }
 });
 
-attributeTypeSchema.post('remove', (doc: IAttributeType, next: (err?: MongooseError | undefined) => void) => {
+attributeTypeSchema.post('deleteOne', (doc: IAttributeType, next: (err?: MongooseError | undefined) => void) => {
   configurationItemModel.find({attributes: [{type: doc._id} as IAttribute]})
-    .then((docs: IConfigurationItem[]) => docs.forEach(d => d.attributes.find(a => a.type.toString() === d.id)?.remove()))
+    .then((docs: IConfigurationItem[]) => docs.forEach(d => d.attributes.find(a => a.type.toString() === d.id)?.deleteOne()))
     .catch((error: any) => next(error));
   next();
 });
