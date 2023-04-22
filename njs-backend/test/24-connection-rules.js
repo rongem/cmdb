@@ -92,7 +92,7 @@ describe('Connection Rules', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
-                const params = res.body.data.errors.map(e => e.param);
+                const params = res.body.data.errors.map(e => e.path);
                 expect(params).to.include(maxConnectionsToUpperField);
                 expect(params).to.include(maxConnectionsToLowerField);
                 expect(params).to.include(validationExpressionField);
@@ -328,7 +328,7 @@ describe('Connection Rules', function() {
                 expect(err).to.be.null;
                 expect(res.status).to.be.equal(400);
                 expect(res.body.data.errors).to.be.a('array');
-                const params = res.body.data.errors.map(e => e.param);
+                const params = res.body.data.errors.map(e => e.path);
                 expect(params).to.include(maxConnectionsToUpperField);
                 expect(params).to.include(maxConnectionsToLowerField);
                 expect(params).to.include(validationExpressionField);

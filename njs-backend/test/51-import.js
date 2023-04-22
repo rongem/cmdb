@@ -7,6 +7,7 @@ const {
     rowsField,
     targetTypeField,
     targetIdField,
+    connectionRuleField,
 } = require('../dist/util/fields.constants');
 const { targetTypeValues, deleteValue } = require('../dist/util/values.constants');
 const {
@@ -148,7 +149,7 @@ describe('Importing data', function() {
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');
                 expect(res.body.data.errors).to.have.property('length', 3);
-                const params = res.body.data.errors.map(e => e.param);
+                const params = res.body.data.errors.map(e => e.path);
                 expect(params).to.include(itemTypeIdField);
                 expect(params).to.include(columnsField);
                 expect(params).to.include(rowsField);
@@ -171,11 +172,10 @@ describe('Importing data', function() {
                 expect(res.body).to.have.property('data');
                 expect(res.body.data).to.have.property('errors');
                 expect(res.body.data.errors).to.be.a('array');
-                expect(res.body.data.errors).to.have.property('length', 3);
-                const params = res.body.data.errors.map(e => e.param);
+                expect(res.body.data.errors).to.have.property('length', 4);
+                const params = res.body.data.errors.map(e => e.path);
                 expect(params).to.include(itemTypeIdField);
                 expect(params).to.include(columnsField);
-                expect(params).to.include(rowsField);
                 done();
             });
     });
@@ -214,7 +214,7 @@ describe('Importing data', function() {
                 expect(res.body.data.errors).to.be.a('array');
                 // console.log(res.body.data.errors);
                 expect(res.body.data.errors.length).to.be.greaterThan(9);
-                const params = res.body.data.errors.map(e => e.param);
+                const params = res.body.data.errors.map(e => e.path);
                 expect(params).to.include(itemTypeIdField);
                 expect(params).to.include(columnsField);
                 expect(params.filter(p => p === columnsField)).to.have.property('length', 4);
