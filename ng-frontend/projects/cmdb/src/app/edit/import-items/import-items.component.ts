@@ -222,7 +222,7 @@ export class ImportItemsComponent implements OnInit {
     this.dataTable = { columns: columns.map(c => c.columnMap), rows };
   }
 
-  private validateFile = (c: UntypedFormControl) => {
+  private validateFile: ValidatorFn = (c: AbstractControl) => {
     if (this.file && this.file.nativeElement) {
       const file = this.file.nativeElement as HTMLInputElement;
       if (file && file.files && file.files.length > 0 && (file.files[0].type === 'text/csv' ||

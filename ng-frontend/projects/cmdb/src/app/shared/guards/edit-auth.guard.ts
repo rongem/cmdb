@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, ActivatedRoute } from '@angular/router';
+import { Injectable, inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, ActivatedRoute, CanActivateFn } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, skipWhile, take } from 'rxjs';
 import { UserRole, MetaDataSelectors } from 'backend-access';
 
 @Injectable({providedIn: 'root'})
-export class EditAuthGuard implements CanActivate {
+class EditAuthGuard  {
 
     constructor(private store: Store, private router: Router, private route: ActivatedRoute) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    canActivate() {
         return this.store.select(MetaDataSelectors.selectState).pipe(
             skipWhile(meta => !meta.validData),
             take(1),
@@ -17,3 +17,5 @@ export class EditAuthGuard implements CanActivate {
         );
     }
 }
+
+export const canActivateEdit: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => inject(EditAuthGuard).canActivate();

@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { Injectable, inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanActivateFn } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, take, skipWhile } from 'rxjs';
 import { UserRole, MetaDataSelectors } from 'backend-access';
 
 @Injectable({providedIn: 'root'})
-export class AdminAuthGuard implements CanActivate {
+class AdminAuthGuard  {
 
     constructor(private store: Store, private router: Router) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    canActivate() {
         return this.store.select(MetaDataSelectors.selectState).pipe(
             skipWhile(meta => !meta.validData),
             take(1),
@@ -17,3 +17,5 @@ export class AdminAuthGuard implements CanActivate {
             meta.userRole === UserRole.administrator ? true : this.router.createUrlTree(['/'])));
     }
 }
+
+export const canActivateAdmin: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => inject(AdminAuthGuard).canActivate();
