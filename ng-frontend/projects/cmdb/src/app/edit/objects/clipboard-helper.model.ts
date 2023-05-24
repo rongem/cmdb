@@ -2,7 +2,7 @@ export class ClipboardHelper {
     static getTableContent(data: DataTransfer): string[][] {
         // first, try html
         let result = data.getData('text/html');
-        if (result.length > 0) {
+        if (result.length > 0 && !result.includes('<script>')) {
             const dom = new DOMParser().parseFromString(result, 'text/html');
             const table = dom.querySelector('table');
             // only, if a table element exists
