@@ -13,6 +13,8 @@ npm prune
 npm outdated
 ng build backend-access
 ng build cmdb
+cd ../xliffTranslate
+npm update
 cd ../njs-backend/
 echo Updating backend
 npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
