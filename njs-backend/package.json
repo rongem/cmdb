@@ -1,6 +1,6 @@
 {
   "name": "njs-backend",
-  "version": "1.0.67",
+  "version": "1.0.68",
   "description": "CMDB backend on NodeJS",
   "main": "./dist/app.ts",
   "scripts": {
@@ -29,7 +29,6 @@
     "mongoose": "^7.0.1",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.4.0",
-    "swagger-ui-express": "^4.2.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz"
   },
   "devDependencies": {
@@ -46,6 +45,7 @@
     "grunt": "^1.5.3",
     "grunt-bump": "^0.8.0",
     "mocha": "^10.0.0",
+    "swagger-ui-express": "^5.0.0",
     "typescript": "^5.0.2"
   }
 }
