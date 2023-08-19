@@ -32,7 +32,7 @@
     "@ngrx/store": "^16.2.0",
     "@ngrx/store-devtools": "^16.2.0",
     "rxjs": "^7.4.0",
-    "tslib": "^2.3.1",
+    "tslib": "^2.6.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz",
     "zone.js": "~0.13.0"
   },
