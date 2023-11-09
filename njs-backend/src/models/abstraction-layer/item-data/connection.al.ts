@@ -262,18 +262,18 @@ export const connectionModelUpdate = async (connectionId: string, description: s
 
 // delete
 export const connectionModelDelete = async (id: string, authentication: UserAccount) => {
-    let connection: IConnection | null = await connectionModel.findById(id);
+    const connection: IConnection | null = await connectionModel.findById(id);
     if (!connection) {
         throw notFoundError;
     }
     const item = await configurationItemFindByIdPopulatedUsers(connection.upperItem.toString());
     checkResponsibility(authentication, item!);
-    connection = await logAndRemoveConnection(connection);
+    const result = await logAndRemoveConnection(connection);
     return new Connection(connection);
 }
 
 export const logAndRemoveConnection = (connection: IConnection) => {
     updateHistoricConnection(connection, true);
-    return connection.deleteOne() as Promise<IConnection>;
+    return connection.deleteOne();
 }
 

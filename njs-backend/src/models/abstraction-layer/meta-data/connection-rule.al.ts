@@ -167,8 +167,8 @@ export const connectionRuleModelDelete = async (id: string) => {
     if (!canDelete) {
         throw new HttpError(400, disallowedDeletionOfConnectionRuleMsg);
     }
-    const deletedConnectionRule = await connectionRule.deleteOne();
-    return new ConnectionRule(deletedConnectionRule);
+    const deletedConnectionRuleResult = await connectionRule.deleteOne();
+    return new ConnectionRule(connectionRule);
 }
 
 export const connectionRuleModelCanDelete = async (connectionRule: string) => {

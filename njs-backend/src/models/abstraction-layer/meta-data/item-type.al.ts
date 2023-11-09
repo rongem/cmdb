@@ -210,8 +210,8 @@ export const itemTypeModelDelete = async (itemId: string) => {
     {
         throw new HttpError(400, disallowedDeletionOfItemTypeWithItemsOrRulesMsg);
     }
-    const deletedItemType = await itemType.deleteOne();
-    return new ItemType(deletedItemType);
+    const deletedItemTypeResult = await itemType.deleteOne();
+    return new ItemType(itemType);
 }
 
 export const itemTypeModelCanDelete = async (itemId: string) => {

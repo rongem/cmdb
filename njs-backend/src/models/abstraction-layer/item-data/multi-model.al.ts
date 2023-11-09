@@ -258,8 +258,8 @@ export const configurationItemModelDelete = async (id: string, authentication: U
     const connections = (await Promise.all(deletedConnections.map(c => logAndRemoveConnection(c)))).map(c => new Connection(c));
     const historicItem = buildHistoricItemVersion(itemToDelete, authentication.accountName);
     updateItemHistory(itemToDelete._id, historicItem, true);
-    const deletedItem = await itemToDelete.deleteOne();
-    const item = new ConfigurationItem(deletedItem);
+    const deletedResult = await itemToDelete.deleteOne();
+    const item = new ConfigurationItem(itemToDelete);
     return { item, connections };
 }
 

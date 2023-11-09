@@ -119,8 +119,8 @@ export const attributeTypeModelDelete = async (id: string) => {
     if (!canDelete) {
         throw new HttpError(400, disallowedDeletionOfAttributeTypeMsg);
     }
-    const deletedAttributeType = await attributeType.deleteOne();
-    return new AttributeType(deletedAttributeType);
+    const deletedAttributeTypeResult = await attributeType.deleteOne();
+    return new AttributeType(attributeType);
 }
 
 export const attributeTypeModelCanDelete = async (id: string) => {
