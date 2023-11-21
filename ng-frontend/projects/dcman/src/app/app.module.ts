@@ -52,7 +52,7 @@ registerLocaleData(localeEn);
     HttpClientModule,
     StoreModule.forRoot(fromApp.appReducer),
     EffectsModule.forRoot([MetaDataEffects, SchemaEffects, BasicsEffects, AssetEffects, ProvisionableEffects]),
-    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+    StoreDevtoolsModule.instrument({ logOnly: environment.production , connectInZone: true}),
     SharedModule,
     NgrxRouterStoreModule,
     ValidatorModule,

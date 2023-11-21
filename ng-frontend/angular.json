@@ -83,14 +83,14 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "cmdb:build:production"
+              "buildTarget": "cmdb:build:production"
             },
             "development": {
-              "browserTarget": "cmdb:build:development",
-              "proxyConfig": "projects/proxy.config.js"
+              "proxyConfig": "projects/proxy.config.js",
+              "buildTarget": "cmdb:build:development"
             },
             "en": {
-              "browserTarget": "cmdb:build:en"
+              "buildTarget": "cmdb:build:en"
             }
           },
           "defaultConfiguration": "development"
@@ -98,7 +98,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "cmdb:build"
+            "buildTarget": "cmdb:build"
           }
         },
         "test": {
@@ -226,11 +226,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "dcman:build:production"
+              "buildTarget": "dcman:build:production"
             },
             "development": {
-              "browserTarget": "dcman:build:development",
-              "proxyConfig": "projects/proxy.config.js"
+              "proxyConfig": "projects/proxy.config.js",
+              "buildTarget": "dcman:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -238,7 +238,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dcman:build"
+            "buildTarget": "dcman:build"
           }
         },
         "test": {

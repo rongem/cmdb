@@ -39,7 +39,7 @@ registerLocaleData(localeDe);
     FormsModule,
     StoreModule.forRoot(appReducer),
     EffectsModule.forRoot([MetaDataEffects, RouterEffects]),
-    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+    StoreDevtoolsModule.instrument({ logOnly: environment.production , connectInZone: true}),
     NgrxRouterStoreModule,
   ],
   bootstrap: [AppComponent],
