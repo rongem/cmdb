@@ -1,5 +1,5 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import localeDe from '@angular/common/locales/de';
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -24,37 +24,34 @@ export const initializeApp = (appConfig: AppConfigService) => () => appConfig.lo
 registerLocaleData(localeDe);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-  ],
-  imports: [
-    BrowserModule,
-    CommonModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    CoreModule,
-    HttpClientModule,
-    CommonModule,
-    FormsModule,
-    StoreModule.forRoot(appReducer),
-    EffectsModule.forRoot([MetaDataEffects, RouterEffects]),
-    StoreDevtoolsModule.instrument({ logOnly: environment.production , connectInZone: true}),
-    NgrxRouterStoreModule,
-  ],
-  bootstrap: [AppComponent],
-  providers: [
-    Title,
-    EnvServiceProvider,
-    HttpAuthProvider,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      deps: [AppConfigService], multi: true
-    }, {
-       provide: LOCALE_ID, useValue: 'de-DE'
-    }
-  ],
-})
+    declarations: [
+        AppComponent,
+        HeaderComponent,
+    ],
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        CommonModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        CoreModule,
+        CommonModule,
+        FormsModule,
+        StoreModule.forRoot(appReducer),
+        EffectsModule.forRoot([MetaDataEffects, RouterEffects]),
+        StoreDevtoolsModule.instrument({ logOnly: environment.production, connectInZone: true }),
+        NgrxRouterStoreModule], providers: [
+        Title,
+        EnvServiceProvider,
+        HttpAuthProvider,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initializeApp,
+            deps: [AppConfigService], multi: true
+        }, {
+            provide: LOCALE_ID, useValue: 'de-DE'
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 
 export class AppModule { }

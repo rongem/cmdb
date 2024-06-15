@@ -1,7 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -38,39 +38,36 @@ function initializeApp(appConfig: ExtendedAppConfigService) {
 registerLocaleData(localeEn);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    RoomsComponent,
-    RoomComponent,
-    HeaderComponent,
-    RoomFormComponent,
-],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    StoreModule.forRoot(fromApp.appReducer),
-    EffectsModule.forRoot([MetaDataEffects, SchemaEffects, BasicsEffects, AssetEffects, ProvisionableEffects]),
-    StoreDevtoolsModule.instrument({ logOnly: environment.production , connectInZone: true}),
-    SharedModule,
-    NgrxRouterStoreModule,
-    ValidatorModule,
-  ],
-  providers: [
-    Title,
-    EnvServiceProvider,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      deps: [ExtendedAppConfigService], multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    },
-],
-  bootstrap: [AppComponent]
-})
+    declarations: [
+        AppComponent,
+        RoomsComponent,
+        RoomComponent,
+        HeaderComponent,
+        RoomFormComponent,
+    ],
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        StoreModule.forRoot(fromApp.appReducer),
+        EffectsModule.forRoot([MetaDataEffects, SchemaEffects, BasicsEffects, AssetEffects, ProvisionableEffects]),
+        StoreDevtoolsModule.instrument({ logOnly: environment.production, connectInZone: true }),
+        SharedModule,
+        NgrxRouterStoreModule,
+        ValidatorModule], providers: [
+        Title,
+        EnvServiceProvider,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: initializeApp,
+            deps: [ExtendedAppConfigService], multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }
