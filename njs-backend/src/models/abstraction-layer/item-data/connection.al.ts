@@ -234,7 +234,7 @@ function createFullConnection(connection: IConnection, rule: ConnectionRule, tar
     conn.targetName = targetItem.name;
     conn.targetTypeId = targetItem.typeId;
     conn.targetType = targetItem.type;
-    conn.targetColor = targetItem.color;
+    conn.targetColor = targetItem.backColor;
     return conn;
 }
 

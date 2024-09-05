@@ -92,14 +92,7 @@ router.post(`/:${idField}/ConvertToItemtype`, [
     colorBodyValidator,
     connectionTypeIdBodyValidator,
     body(attributeTypesToTransferField, invalidAttributeTypesMsg).optional().isArray().bail()
-        .custom((values: string[]) => {
-            values.forEach(value => {
-                if (!ObjectId.isValid(value)) {
-                    return false;
-                }
-            });
-            return true;
-        }).bail()
+        .custom((values: string[]) => values.every(value => ObjectId.isValid(value))).bail()
         .custom(async (values: string[], { req }) => {
             try {
                 req.attributeTypes = await attributeTypeModelFind({ _id: { $in: values }});

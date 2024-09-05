@@ -168,7 +168,7 @@ export const userModelDelete = async (name: string, withResponsibilities: boolea
     if (withResponsibilities) {
         configurationItemModel.updateMany(
             { responsibleUsers: [user._id] },
-            { $pullAll: { responsibleUsers: user._id } }
+            { $pullAll: { responsibleUsers: [user._id] } }
         ).exec();
         deleted = true;
         deletedUserResult = await user.deleteOne();

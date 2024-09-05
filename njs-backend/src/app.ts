@@ -1,11 +1,9 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import ntlm from 'express-ntlm';
 import { body } from 'express-validator';
 import swaggerUI from 'swagger-ui-express';
 
 import endpoint from './util/endpoint.config';
-import socket from './controllers/socket.controller';
 import restRouter from './routes/rest.route';
 import { error404 } from './controllers/error.controller';
 import { getAuthentication, issueToken } from './controllers/auth/authentication.controller';
@@ -14,7 +12,6 @@ import { invalidAuthenticationMethod, invalidPassphraseMsg, invalidUserNameMsg }
 import { stringExistsBodyValidator, validate } from './routes/validators';
 import { accountNameField, passphraseField } from './util/fields.constants';
 import * as openApiDocumentation from './openApiDocumentation.json';
-import { HouseKeeping } from './models/abstraction-layer/housekeeping';
 import { errorHandler } from './controllers/error.controller';
 
 const app: express.Application = express();
@@ -53,16 +50,4 @@ app.use('/', error404);
 
 app.use(errorHandler);
 
-let exp: any;
-
-mongoose.connect(endpoint.databaseUrl()).then(() => {
-  const server = app.listen(8000);
-  exp = server;
-  const io = socket.init(server);
-  io.of('/rest').use((s, next) => {
-    console.log('Client connected:', s.client.conn);
-  });
-  HouseKeeping.getInstance().start();
-}).catch(reason => console.log(reason));
-
-export default () => exp;
+export { app };

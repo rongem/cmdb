@@ -4,14 +4,21 @@
   "description": "CMDB backend on NodeJS",
   "main": "./dist/app.ts",
   "scripts": {
-    "test-only": "mocha --timeout 5000",
-    "test": "tsc && mocha --timeout 5000",
-    "prep": "tsc --declaration && mocha --timeout 5000 && grunt bump",
+    "test": "jest --no-cache --detectOpenHandles --covarage=true --runInBand",
+    "prep": "tsc --declaration && mocha -r ts-node/register test/**/*.ts --timeout 5000 && grunt bump",
     "comp": "tsc --declaration",
     "dev": "nodemon -r dotenv/config ./src/app.ts",
     "prod": "tsc && node ./build/app.js",
     "docker": "docker build -t rongem/cmdb-backend .",
     "start": "node dist/app.js"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testSequencer": "./src/test/sequencer.js",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ]
   },
   "keywords": [
     "CMDB",
@@ -32,20 +39,25 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz"
   },
   "devDependencies": {
+    "@jest/test-sequencer": "^29.7.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.12",
     "@types/express-ntlm": "^2.3.2",
+    "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.0",
     "@types/multer": "^1.4.6",
     "@types/node": "^20.10.1",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.2",
-    "chai": "^4.3.4",
-    "chai-http": "^4.3.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
     "grunt": "^1.5.3",
     "grunt-bump": "^0.8.0",
-    "mocha": "^10.0.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
     "swagger-ui-express": "^5.0.0",
+    "ts-jest": "^29.2.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.0.2"
   }
 }

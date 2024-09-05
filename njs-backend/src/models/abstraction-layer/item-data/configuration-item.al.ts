@@ -165,7 +165,7 @@ export const configurationItemModelGetProposals = async (text: string, lookupIte
         queries.push({ 'attributes.value': {$regex: text, $options: 'i'}});
     }
     const query = queries.length > 1 ? {$or: queries} : queries[0];
-    const items: IConfigurationItem[] = await configurationItemModel.find({filter: query}).limit(20);
+    const items: IConfigurationItem[] = await configurationItemModel.find(query).limit(20);
     const words: string[] = [];
     items.forEach(item => {
         if (lookupItems) {
