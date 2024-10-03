@@ -11,7 +11,7 @@ export class ConnectionRule {
 
     constructor(entity?: IConnectionRule) {
         if (entity) {
-            this.id = entity._id.toString();
+            this.id = (entity._id as any).toString();
             this.upperItemTypeId = entity.upperItemType.toString();
             this.lowerItemTypeId = entity.lowerItemType.toString();
             this.connectionTypeId = entity.connectionType.toString();

@@ -430,13 +430,13 @@ export const modelGetFullConfigurationItemsByIds = async (itemIds: string[]) => 
     const fullItems = items.map(item => {
         // build connections to upper
         const ctu = connectionsToUpper.map(c => createFullConnection(c,
-            connectionRules.find(r => r._id.toString() === (c.connectionRule as IConnectionRule).toString())!,
-            targetItems.find(i => i._id.toString() === (c.upperItem as IConfigurationItem).toString())!
+            connectionRules.find(r => (r._id as any).toString() === (c.connectionRule as IConnectionRule).toString())!,
+            targetItems.find(i => (i._id as any).toString() === (c.upperItem as IConfigurationItem).toString())!
         ));
         // build connections to lower
         const ctl = connectionsToLower.map(c => createFullConnection(c,
-            connectionRules.find(r => r._id.toString() === (c.connectionRule as IConnectionRule).toString())!,
-            targetItems.find(i => i._id.toString() === (c.lowerItem as IConfigurationItem).toString())!
+            connectionRules.find(r => (r._id as any).toString() === (c.connectionRule as IConnectionRule).toString())!,
+            targetItems.find(i => (i._id as any).toString() === (c.lowerItem as IConfigurationItem).toString())!
         ));
         return new FullConfigurationItem(item, ctu, ctl);
     });

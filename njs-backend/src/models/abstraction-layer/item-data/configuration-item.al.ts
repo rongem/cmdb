@@ -144,7 +144,7 @@ export const checkResponsibility = (user: UserAccount | undefined, item: IConfig
     if (!user) {
         throw new HttpError(403, missingResponsibilityMsg);
     }
-    if (!item.responsibleUsers.map((u) => u.name).includes(user.accountName)) {
+    if (!item.responsibleUsers.map((u) => (u as IUser).name).includes(user.accountName)) {
         // If user is not present in current item, but will be set in update, accept this, too. If neither is set, fail.
         if (!newResponsibleUsers || !newResponsibleUsers.map(u => u).includes(user.accountName)) {
             throw new HttpError(403, missingResponsibilityMsg);
@@ -232,7 +232,7 @@ export const configurationItemModelCreate = async (expectedUsers: string[], user
 function updateResponsibleUsers(item: IConfigurationItem, responsibleUsers: UserAccount[], changed: boolean) {
     const usersToDelete: number[] = [];
     item.responsibleUsers.forEach((u, index) => {
-        const del = responsibleUsers.findIndex(us => us.id === u.id);
+        const del = responsibleUsers.findIndex(us => us.id === u!.id);
         if (del > -1) {
             responsibleUsers.splice(del, 1);
         } else {
@@ -358,7 +358,7 @@ export const configurationItemModelTakeResponsibility = async (id: string, authe
     if (!item || !authentication) {
         throw notFoundError;
     }
-    if (item.responsibleUsers.map(u => u.id).includes(authentication.id)) {
+    if (item.responsibleUsers.map(u => (u as IUser).id).includes(authentication.id)) {
         throw new HttpError(304, nothingChangedMsg);
     }
     item.responsibleUsers.push({_id: authentication.id} as IUser);
@@ -373,10 +373,10 @@ export const configurationItemModelAbandonResponsibility = async (id: string, au
     if (!item || !authentication) {
         throw notFoundError;
     }
-    if (!item.responsibleUsers.map(u => u._id.toString()).includes(authentication.id)) {
+    if (!item.responsibleUsers.map(u => (u!._id as any).toString()).includes(authentication.id)) {
         throw new HttpError(304, nothingChangedMsg);
     }
-    item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u.toString() === authentication.id, 1));
+    item.responsibleUsers.splice(item.responsibleUsers.findIndex(u => u!.toString() === authentication.id, 1));
     item = await item.save();
     return await configurationItemModelFindSingle(id);
 }

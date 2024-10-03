@@ -159,7 +159,7 @@ export const itemTypeModelUpdate = async (id: string, name: string, color: strin
     // remove item attributes that are no longer inside the item type
     if (existingAttributeGroupIds.length > 0) {
         const attributeTypeIds = attributeTypes.filter(at => existingAttributeGroupIds.includes(at.attributeGroupId)).map(at => at.id);
-        const itemIds = (await configurationItemModel.find({type: id, attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}})).map(i => i._id.toString());
+        const itemIds = (await configurationItemModel.find({type: id, attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}})).map(i => (i._id as any).toString());
         await configurationItemModel.updateMany(
             {type: id, attributes: {$elemMatch: {type: {$in: attributeTypeIds}}}},
             {$pull: {attributes: {type: {$in: attributeTypeIds}}}}

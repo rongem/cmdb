@@ -13,7 +13,7 @@ export class UserAccount {
 
     constructor(u?: IUser) {
         if (u) {
-            this.id = u._id.toString();
+            this.id = (u._id as any).toString();
             this.accountName = u.name;
             this.role = u.role;
             this.roleName = roleNamesValues[u.role];

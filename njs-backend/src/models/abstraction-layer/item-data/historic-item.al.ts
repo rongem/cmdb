@@ -3,11 +3,12 @@ import { historicCiModel } from '../../mongoose/historic-ci.model';
 import { historicConnectionModel, IHistoricConnection } from '../../mongoose/historic-connection.model';
 import { itemTypeModel } from '../../mongoose/item-type.model';
 import { notFoundError } from '../../../controllers/error.controller';
+import { IUser } from '../../mongoose/user.model';
 
 export const historicCiModelFindById = async (id: string) => {
     const [item, connectionsToLower, connectionsToUpper] = await Promise.all([
         historicCiModel.findById(id).then(i => (!!i ? {
-            id: i._id.toString(),
+            id: (i._id as any).toString(),
             typeId: i.typeId,
             type: i.typeName,
             lastChange: i.createdAt,
@@ -20,10 +21,10 @@ export const historicCiModelFindById = async (id: string) => {
                     typeId: a.typeId,
                     type: a.typeName,
                     value: a.value,
-                    id: a._id.toString(),
+                    id: (a._id as any).toString(),
                 })),
                 links: v.links.map(l => ({
-                    id: l._id.toString(),
+                    id: (l._id as any).toString(),
                     uri: l.uri,
                     description: l.description,
                 })),
@@ -40,7 +41,7 @@ export const historicCiModelFindById = async (id: string) => {
 }
 
 const mapConnections = (connections: IHistoricConnection[]) => connections.map(c => ({
-    id: c._id.toString(),
+    id: (c._id as any).toString(),
     ruleId: c.connectionRuleId,
     typeId: c.connectionTypeId,
     typeName: c.connectionTypeName,
@@ -66,7 +67,7 @@ export const buildHistoricItemVersion = (item: IConfigurationItem, userName: str
             description: l.description,
         })),
         responsibleUsers: item.responsibleUsers.map(u => ({
-            name: u.name,
+            name: (u as IUser).name,
         })),
         lastUpdate: item.updatedAt,
         savedBy: userName,

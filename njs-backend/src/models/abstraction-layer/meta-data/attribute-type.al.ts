@@ -89,7 +89,7 @@ export const attributeTypeModelUpdate = async (id: string, name: string, attribu
             }
         }
     }
-    const compareGroupId = (attributeType.attributeGroup as IAttributeGroup)._id.toString();
+    const compareGroupId = ((attributeType.attributeGroup as IAttributeGroup)._id as any).toString();
     if (compareGroupId !== attributeGroupId) {
         attributeType.attributeGroup = new Types.ObjectId(attributeGroupId);
         changed = true;

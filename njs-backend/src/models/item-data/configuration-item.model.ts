@@ -1,6 +1,7 @@
 import { ItemAttribute } from './item-attribute.model';
 import { ItemLink } from './item-link.model';
 import { IConfigurationItem } from '../mongoose/configuration-item.model';
+import { IUser } from '../mongoose/user.model';
 
 export class ConfigurationItem {
     id!: string;
@@ -22,10 +23,10 @@ export class ConfigurationItem {
             this.type = item.typeName;
             this.backColor = item.typeColor;
             this.lastChange = new Date(item.updatedAt as string);
-            this.version = item.__v;
+            this.version = (item as any).__v;
             item.attributes.forEach(a => this.attributes.push(new ItemAttribute(a)));
             item.links.forEach(l => this.links.push(new ItemLink(l)));
-            this.responsibleUsers = item.responsibleUsers.map(u => u.name).sort();
+            this.responsibleUsers = item.responsibleUsers.map(u => (u as IUser).name).sort();
         }
     }
 }

@@ -93,7 +93,7 @@ export const importDataTable = async (itemType: ItemType, columns: ColumnMap[], 
     }
     ruleIds = [...new Set(ruleIds)];
     const configurationItems = await Promise.all(itemPromises);
-    const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id);
+    const existingItemIds = configurationItems.filter(i => !!i).map(i => i!._id) as string[];
     const allowedAttributeTypeIds = allowedAttributeTypes.map(a => a.id);
     const connectionsPromise: Promise<IConnection[]> = connectionModel.find({$and: [
         {$or: [{upperItem: {$in: existingItemIds.map(id => new Types.ObjectId(id))}}, {lowerItem: {$in: existingItemIds.map(id => new Types.ObjectId(id))}}]},
@@ -128,7 +128,7 @@ export const importDataTable = async (itemType: ItemType, columns: ColumnMap[], 
         if (item) {
             // update existing item
             let changed = false;
-            if (!item.responsibleUsers.map(u => u.name).includes(authentication.accountName)) {
+            if (!item.responsibleUsers.map(u => (u as IUser).name).includes(authentication.accountName)) {
                 item.responsibleUsers.push({_id: authentication.id} as IUser);
                 changed = true;
             }
@@ -287,8 +287,8 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
     rows.forEach((row, index) => {
         const item = configurationItems[index];
         if (item) {
-            const connectionsToLower = connections.filter(c => (c.upperItem as IConfigurationItem)._id.toString() === item._id.toString());
-            const connectionsToUpper = connections.filter(c => (c.lowerItem as IConfigurationItem)._id.toString() === item._id.toString());
+            const connectionsToLower = connections.filter(c => ((c.upperItem as IConfigurationItem)._id as any).toString() === (item._id as any).toString());
+            const connectionsToUpper = connections.filter(c => ((c.lowerItem as IConfigurationItem)._id as any).toString() === (item._id as any).toString());
             row.forEach((cell, colindex) => {
                 const col = columns[colindex];
                 const cellContent = splitConnection(cell);
@@ -314,7 +314,7 @@ async function retrieveConnections(rows: string[][], columns: ColumnMap[], conne
                                         countStore.addLowerItemAndRule(item, rule);
                                         countStore.addUpperItemAndRule(i, rule);
                                         // user must have responsibility for upper item to connect to any lower item
-                                        if (!i.responsibleUsers.map(u => u.toString()).includes(authentication.id)) {
+                                        if (!i.responsibleUsers.map(u => u!.toString()).includes(authentication.id)) {
                                             i.responsibleUsers.push({_id: authentication.id} as IUser);
                                             i.save();
                                             const historicItem = buildHistoricItemVersion(i, authentication.accountName);
@@ -416,7 +416,7 @@ class ItemConnectionsCountStore {
                 }));
         }
     }
-    private getId = (item: IConfigurationItem, rule: ConnectionRule) => item._id.toString() + '|' + rule.id;
+    private getId = (item: IConfigurationItem, rule: ConnectionRule) => (item._id as any).toString() + '|' + rule.id;
 
     addUpperItemAndRule(item: IConfigurationItem, rule: ConnectionRule) {
         const id = this.getId(item, rule);

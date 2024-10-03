@@ -16,7 +16,7 @@ export class ItemType {
             if (entity.populated('attributeGroups')) {
                 this.attributeGroups = entity.attributeGroups.map(ag => new AttributeGroup(ag as IAttributeGroup));
             } else {
-                this.attributeGroups = (entity.attributeGroups as IAttributeGroup[]).map(ag => ({ id: ag._id.toString(), name: '' }));
+                this.attributeGroups = (entity.attributeGroups as IAttributeGroup[]).map(ag => ({ id: (ag._id as any).toString(), name: '' }));
             }
         }
     }

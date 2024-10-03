@@ -252,7 +252,7 @@ class SearchItems {
         this.connectionsToUpper.forEach(c => {
             const rule = this.connectionRules!.find(cr => cr.id === c.ruleId)!;
             const type = this.connectionTypes!.find(ct => ct.id === rule.connectionTypeId)!;
-            const conn = this.createFullConnection(c, rule, targetItems.find(i => i._id.toString() === c.upperItemId)!, type.reverseName);
+            const conn = this.createFullConnection(c, rule, targetItems.find(i => (i._id as any).toString() === c.upperItemId)!, type.reverseName);
             if (connectionsToUpper.has(c.lowerItemId)) {
                 connectionsToUpper.set(c.lowerItemId, [...connectionsToUpper.get(c.lowerItemId)!, conn]);
             } else {
@@ -262,7 +262,7 @@ class SearchItems {
         this.connectionsToLower.forEach(c => {
             const rule = this.connectionRules!.find(cr => cr.id === c.ruleId)!;
             const type = this.connectionTypes!.find(ct => ct.id === rule.connectionTypeId)!;
-            const conn = this.createFullConnection(c, rule, targetItems.find(i => i._id.toString() === c.lowerItemId)!, type.name);
+            const conn = this.createFullConnection(c, rule, targetItems.find(i => (i._id as any).toString() === c.lowerItemId)!, type.name);
             if (connectionsToLower.has(c.upperItemId)) {
                 connectionsToLower.set(c.upperItemId, [...connectionsToLower.get(c.upperItemId)!, conn]);
             } else {
