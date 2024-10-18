@@ -1,6 +1,6 @@
 {
   "name": "ng-frontend",
-  "version": "2.1.125",
+  "version": "2.1.126",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -20,7 +20,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.8",
-    "@angular/cdk": "^18.2.8",
+    "@angular/cdk": "^18.2.9",
     "@angular/common": "^18.2.8",
     "@angular/compiler": "^18.2.8",
     "@angular/core": "^18.2.8",
@@ -41,12 +41,12 @@
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.8",
+    "@angular-devkit/build-angular": "^18.2.9",
     "@angular-eslint/eslint-plugin": "^18.3.1",
     "@angular-eslint/eslint-plugin-template": "^18.3.1",
     "@angular-eslint/schematics": "18.3.1",
     "@angular-eslint/template-parser": "^18.3.1",
-    "@angular/cli": "^18.2.8",
+    "@angular/cli": "^18.2.9",
     "@angular/compiler-cli": "^18.2.8",
     "@angular/language-service": "^18.2.8",
     "@types/jest": "^29.5.13",
