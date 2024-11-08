@@ -3,7 +3,7 @@ npm outdated --location=global
 npm update --location=global
 cd ng-frontend
 echo Updating @angular
-ng update @angular/cli @angular/core @angular/cdk @ngrx/store @angular-eslint/schematics --force --allow-dirty
+ng update @angular/cli @angular/core @angular/cdk @ngrx/store --force --allow-dirty
 echo Updating other libraries
 npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
 npm update
