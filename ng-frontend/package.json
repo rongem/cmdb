@@ -1,6 +1,6 @@
 {
   "name": "ng-frontend",
-  "version": "2.1.129",
+  "version": "2.1.130",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -20,7 +20,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.11",
-    "@angular/cdk": "^18.2.12",
+    "@angular/cdk": "^18.2.13",
     "@angular/common": "^18.2.11",
     "@angular/compiler": "^18.2.11",
     "@angular/core": "^18.2.11",
