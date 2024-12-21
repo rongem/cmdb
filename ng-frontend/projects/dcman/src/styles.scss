@@ -1,4 +1,5 @@
-@import "_variables.scss";
+@use "sass:color";
+@use "_variables.scss";
 
 * {
     box-sizing: border-box;
@@ -7,8 +8,8 @@
 html, body { height: 100%; }
 
 body {
-    color: $main-color;
-    background-color: $body-background-color;
+    color: variables.$main-color;
+    background-color: variables.$body-background-color;
     margin: 0;
     margin-top: 4.5rem;
     font-family: Roboto, Verdana, Helvetica, sans-serif;
@@ -124,9 +125,9 @@ body {
     padding: 0 1rem 0.3rem 1rem;
     display: flex;
     flex-direction: column;
-    background-color: $element-background-color;
+    background-color: variables.$element-background-color;
     z-index: 2;
-    box-shadow: $box-shadow-small;
+    box-shadow: variables.$box-shadow-small;
 
     @media print {
         display: none;
@@ -140,13 +141,13 @@ body {
     
     .header-item {
         display: none;
-        border: 2px $main-border-color dotted;
+        border: 2px variables.$main-border-color dotted;
         padding: 0.2rem 0.5rem;
         margin: 0 0.1rem;
         font-weight: bold;
         font-size: 1.1rem;
         a {
-            color: $main-color;
+            color: variables.$main-color;
             text-decoration: none;
         }
         &.menu-open {
@@ -174,7 +175,7 @@ body {
         .menu-bar {
             width: 100%;
             height: 0.2rem;
-            background: $main-border-color;
+            background: variables.$main-border-color;
             display: block;
             margin: 0.6rem 0;
     
@@ -208,19 +209,19 @@ body {
     position: absolute;
     top: 100%;
     left: 0;
-    z-index: $zindex-dropdown;
+    z-index: variables.$zindex-dropdown;
     display: none; // none by default, but block on "open" of the menu
     float: left;
-    min-width: $dropdown-min-width;
-    padding: $dropdown-padding-y 0;
-    margin: $dropdown-spacer 0 0; // override default ul
-    font-size: $font-size-base; // Redeclare because nesting can cause inheritance issues
-    color: $body-background-color;
+    min-width: variables.$dropdown-min-width;
+    padding: variables.$dropdown-padding-y 0;
+    margin: variables.$dropdown-spacer 0 0; // override default ul
+    font-size: variables.$font-size-base; // Redeclare because nesting can cause inheritance issues
+    color: variables.$body-background-color;
     text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
     list-style: none;
-    background-color: $dropdown-bg;
+    background-color: variables.$dropdown-bg;
     background-clip: padding-box;
-    border: $dropdown-border-width solid $dropdown-border-color;
+    border: variables.$dropdown-border-width solid variables.$dropdown-border-color;
 }
 
 .open .dropdown-menu {
@@ -257,7 +258,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: lighten(wheat, 10%);
+    background-color: color.adjust(wheat, $lightness: 10%);
     border: 1px solid darkblue;
     border-radius: 1rem;
     padding: 2rem;
@@ -275,7 +276,7 @@ body {
 }
 
 .list-container {
-    background-color: $element-background-color;
+    background-color: variables.$element-background-color;
     margin: 1rem;
     padding: 1rem;
     border-radius: 1rem;
@@ -304,14 +305,14 @@ body {
         }
 
         .list-item {
-            border: $medium-border-style;
+            border: variables.$medium-border-style;
             margin: 0.5rem;
             box-shadow: 0.1rem 0.1rem 0.3rem;
             border-radius: 0.3rem;
             padding: 1rem;
 
             &:not(.error) {
-                background-color: $element-hover-background-color;
+                background-color: variables.$element-hover-background-color;
             }
 
             &.headline {
@@ -320,7 +321,7 @@ body {
             }
         }
         .error {
-            border: $error-border-style;
+            border: variables.$error-border-style;
         }
         
         .selected {
@@ -347,7 +348,7 @@ button {
 .clickable {
     cursor: pointer;
     &:hover, &:active {
-        background: radial-gradient(ellipse at center, darken($element-hover-background-color, 20%), $element-background-color) !important;
+        background: radial-gradient(ellipse at center, color.adjust(variables.$element-hover-background-color, $lightness: -20%), variables.$element-background-color) !important;
     }
 }
 
@@ -362,15 +363,15 @@ button {
         }
     
         &:focus {
-            background-color: $element-hover-background-color;
+            background-color: variables.$element-hover-background-color;
         }
     }
 }
 
 .readonly-box {
     margin-bottom: 1rem;
-    border: $medium-border-style;
-    background-color: $element-background-color;
+    border: variables.$medium-border-style;
+    background-color: variables.$element-background-color;
     white-space: nowrap ;
     padding: 0 0.2rem;
     line-height: 1.5rem;
@@ -398,14 +399,14 @@ form, .form {
     margin: 1rem;
     padding: 1rem;
     &.ng-invalid {
-        border-right: 1px $error-border-color solid;
+        border-right: 1px variables.$error-border-color solid;
     }
 
     input, select {
         margin-bottom: 1rem;
 
         &.ng-invalid {
-            border-color: $error-border-color;
+            border-color: variables.$error-border-color;
         }
     }
 
@@ -433,15 +434,15 @@ form, .form {
 }
 
 .warning {
-    background-color: $warning-background-color;
+    background-color: variables.$warning-background-color;
 }
 
 .error {
-    background-color: $error-background-color;
+    background-color: variables.$error-background-color;
 }
 
 .error.warning {
-    background: linear-gradient(to right, $error-background-color, $warning-background-color);
+    background: linear-gradient(to right, variables.$error-background-color, variables.$warning-background-color);
 }
 
 .invisible {

@@ -1,9 +1,9 @@
-@import "projects/cmdb/src/_variables.scss";
+@use "../../../../_variables.scss";
 
 .color-popup {
     display: none;
-    background: $element-background-color;
-    box-shadow: $box-shadow-medium;
+    background: variables.$element-background-color;
+    box-shadow: variables.$box-shadow-medium;
     width: 22rem;
     height: 24rem;
     padding: 1rem;

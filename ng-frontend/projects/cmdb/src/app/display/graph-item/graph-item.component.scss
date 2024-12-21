@@ -1,12 +1,13 @@
-@import "projects/cmdb/src/_variables.scss";
+@use "sass:color";
+@use "../../../_variables.scss";
 
 $margin: 25px;
 $line-width: 2px;
-$line-color: rgba($main-border-color, 0.7);
+$line-color: rgba(variables.$main-border-color, 0.7);
 
 .item-container {
     padding: 1rem;
-    border: $main-border-style;
+    border: variables.$main-border-style;
     width: max-content;
     position: relative;
 }
@@ -57,7 +58,7 @@ $line-color: rgba($main-border-color, 0.7);
 }
 
 .outline {
-    outline: double lighten($color: $main-border-color, $amount: 50%);
+    outline: double color.adjust($color: variables.$main-border-color, $lightness: 50%);
 }
 
 .right {

@@ -1,4 +1,5 @@
-@import "projects/cmdb/src/_variables.scss";
+@use "sass:color";
+@use "../../../_variables.scss";
 
 .busy-spinner {
     position: fixed;
@@ -10,9 +11,9 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background: $element-background-color;
+    background: variables.$element-background-color;
     border-radius: 0.5rem;
-    box-shadow: $box-shadow-large;
+    box-shadow: variables.$box-shadow-large;
     text-align: center;
 }
 
@@ -30,7 +31,7 @@
     top: 36px;
     position: absolute;
     animation: ldio-inner linear 1.5384615384615383s infinite;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
     width: 12px;
     height: 24px;
     border-radius: 3.12px / 3.12px;
@@ -39,62 +40,62 @@
 .ldio-inner div:nth-child(1) {
     transform: rotate(0deg);
     animation-delay: -1.4102564102564101s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(2) {
     transform: rotate(30deg);
     animation-delay: -1.282051282051282s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(3) {
     transform: rotate(60deg);
     animation-delay: -1.1538461538461537s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(4) {
     transform: rotate(90deg);
     animation-delay: -1.0256410256410255s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(5) {
     transform: rotate(120deg);
     animation-delay: -0.8974358974358974s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(6) {
     transform: rotate(150deg);
     animation-delay: -0.7692307692307692s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(7) {
     transform: rotate(180deg);
     animation-delay: -0.641025641025641s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(8) {
     transform: rotate(210deg);
     animation-delay: -0.5128205128205128s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(9) {
     transform: rotate(240deg);
     animation-delay: -0.3846153846153846s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(10) {
     transform: rotate(270deg);
     animation-delay: -0.2564102564102564s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(11) {
     transform: rotate(300deg);
     animation-delay: -0.1282051282051282s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .ldio-inner div:nth-child(12) {
     transform: rotate(330deg);
     animation-delay: 0s;
-    background: darken($body-background-color, 10%);
+    background: color.adjust(variables.$body-background-color, $lightness: -10%);
 }
 .loadingio-spinner {
     width: 200px;

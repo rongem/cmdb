@@ -1,4 +1,4 @@
-@import "../../../_variables.scss";
+@use "../../../_variables.scss";
 
 .busy-spinner {
     position: fixed;
@@ -6,9 +6,9 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background: $element-background-color;
+    background: variables.$element-background-color;
     border-radius: 0.5rem;
-    box-shadow: $box-shadow-large;
+    box-shadow: variables.$box-shadow-large;
     text-align: center;
 }
 

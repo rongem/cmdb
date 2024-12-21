@@ -1,7 +1,8 @@
+@use "sass:color";
 $main-color: #005;
 $main-border-color: $main-color;
 $error-color: #c54644;
-$error-background-color: lighten($error-color, 30%);
+$error-background-color: color.adjust($error-color, $lightness: 30%);
 $body-background-color: #ddf;
 $element-background-color: #eee;
 $element-inactive-background-color: #bbb;

@@ -1,7 +1,7 @@
-@import "../../../_variables.scss";
+@use "../../../_variables.scss";
 
 .border {
-    border: $main-border-style;
+    border: variables.$main-border-style;
     padding: 0.3rem;
 }
 

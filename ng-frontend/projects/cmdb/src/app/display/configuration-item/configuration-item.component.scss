@@ -1,4 +1,4 @@
-@import "projects/cmdb/src/_variables.scss";
+@use "../../../_variables.scss";
 
 .connections {
     grid-area: connections;
@@ -24,7 +24,7 @@
 }
 
 .connections-group {
-    border: $main-border-style;
+    border: variables.$main-border-style;
     border-radius: 0.5rem;
     padding: 1rem;
 
@@ -34,7 +34,7 @@
 }
 
 .connections-rule {
-    border: $light-border-style;
+    border: variables.$light-border-style;
     border-radius: 0.5rem;
     padding: 1rem;
     em {

@@ -1,7 +1,7 @@
-@import "../../../_variables.scss";
+@use "../../../_variables.scss";
 
 .room {
-    background-color: $element-background-color;
+    background-color: variables.$element-background-color;
     padding: 2rem;
     margin: 1rem;
     border-radius: 1rem;
@@ -14,7 +14,7 @@
     width: 100%;
     .rack__inner-border {
         border: 0.1rem #505050 solid;
-        background-color: $element-background-color;
+        background-color: variables.$element-background-color;
         margin: 0.2rem;
         min-height: 10rem;
         display: grid;
@@ -59,8 +59,8 @@
                 }
                 
                 .enclosure-bays {
-                    background-color: $element-background-color;
-                    border: $light-border-style;
+                    background-color: variables.$element-background-color;
+                    border: variables.$light-border-style;
                 }
 
                 .back-side {
@@ -71,7 +71,7 @@
                 }
 
                 .enclosure-bay {
-                    border: $light-border-style;
+                    border: variables.$light-border-style;
 
                     .enclosure-label {
                         width: 100%;

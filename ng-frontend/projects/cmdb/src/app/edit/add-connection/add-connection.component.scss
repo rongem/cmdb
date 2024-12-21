@@ -1,4 +1,4 @@
-@import "projects/cmdb/src/_variables.scss";
+@use "../../../_variables.scss";
 
 .form {
     width: 100%;
@@ -7,7 +7,7 @@
 }
 
 select {
-    border: $main-border-style;
+    border: variables.$main-border-style;
     padding: 0.5rem 1rem;
     margin: 1rem 0.5rem;
     width: 100%;

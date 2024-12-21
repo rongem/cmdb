@@ -1,5 +1,4 @@
-@import "projects/cmdb/src/_variables.scss";
-@import "projects/cmdb/src/_variables.scss";
+@use "../../../_variables.scss";
 
 .dragging {
     background-color: lightgray;
@@ -17,19 +16,19 @@
 }
 
 .upper-border {
-    border-top: $medium-border-style;
+    border-top: variables.$medium-border-style;
 }
 
 .right-border {
-    border-right: $medium-border-style !important;
+    border-right: variables.$medium-border-style !important;
 }
 
 .lower-border {
-    border-bottom: $medium-border-style;
+    border-bottom: variables.$medium-border-style;
 }
 
 .left-border {
-    border-left: $medium-border-style;
+    border-left: variables.$medium-border-style;
 }
 
 .red-border {

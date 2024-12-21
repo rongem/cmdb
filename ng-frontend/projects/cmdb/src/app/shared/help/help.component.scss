@@ -1,4 +1,4 @@
-@import "projects/cmdb/src/_variables.scss";
+@use "../../../_variables.scss";
 
 .help-button {
     left: 90%;
@@ -15,10 +15,10 @@
     margin: 0 3rem;
     padding: 0 1rem;
     &.visible {
-        background: $element-background-color;
-        border: $main-border-style;
+        background: variables.$element-background-color;
+        border: variables.$main-border-style;
         border-radius: 0.5rem;
-        box-shadow: $box-shadow-large;
+        box-shadow: variables.$box-shadow-large;
         padding: 1rem;
         max-height: calc(98% - 7rem);
     }

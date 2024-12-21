@@ -17,7 +17,7 @@ export const resultListFailed = createSelector(itemState, state => !(state.resul
 // if item is selected, return its attribute group ids, otherwise return all attribute group ids
 const attributeGroupIdsForCurrentDisplayItemType = createSelector(MetaDataSelectors.selectItemTypes, MetaDataSelectors.selectAttributeGroups, configurationItem,
     (itemTypes, attributeGroups, item) =>
-        !!item ? [...new Set(itemTypes.find(it => it.id === item.typeId).attributeGroups?.map(ag => ag.id))] ?? [] : attributeGroups.map(ag => ag.id)
+        !!item ? [...new Set(itemTypes.find(it => it.id === item.typeId).attributeGroups?.map(ag => ag.id))] : attributeGroups.map(ag => ag.id)
 );
 
 // Extract all attribute types that are available for the currently selected item's type
