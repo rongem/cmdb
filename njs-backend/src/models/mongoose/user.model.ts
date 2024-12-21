@@ -57,7 +57,8 @@ const userSchema = new Schema<IUser, Model<IUser>>({
 //   },
 });
 
-userSchema.index({name: 1}, {unique: true});
+// commented out because of mongoose 8.9.2 error. Mongoose sucks!
+//userSchema.index({name: 1}, {unique: true});
 
 export const userModel = model<IUser, Model<IUser>>('User', userSchema);
 
