@@ -19,9 +19,10 @@ import { Column } from '../objects/column.model';
 import { ImportSettings } from '../../shared/objects/import-settings.model';
 
 @Component({
-  selector: 'app-import-items',
-  templateUrl: './import-items.component.html',
-  styleUrls: ['./import-items.component.scss']
+    selector: 'app-import-items',
+    templateUrl: './import-items.component.html',
+    styleUrls: ['./import-items.component.scss'],
+    standalone: false
 })
 export class ImportItemsComponent implements OnInit {
   @ViewChild('file') file: ElementRef;

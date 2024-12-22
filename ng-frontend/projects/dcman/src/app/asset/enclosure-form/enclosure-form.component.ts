@@ -14,9 +14,10 @@ import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountab
 
 
 @Component({
-  selector: 'app-enclosure-form',
-  templateUrl: './enclosure-form.component.html',
-  styleUrls: ['./enclosure-form.component.scss']
+    selector: 'app-enclosure-form',
+    templateUrl: './enclosure-form.component.html',
+    styleUrls: ['./enclosure-form.component.scss'],
+    standalone: false
 })
 export class EnclosureFormComponent implements OnInit {
   @Input() backSide: boolean;

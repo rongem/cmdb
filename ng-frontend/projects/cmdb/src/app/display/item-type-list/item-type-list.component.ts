@@ -3,9 +3,10 @@ import { Store } from '@ngrx/store';
 import { MetaDataSelectors } from 'backend-access';
 
 @Component({
-  selector: 'app-item-type-list',
-  templateUrl: './item-type-list.component.html',
-  styleUrls: ['./item-type-list.component.scss']
+    selector: 'app-item-type-list',
+    templateUrl: './item-type-list.component.html',
+    styleUrls: ['./item-type-list.component.scss'],
+    standalone: false
 })
 export class ItemTypeListComponent implements OnInit {
   hidden = false;

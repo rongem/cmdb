@@ -10,9 +10,10 @@ import { HistoryEntry } from '../../shared/objects/history-entry.model';
 import { History } from '../../shared/objects/history.model';
 
 @Component({
-  selector: 'app-show-history',
-  templateUrl: './show-history.component.html',
-  styleUrls: ['./show-history.component.scss']
+    selector: 'app-show-history',
+    templateUrl: './show-history.component.html',
+    styleUrls: ['./show-history.component.scss'],
+    standalone: false
 })
 export class ShowHistoryComponent implements OnInit {
   displayedColumns = ['date', 'subject', 'text', 'responsible'];

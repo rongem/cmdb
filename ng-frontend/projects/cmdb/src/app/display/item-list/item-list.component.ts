@@ -5,9 +5,10 @@ import { map, of, Subscription, switchMap, take, withLatestFrom } from 'rxjs';
 import { ItemSelectors, MultiEditActions, MultiEditSelectors, SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
-  selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.scss']
+    selector: 'app-item-list',
+    templateUrl: './item-list.component.html',
+    styleUrls: ['./item-list.component.scss'],
+    standalone: false
 })
 export class ItemListComponent implements OnInit, OnDestroy {
   displayedAttributeTypesList: AttributeType[] = [];

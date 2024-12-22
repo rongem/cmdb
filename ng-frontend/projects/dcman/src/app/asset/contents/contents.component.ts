@@ -12,9 +12,10 @@ import { Mappings } from '../../shared/objects/appsettings/mappings.model';
 import { llc } from '../../shared/store/functions';
 
 @Component({
-  selector: 'app-contents',
-  templateUrl: './contents.component.html',
-  styleUrls: ['./contents.component.scss']
+    selector: 'app-contents',
+    templateUrl: './contents.component.html',
+    styleUrls: ['./contents.component.scss'],
+    standalone: false
 })
 export class ContentsComponent implements OnInit {
 

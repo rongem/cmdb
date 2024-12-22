@@ -12,9 +12,10 @@ import { Rack } from '../shared/objects/asset/rack.model';
 import { of } from 'rxjs';
 
 @Component({
-  selector: 'app-rooms',
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.scss']
+    selector: 'app-rooms',
+    templateUrl: './rooms.component.html',
+    styleUrls: ['./rooms.component.scss'],
+    standalone: false
 })
 export class RoomsComponent implements OnInit {
   currentBuilding = '';

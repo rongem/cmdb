@@ -6,9 +6,10 @@ import { ItemSelectors } from '../../shared/store/store.api';
 
 
 @Component({
-  selector: 'app-configuration-item',
-  templateUrl: './configuration-item.component.html',
-  styleUrls: ['./configuration-item.component.scss']
+    selector: 'app-configuration-item',
+    templateUrl: './configuration-item.component.html',
+    styleUrls: ['./configuration-item.component.scss'],
+    standalone: false
 })
 export class ConfigurationItemComponent implements OnInit {
 

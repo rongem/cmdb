@@ -19,9 +19,10 @@ import { llc, llcc } from '../../shared/store/functions';
 import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
 
 @Component({
-  selector: 'app-mountable-form',
-  templateUrl: './mountable-form.component.html',
-  styleUrls: ['./mountable-form.component.scss']
+    selector: 'app-mountable-form',
+    templateUrl: './mountable-form.component.html',
+    styleUrls: ['./mountable-form.component.scss'],
+    standalone: false
 })
 export class MountableFormComponent implements OnInit, OnDestroy {
   @Input() mountable: RackMountable | EnclosureMountable;

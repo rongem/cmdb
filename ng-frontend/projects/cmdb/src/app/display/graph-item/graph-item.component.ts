@@ -7,21 +7,23 @@ import { ItemActions, ItemSelectors } from '../../shared/store/store.api';
 import { GraphItem } from '../../shared/objects/graph-item.model';
 
 @Component({
-  selector: 'app-graph-item',
-  templateUrl: './graph-item.component.html',
-  styleUrls: ['./graph-item.component.scss'],
-  animations: [
-    trigger('turnIn', [
-      transition('void => *', [
-        style({
-          transform: 'rotateY(90deg)',
-        }),
-        animate(200, style({
-          transform: 'rotateY(40deg)',
-        })),
-        animate(300),
-      ])])
-  ],
+    selector: 'app-graph-item',
+    templateUrl: './graph-item.component.html',
+    styleUrls: ['./graph-item.component.scss'],
+    animations: [
+        trigger('turnIn', [
+            transition('void => *', [
+                style({
+                    transform: 'rotateY(90deg)',
+                }),
+                animate(200, style({
+                    transform: 'rotateY(40deg)',
+                })),
+                animate(300),
+            ])
+        ])
+    ],
+    standalone: false
 })
 export class GraphItemComponent implements OnInit {
   @Input() item: GraphItem;

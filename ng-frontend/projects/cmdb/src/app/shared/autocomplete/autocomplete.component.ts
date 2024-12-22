@@ -4,10 +4,11 @@ import { AutocompleteContentDirective } from './autocomplete-content.directive';
 import { OptionComponent } from '../option/option.component';
 
 @Component({
-  selector: 'app-autocomplete',
-  templateUrl: './autocomplete.component.html',
-  styleUrls: ['./autocomplete.component.scss'],
-  exportAs: 'appAutocomplete',
+    selector: 'app-autocomplete',
+    templateUrl: './autocomplete.component.html',
+    styleUrls: ['./autocomplete.component.scss'],
+    exportAs: 'appAutocomplete',
+    standalone: false
 })
 export class AutocompleteComponent implements OnInit {
   @ViewChild('root') rootTemplate: TemplateRef<any>;

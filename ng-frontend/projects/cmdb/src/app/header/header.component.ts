@@ -6,9 +6,10 @@ import { Subject } from 'rxjs';
 import { GlobalActions } from '../shared/store/store.api';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: false
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   remainingTime: Subject<string> = new Subject();

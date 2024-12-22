@@ -15,7 +15,10 @@ const overlayClickOutside = (overlayRef: OverlayRef, origin: HTMLElement) => fro
     takeUntil(overlayRef.detachments())
 );
 
-@Directive({selector: '[appAutocomplete]'})
+@Directive({
+    selector: '[appAutocomplete]',
+    standalone: false
+})
 export class AutocompleteDirective implements OnInit, OnDestroy {
     @Input() appAutocomplete: AutocompleteComponent;
     private overlayRef: OverlayRef;

@@ -17,9 +17,10 @@ import { selectRouterStateId } from '../../shared/store/router/router.reducer';
 import { llcc } from '../../shared/store/functions';
 
 @Component({
-  selector: 'app-asset',
-  templateUrl: './asset.component.html',
-  styleUrls: ['./asset.component.scss']
+    selector: 'app-asset',
+    templateUrl: './asset.component.html',
+    styleUrls: ['./asset.component.scss'],
+    standalone: false
 })
 export class AssetComponent implements OnInit, OnDestroy {
   selectedAsset: Asset;

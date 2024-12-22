@@ -7,9 +7,10 @@ import { AdminActions, ConnectionRule, MetaDataSelectors, ValidatorService } fro
 
 
 @Component({
-  selector: 'app-edit-rule',
-  templateUrl: './edit-rule.component.html',
-  styleUrls: ['./edit-rule.component.scss']
+    selector: 'app-edit-rule',
+    templateUrl: './edit-rule.component.html',
+    styleUrls: ['./edit-rule.component.scss'],
+    standalone: false
 })
 export class EditRuleComponent implements OnInit {
   ruleForm: UntypedFormGroup;

@@ -16,9 +16,10 @@ import { ItemSelectors } from '../../shared/store/store.api';
 import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
-  selector: 'app-edit-item',
-  templateUrl: './edit-item.component.html',
-  styleUrls: ['./edit-item.component.scss']
+    selector: 'app-edit-item',
+    templateUrl: './edit-item.component.html',
+    styleUrls: ['./edit-item.component.scss'],
+    standalone: false
 })
 export class EditItemComponent implements OnInit, OnDestroy {
   form: UntypedFormGroup;

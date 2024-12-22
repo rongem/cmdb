@@ -8,9 +8,10 @@ import { UserInfo, UserRole, AdminActions, AppConfigService, MetaDataSelectors, 
 import * as AdminSelectors from '../store/admin.selectors';
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+    selector: 'app-users',
+    templateUrl: './users.component.html',
+    styleUrls: ['./users.component.scss'],
+    standalone: false
 })
 export class UsersComponent implements OnInit {
   userProposals: Observable<UserInfo[]>;

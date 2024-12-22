@@ -7,25 +7,22 @@ import { MultiEditSelectors, SearchFormSelectors } from '../../shared/store/stor
 import { MultiEditService } from '../services/multi-edit.service';
 
 @Component({
-  selector: 'app-multi-delete',
-  templateUrl: './multi-delete.component.html',
-  styleUrls: ['./multi-delete.component.scss'],
-  animations: [
-    trigger('vanishingRow', [
-      transition('* => void', [
-        animate(300,
-          style({
-            transform: 'rotateX(30deg)'
-          })
-        ),
-        animate(200,
-          style({
-            transform: 'rotateX(90deg)'
-          })
-        ),
-      ])
-    ])
-  ]
+    selector: 'app-multi-delete',
+    templateUrl: './multi-delete.component.html',
+    styleUrls: ['./multi-delete.component.scss'],
+    animations: [
+        trigger('vanishingRow', [
+            transition('* => void', [
+                animate(300, style({
+                    transform: 'rotateX(30deg)'
+                })),
+                animate(200, style({
+                    transform: 'rotateX(90deg)'
+                })),
+            ])
+        ])
+    ],
+    standalone: false
 })
 export class MultiDeleteComponent implements OnInit, OnDestroy {
   subscription: Subscription;

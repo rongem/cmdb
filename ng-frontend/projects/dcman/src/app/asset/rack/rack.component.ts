@@ -25,9 +25,10 @@ import { Rack } from '../../shared/objects/asset/rack.model';
 import { getRouterState } from '../../shared/store/router/router.reducer';
 
 @Component({
-  selector: 'app-rack',
-  templateUrl: './rack.component.html',
-  styleUrls: ['./rack.component.scss']
+    selector: 'app-rack',
+    templateUrl: './rack.component.html',
+    styleUrls: ['./rack.component.scss'],
+    standalone: false
 })
 export class RackComponent implements OnInit, OnDestroy {
   selectedRackMountable: RackMountable;

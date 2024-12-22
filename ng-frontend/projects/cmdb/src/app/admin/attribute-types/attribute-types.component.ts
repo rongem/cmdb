@@ -4,9 +4,10 @@ import { Store } from '@ngrx/store';
 import { AttributeType, AdminActions, MetaDataSelectors } from 'backend-access';
 
 @Component({
-  selector: 'app-attribute-types',
-  templateUrl: './attribute-types.component.html',
-  styleUrls: ['./attribute-types.component.scss']
+    selector: 'app-attribute-types',
+    templateUrl: './attribute-types.component.html',
+    styleUrls: ['./attribute-types.component.scss'],
+    standalone: false
 })
 export class AttributeTypesComponent implements OnInit {
   @ViewChild('nameInput') nameInput: ElementRef;

@@ -13,9 +13,10 @@ interface ExportElement {
 }
 
 @Component({
-  selector: 'app-export-items',
-  templateUrl: './export-items.component.html',
-  styleUrls: ['./export-items.component.scss']
+    selector: 'app-export-items',
+    templateUrl: './export-items.component.html',
+    styleUrls: ['./export-items.component.scss'],
+    standalone: false
 })
 export class ExportItemsComponent implements OnInit {
   @Input() items: FullConfigurationItem[];

@@ -13,9 +13,10 @@ import { Model } from '../../shared/objects/model.model';
 import { RackMountable } from '../../shared/objects/asset/rack-mountable.model';
 
 @Component({
-  selector: 'app-rack-mount-form',
-  templateUrl: './rack-mount-form.component.html',
-  styleUrls: ['./rack-mount-form.component.scss']
+    selector: 'app-rack-mount-form',
+    templateUrl: './rack-mount-form.component.html',
+    styleUrls: ['./rack-mount-form.component.scss'],
+    standalone: false
 })
 export class RackMountFormComponent implements OnInit {
   @Input() rack: Rack;

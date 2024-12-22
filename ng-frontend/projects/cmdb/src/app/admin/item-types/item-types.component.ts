@@ -7,9 +7,10 @@ import * as LocalAdminActions from '../store/admin.actions';
 import { ItemTypeAttributeGroupMappingsComponent } from './attribute-group-mappings/attribute-group-mappings.component';
 
 @Component({
-  selector: 'app-item-types',
-  templateUrl: './item-types.component.html',
-  styleUrls: ['./item-types.component.scss']
+    selector: 'app-item-types',
+    templateUrl: './item-types.component.html',
+    styleUrls: ['./item-types.component.scss'],
+    standalone: false
 })
 export class ItemTypesComponent implements OnInit {
   readonly minLength = 4;

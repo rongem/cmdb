@@ -13,9 +13,10 @@ import { Model } from '../../shared/objects/model.model';
 import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
 
 @Component({
-  selector: 'app-asset-form',
-  templateUrl: './asset-form.component.html',
-  styleUrls: ['./asset-form.component.scss']
+    selector: 'app-asset-form',
+    templateUrl: './asset-form.component.html',
+    styleUrls: ['./asset-form.component.scss'],
+    standalone: false
 })
 export class AssetFormComponent implements OnInit {
   @Input() asset: Asset;

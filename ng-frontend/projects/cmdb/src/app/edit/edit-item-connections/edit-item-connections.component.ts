@@ -6,9 +6,10 @@ import { ItemSelectors } from '../../shared/store/store.api';
 import { AddConnectionComponent } from '../add-connection/add-connection.component';
 
 @Component({
-  selector: 'app-edit-item-connections',
-  templateUrl: './edit-item-connections.component.html',
-  styleUrls: ['./edit-item-connections.component.scss']
+    selector: 'app-edit-item-connections',
+    templateUrl: './edit-item-connections.component.html',
+    styleUrls: ['./edit-item-connections.component.scss'],
+    standalone: false
 })
 export class EditItemConnectionsComponent implements OnInit {
   itemId: string;

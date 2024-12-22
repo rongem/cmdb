@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-role-display',
-  templateUrl: './role-display.component.html',
-  styleUrls: ['./role-display.component.scss']
+    selector: 'app-role-display',
+    templateUrl: './role-display.component.html',
+    styleUrls: ['./role-display.component.scss'],
+    standalone: false
 })
 export class RoleDisplayComponent implements OnInit {
   @Input() role: number;

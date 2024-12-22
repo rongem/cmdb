@@ -8,29 +8,29 @@ import { getRouterState } from '../store/router/router.reducer';
 import { ItemSelectors, MultiEditActions, MultiEditSelectors, NeighborSearchSelectors, SearchFormSelectors } from '../store/store.api';
 
 @Component({
-  selector: 'app-action-list',
-  templateUrl: './action-list.component.html',
-  styleUrls: ['./action-list.component.scss'],
-  animations: [
-    trigger('showButton', [
-      transition('void => *', [
-        style({
-          color: 'white',
-          background: 'white',
-          boxShadow: '0.5rem 0.7rem 0.7rem #005',
-          transform: 'scale(1.3)',
-        }),
-        animate(300, style({
-          color: 'black',
-          background: 'white',
-          boxShadow: '0.3rem 0.5rem 0.5rem #005',
-          transform: 'scale(1)',
-        })),
-        animate(300)
-      ]),
-    ]),
-  ],
-
+    selector: 'app-action-list',
+    templateUrl: './action-list.component.html',
+    styleUrls: ['./action-list.component.scss'],
+    animations: [
+        trigger('showButton', [
+            transition('void => *', [
+                style({
+                    color: 'white',
+                    background: 'white',
+                    boxShadow: '0.5rem 0.7rem 0.7rem #005',
+                    transform: 'scale(1.3)',
+                }),
+                animate(300, style({
+                    color: 'black',
+                    background: 'white',
+                    boxShadow: '0.3rem 0.5rem 0.5rem #005',
+                    transform: 'scale(1)',
+                })),
+                animate(300)
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class ActionListComponent implements OnInit, OnDestroy {
   hidden = false;

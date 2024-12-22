@@ -7,9 +7,10 @@ import { Store } from '@ngrx/store';
 import { AdminActions, AdminFunctions, UserInfo } from 'backend-access';
 
 @Component({
-  selector: 'app-new-user',
-  templateUrl: './new-user.component.html',
-  styleUrls: ['./new-user.component.scss']
+    selector: 'app-new-user',
+    templateUrl: './new-user.component.html',
+    styleUrls: ['./new-user.component.scss'],
+    standalone: false
 })
 export class NewUserComponent implements OnInit {
   userForm: FormGroup;

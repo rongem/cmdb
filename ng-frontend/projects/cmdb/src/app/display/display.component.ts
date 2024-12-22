@@ -6,9 +6,10 @@ import { MetaDataSelectors, SearchActions } from 'backend-access';
 import { ItemActions, SearchFormActions, SearchFormSelectors } from '../shared/store/store.api';
 
 @Component({
-  selector: 'app-display',
-  templateUrl: './display.component.html',
-  styleUrls: ['./display.component.scss']
+    selector: 'app-display',
+    templateUrl: './display.component.html',
+    styleUrls: ['./display.component.scss'],
+    standalone: false
 })
 export class DisplayComponent implements OnInit, OnDestroy {
   private subscription: Subscription;

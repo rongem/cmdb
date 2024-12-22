@@ -5,9 +5,10 @@ import { map } from 'rxjs';
 import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.api';
 
 @Component({
-  selector: 'app-item-selector',
-  templateUrl: './item-selector.component.html',
-  styleUrls: ['./item-selector.component.scss']
+    selector: 'app-item-selector',
+    templateUrl: './item-selector.component.html',
+    styleUrls: ['./item-selector.component.scss'],
+    standalone: false
 })
 export class ItemSelectorComponent implements OnInit {
   @Input() itemId: string;

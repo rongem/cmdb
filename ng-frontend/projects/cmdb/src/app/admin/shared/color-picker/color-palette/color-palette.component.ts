@@ -12,9 +12,10 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-color-palette',
-  templateUrl: './color-palette.component.html',
-  styleUrls: ['./color-palette.component.scss'],
+    selector: 'app-color-palette',
+    templateUrl: './color-palette.component.html',
+    styleUrls: ['./color-palette.component.scss'],
+    standalone: false
 })
 export class ColorPaletteComponent implements AfterViewInit, OnChanges {
   @Input() hue: string;

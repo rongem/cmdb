@@ -6,9 +6,10 @@ import { iif, of, Subscription, switchMap, tap } from 'rxjs';
 import { AttributeType, AdminFunctions, MetaDataSelectors, AdminActions } from 'backend-access';
 
 @Component({
-  selector: 'app-delete-attribute-type',
-  templateUrl: './delete-attribute-type.component.html',
-  styleUrls: ['./delete-attribute-type.component.scss']
+    selector: 'app-delete-attribute-type',
+    templateUrl: './delete-attribute-type.component.html',
+    styleUrls: ['./delete-attribute-type.component.scss'],
+    standalone: false
 })
 export class DeleteAttributeTypeComponent implements OnInit, OnDestroy {
   attributeType?: AttributeType;

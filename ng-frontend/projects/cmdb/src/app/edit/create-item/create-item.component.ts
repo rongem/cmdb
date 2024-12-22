@@ -7,9 +7,10 @@ import { map, skipWhile, Subscription, take, withLatestFrom } from 'rxjs';
 import { ConfigurationItem, EditActions, MetaDataSelectors, ReadActions, ValidatorService } from 'backend-access';
 
 @Component({
-  selector: 'app-create-item',
-  templateUrl: './create-item.component.html',
-  styleUrls: ['./create-item.component.scss']
+    selector: 'app-create-item',
+    templateUrl: './create-item.component.html',
+    styleUrls: ['./create-item.component.scss'],
+    standalone: false
 })
 export class CreateItemComponent implements OnInit, OnDestroy {
   form: UntypedFormGroup;

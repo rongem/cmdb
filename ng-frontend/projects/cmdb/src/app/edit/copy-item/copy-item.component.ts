@@ -21,9 +21,10 @@ import { ItemSelectors } from '../../shared/store/store.api';
 
 
 @Component({
-  selector: 'app-copy-item',
-  templateUrl: './copy-item.component.html',
-  styleUrls: ['./copy-item.component.scss']
+    selector: 'app-copy-item',
+    templateUrl: './copy-item.component.html',
+    styleUrls: ['./copy-item.component.scss'],
+    standalone: false
 })
 export class CopyItemComponent implements OnInit, OnDestroy {
   item = new FullConfigurationItem();

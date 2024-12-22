@@ -12,9 +12,10 @@ import { getRouterState } from '../../../shared/store/router/router.reducer';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 
 @Component({
-  selector: 'app-model-item',
-  templateUrl: './model-item.component.html',
-  styleUrls: ['./model-item.component.scss']
+    selector: 'app-model-item',
+    templateUrl: './model-item.component.html',
+    styleUrls: ['./model-item.component.scss'],
+    standalone: false
 })
 export class ModelItemComponent implements OnInit {
   @Input() model: Model;

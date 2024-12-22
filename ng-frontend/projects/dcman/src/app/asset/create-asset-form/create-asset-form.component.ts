@@ -8,9 +8,10 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { llc } from '../../shared/store/functions';
 
 @Component({
-  selector: 'app-create-asset-form',
-  templateUrl: './create-asset-form.component.html',
-  styleUrls: ['./create-asset-form.component.scss']
+    selector: 'app-create-asset-form',
+    templateUrl: './create-asset-form.component.html',
+    styleUrls: ['./create-asset-form.component.scss'],
+    standalone: false
 })
 export class CreateAssetFormComponent implements OnInit {
   @Input() model: Model;

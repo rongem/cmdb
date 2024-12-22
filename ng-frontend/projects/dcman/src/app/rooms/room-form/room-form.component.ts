@@ -6,9 +6,10 @@ import { Room } from '../../shared/objects/asset/room.model';
 import { ExtendedAppConfigService } from '../../shared/app-config.service';
 
 @Component({
-  selector: 'app-room-form',
-  templateUrl: './room-form.component.html',
-  styleUrls: ['./room-form.component.scss']
+    selector: 'app-room-form',
+    templateUrl: './room-form.component.html',
+    styleUrls: ['./room-form.component.scss'],
+    standalone: false
 })
 export class RoomFormComponent implements OnInit {
   @Input() room: Room;

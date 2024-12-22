@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostListener, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[appClickOpen]'
+    selector: '[appClickOpen]',
+    standalone: false
 })
 export class ClickOpenDirective {
     @HostBinding('class.open') isOpen = false;

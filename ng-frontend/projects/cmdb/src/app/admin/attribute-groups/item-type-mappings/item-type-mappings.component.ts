@@ -7,9 +7,10 @@ import { ItemType, AttributeType, AttributeGroup, AdminActions, AdminFunctions, 
 
 
 @Component({
-  selector: 'app-attribute-group-item-type-mappings',
-  templateUrl: './item-type-mappings.component.html',
-  styleUrls: ['./item-type-mappings.component.scss']
+    selector: 'app-attribute-group-item-type-mappings',
+    templateUrl: './item-type-mappings.component.html',
+    styleUrls: ['./item-type-mappings.component.scss'],
+    standalone: false
 })
 export class AttributeGroupItemTypeMappingsComponent implements OnInit, OnDestroy {
   attributeGroup: AttributeGroup;

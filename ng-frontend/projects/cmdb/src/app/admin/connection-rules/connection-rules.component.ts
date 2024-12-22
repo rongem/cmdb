@@ -7,9 +7,10 @@ import { ConnectionRule, AdminActions, MetaDataSelectors, AdminFunctions, ItemTy
 
 
 @Component({
-  selector: 'app-connection-rules',
-  templateUrl: './connection-rules.component.html',
-  styleUrls: ['./connection-rules.component.scss']
+    selector: 'app-connection-rules',
+    templateUrl: './connection-rules.component.html',
+    styleUrls: ['./connection-rules.component.scss'],
+    standalone: false
 })
 export class ConnectionRulesComponent implements OnInit {
   upperItemType?: ItemType;

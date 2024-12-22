@@ -5,9 +5,10 @@ import { ConnectionRule, Connection, ConfigurationItem, ErrorActions, MetaDataSe
 import { ItemSelectors } from '../../shared/store/store.api';
 
 @Component({
-  selector: 'app-add-connection',
-  templateUrl: './add-connection.component.html',
-  styleUrls: ['./add-connection.component.scss']
+    selector: 'app-add-connection',
+    templateUrl: './add-connection.component.html',
+    styleUrls: ['./add-connection.component.scss'],
+    standalone: false
 })
 export class AddConnectionComponent implements OnInit {
   @Input() rule: ConnectionRule;

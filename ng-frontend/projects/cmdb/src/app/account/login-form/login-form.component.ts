@@ -6,9 +6,10 @@ import { ErrorSelectors, JwtLoginService } from 'backend-access';
 import { GlobalActions, GlobalSelectors } from '../../shared/store/store.api';
 
 @Component({
-  selector: 'app-login-form',
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+    selector: 'app-login-form',
+    templateUrl: './login-form.component.html',
+    styleUrls: ['./login-form.component.scss'],
+    standalone: false
 })
 export class LoginFormComponent implements OnInit {
   accountName: string;

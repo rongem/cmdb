@@ -7,9 +7,10 @@ import { ItemSelectors, NeighborSearchActions, NeighborSearchSelectors } from '.
 import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
-  selector: 'app-neighbor-list',
-  templateUrl: './neighbor-list.component.html',
-  styleUrls: ['./neighbor-list.component.scss']
+    selector: 'app-neighbor-list',
+    templateUrl: './neighbor-list.component.html',
+    styleUrls: ['./neighbor-list.component.scss'],
+    standalone: false
 })
 export class NeighborListComponent implements OnInit, OnDestroy {
   form: UntypedFormGroup;

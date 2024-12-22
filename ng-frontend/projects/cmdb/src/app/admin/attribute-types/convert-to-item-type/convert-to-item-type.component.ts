@@ -8,51 +8,52 @@ import { AttributeType, ItemType, ConnectionType, AdminActions,
   MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 @Component({
-  selector: 'app-convert-to-item-type',
-  templateUrl: './convert-to-item-type.component.html',
-  styleUrls: ['./convert-to-item-type.component.scss'],
-  animations: [
-    trigger('swapDirectionOfUpper', [
-      transition('above => below', [
-        style({
-          transform: 'translateY(150px)',
-        }),
-        animate(200, style({
-          transform: 'translateY(50px) translateX(20px)',
-        })),
-        animate(300)
-      ]),
-      transition('below => above', [
-        style({
-          transform: 'translateY(-150px)',
-        }),
-        animate(200, style({
-          transform: 'translateY(-50px) translateX(-20px)',
-        })),
-        animate(300)
-      ]),
-    ]),
-    trigger('swapDirectionOfLower', [
-      transition('below => above', [
-        style({
-          transform: 'translateY(150px)',
-        }),
-        animate(200, style({
-          transform: 'translateY(50px) translateX(20px)',
-        })),
-        animate(300)
-      ]),
-      transition('above => below', [
-        style({
-          transform: 'translateY(-150px)',
-        }),
-        animate(200, style({
-          transform: 'translateY(-50px) translateX(-20px)',
-        })),
-        animate(300)
-      ]),
-    ]),
-  ],
+    selector: 'app-convert-to-item-type',
+    templateUrl: './convert-to-item-type.component.html',
+    styleUrls: ['./convert-to-item-type.component.scss'],
+    animations: [
+        trigger('swapDirectionOfUpper', [
+            transition('above => below', [
+                style({
+                    transform: 'translateY(150px)',
+                }),
+                animate(200, style({
+                    transform: 'translateY(50px) translateX(20px)',
+                })),
+                animate(300)
+            ]),
+            transition('below => above', [
+                style({
+                    transform: 'translateY(-150px)',
+                }),
+                animate(200, style({
+                    transform: 'translateY(-50px) translateX(-20px)',
+                })),
+                animate(300)
+            ]),
+        ]),
+        trigger('swapDirectionOfLower', [
+            transition('below => above', [
+                style({
+                    transform: 'translateY(150px)',
+                }),
+                animate(200, style({
+                    transform: 'translateY(50px) translateX(20px)',
+                })),
+                animate(300)
+            ]),
+            transition('above => below', [
+                style({
+                    transform: 'translateY(-150px)',
+                }),
+                animate(200, style({
+                    transform: 'translateY(-50px) translateX(-20px)',
+                })),
+                animate(300)
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class ConvertToItemTypeComponent implements OnInit {
   typeId: string;

@@ -11,9 +11,10 @@ import { noAction } from '../../../shared/store/basics/basics.actions';
 import { llc, llcc } from '../../../shared/store/functions';
 
 @Component({
-  selector: 'app-model-form',
-  templateUrl: './model-form.component.html',
-  styleUrls: ['./model-form.component.scss']
+    selector: 'app-model-form',
+    templateUrl: './model-form.component.html',
+    styleUrls: ['./model-form.component.scss'],
+    standalone: false
 })
 export class ModelFormComponent implements OnInit {
   @Input() model: Model;

@@ -18,9 +18,10 @@ import { EnclosureMountable } from '../shared/objects/asset/enclosure-mountable.
 import { llc, llcc } from '../shared/store/functions';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: false
 })
 export class SearchComponent implements OnInit {
   searchText: string;

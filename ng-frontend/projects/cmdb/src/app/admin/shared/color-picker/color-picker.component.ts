@@ -2,16 +2,17 @@ import { Component, OnInit, forwardRef, Output, EventEmitter, Input } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-  selector: 'app-color-picker',
-  templateUrl: './color-picker.component.html',
-  styleUrls: ['./color-picker.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => ColorPickerComponent),
-      multi: true,
-    }
-  ]
+    selector: 'app-color-picker',
+    templateUrl: './color-picker.component.html',
+    styleUrls: ['./color-picker.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ColorPickerComponent),
+            multi: true,
+        }
+    ],
+    standalone: false
 })
 export class ColorPickerComponent implements OnInit, ControlValueAccessor {
   @Output() colorChange = new EventEmitter<string>();

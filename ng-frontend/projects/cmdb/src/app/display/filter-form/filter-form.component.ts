@@ -8,9 +8,10 @@ import { SearchFormActions, SearchFormSelectors } from '../../shared/store/store
 
 
 @Component({
-  selector: 'app-filter-form',
-  templateUrl: './filter-form.component.html',
-  styleUrls: ['./filter-form.component.scss']
+    selector: 'app-filter-form',
+    templateUrl: './filter-form.component.html',
+    styleUrls: ['./filter-form.component.scss'],
+    standalone: false
 })
 export class FilterFormComponent implements OnInit, OnDestroy {
   options = [];

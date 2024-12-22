@@ -5,9 +5,10 @@ import { take } from 'rxjs';
 import { SearchFormSelectors } from '../../shared/store/store.api';
 
 @Component({
-  selector: 'app-admin-navbar',
-  templateUrl: './admin-navbar.component.html',
-  styleUrls: ['./admin-navbar.component.scss']
+    selector: 'app-admin-navbar',
+    templateUrl: './admin-navbar.component.html',
+    styleUrls: ['./admin-navbar.component.scss'],
+    standalone: false
 })
 export class AdminNavbarComponent implements OnInit {
 

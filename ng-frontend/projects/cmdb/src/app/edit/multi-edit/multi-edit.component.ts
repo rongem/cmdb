@@ -20,9 +20,10 @@ import { TargetConnections } from '../objects/target-connections.model';
 import { ClipboardHelper } from '../objects/clipboard-helper.model';
 
 @Component({
-  selector: 'app-multi-edit',
-  templateUrl: './multi-edit.component.html',
-  styleUrls: ['./multi-edit.component.scss']
+    selector: 'app-multi-edit',
+    templateUrl: './multi-edit.component.html',
+    styleUrls: ['./multi-edit.component.scss'],
+    standalone: false
 })
 export class MultiEditComponent implements OnInit, OnDestroy {
   // table cells for selection

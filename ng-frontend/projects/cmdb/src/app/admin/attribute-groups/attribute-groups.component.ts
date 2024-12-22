@@ -4,9 +4,10 @@ import { map } from 'rxjs';
 import { AttributeGroup, AdminActions, MetaDataSelectors } from 'backend-access';
 
 @Component({
-  selector: 'app-attribute-groups',
-  templateUrl: './attribute-groups.component.html',
-  styleUrls: ['./attribute-groups.component.scss']
+    selector: 'app-attribute-groups',
+    templateUrl: './attribute-groups.component.html',
+    styleUrls: ['./attribute-groups.component.scss'],
+    standalone: false
 })
 export class AttributeGroupsComponent implements OnInit {
   activeGroup: string;

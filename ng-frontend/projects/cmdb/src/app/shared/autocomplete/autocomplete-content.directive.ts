@@ -1,7 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core';
 
 @Directive({
-  selector: '[appAutocompleteContent]'
+    selector: '[appAutocompleteContent]',
+    standalone: false
 })
 export class AutocompleteContentDirective {
 

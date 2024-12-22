@@ -17,9 +17,10 @@ import { AssetValue } from '../../shared/objects/form-values/asset-value.model';
 import { llc } from '../../shared/store/functions';
 
 @Component({
-  selector: 'app-racks',
-  templateUrl: './racks.component.html',
-  styleUrls: ['./racks.component.scss']
+    selector: 'app-racks',
+    templateUrl: './racks.component.html',
+    styleUrls: ['./racks.component.scss'],
+    standalone: false
 })
 export class RacksComponent implements OnInit {
   selectedRack: Rack;

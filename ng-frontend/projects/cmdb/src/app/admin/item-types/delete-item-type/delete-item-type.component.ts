@@ -9,9 +9,10 @@ import * as fromSelectAdmin from '../../store/admin.selectors';
 import { setCurrentItemType } from '../../store/admin.actions';
 
 @Component({
-  selector: 'app-delete-item-type',
-  templateUrl: './delete-item-type.component.html',
-  styleUrls: ['./delete-item-type.component.scss']
+    selector: 'app-delete-item-type',
+    templateUrl: './delete-item-type.component.html',
+    styleUrls: ['./delete-item-type.component.scss'],
+    standalone: false
 })
 export class DeleteItemTypeComponent implements OnInit, OnDestroy {
   itemType?: ItemType;

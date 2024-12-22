@@ -6,9 +6,10 @@ import { Store } from '@ngrx/store';
 import { ItemType, AttributeType, AttributeGroup, AdminActions, MetaDataSelectors, AdminFunctions } from 'backend-access';
 
 @Component({
-  selector: 'app-item-type-attribute-group-mappings',
-  templateUrl: './attribute-group-mappings.component.html',
-  styleUrls: ['./attribute-group-mappings.component.scss']
+    selector: 'app-item-type-attribute-group-mappings',
+    templateUrl: './attribute-group-mappings.component.html',
+    styleUrls: ['./attribute-group-mappings.component.scss'],
+    standalone: false
 })
 export class ItemTypeAttributeGroupMappingsComponent implements OnInit, OnDestroy {
   itemType: ItemType;

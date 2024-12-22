@@ -5,9 +5,10 @@ import { StoreConstants, MetaDataActions, JwtLoginService } from 'backend-access
 import * as fromApp from './shared/store/app.reducer';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   title = 'ng-dcman';

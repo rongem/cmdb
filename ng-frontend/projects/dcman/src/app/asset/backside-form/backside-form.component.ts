@@ -8,9 +8,10 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { EnclosureMountable } from '../../shared/objects/asset/enclosure-mountable.model';
 
 @Component({
-  selector: 'app-backside-form',
-  templateUrl: './backside-form.component.html',
-  styleUrls: ['./backside-form.component.scss']
+    selector: 'app-backside-form',
+    templateUrl: './backside-form.component.html',
+    styleUrls: ['./backside-form.component.scss'],
+    standalone: false
 })
 export class BacksideFormComponent implements OnInit {
   @Input() mountable: EnclosureMountable;

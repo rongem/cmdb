@@ -11,9 +11,10 @@ import { RackValue } from '../../../shared/objects/form-values/rack-value.model'
 import { AssetStatus } from '../../../shared/objects/asset/asset-status.enum';
 
 @Component({
-  selector: 'app-rack-form',
-  templateUrl: './rack-form.component.html',
-  styleUrls: ['./rack-form.component.scss']
+    selector: 'app-rack-form',
+    templateUrl: './rack-form.component.html',
+    styleUrls: ['./rack-form.component.scss'],
+    standalone: false
 })
 export class RackFormComponent implements OnInit {
   @Input() rack: Rack;

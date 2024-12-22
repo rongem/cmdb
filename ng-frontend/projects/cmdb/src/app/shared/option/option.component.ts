@@ -2,9 +2,10 @@ import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { fromEvent, mapTo, Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-option',
-  templateUrl: './option.component.html',
-  styleUrls: ['./option.component.scss']
+    selector: 'app-option',
+    templateUrl: './option.component.html',
+    styleUrls: ['./option.component.scss'],
+    standalone: false
 })
 export class OptionComponent implements OnInit {
   @Input() value: string;

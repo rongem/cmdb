@@ -4,9 +4,10 @@ import { Store } from '@ngrx/store';
 import { ConnectionType, ConnectionRule, AdminActions, MetaDataSelectors } from 'backend-access';
 
 @Component({
-  selector: 'app-connection-types',
-  templateUrl: './connection-types.component.html',
-  styleUrls: ['./connection-types.component.scss']
+    selector: 'app-connection-types',
+    templateUrl: './connection-types.component.html',
+    styleUrls: ['./connection-types.component.scss'],
+    standalone: false
 })
 export class ConnectionTypesComponent implements OnInit {
   @ViewChild('nameInput') nameInput: ElementRef;

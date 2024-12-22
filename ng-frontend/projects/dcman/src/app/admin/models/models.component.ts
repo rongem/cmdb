@@ -14,9 +14,10 @@ import { ExtendedAppConfigService } from '../../shared/app-config.service';
 import { llc, llcc } from '../../shared/store/functions';
 
 @Component({
-  selector: 'app-models',
-  templateUrl: './models.component.html',
-  styleUrls: ['./models.component.scss']
+    selector: 'app-models',
+    templateUrl: './models.component.html',
+    styleUrls: ['./models.component.scss'],
+    standalone: false
 })
 export class ModelsComponent implements OnInit {
   itemTypeId: string;

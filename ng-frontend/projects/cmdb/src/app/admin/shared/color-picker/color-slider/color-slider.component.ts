@@ -4,9 +4,10 @@ import { Component, OnInit,
   Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-color-slider',
-  templateUrl: './color-slider.component.html',
-  styleUrls: ['./color-slider.component.scss']
+    selector: 'app-color-slider',
+    templateUrl: './color-slider.component.html',
+    styleUrls: ['./color-slider.component.scss'],
+    standalone: false
 })
 export class ColorSliderComponent implements AfterViewInit {
   @ViewChild('canvas', {static: true}) canvas: ElementRef<HTMLCanvasElement>;

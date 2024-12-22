@@ -6,9 +6,10 @@ import { FullConfigurationItem } from 'backend-access';
 import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.api';
 
 @Component({
-  selector: 'app-multi-selector',
-  templateUrl: './multi-selector.component.html',
-  styleUrls: ['./multi-selector.component.scss'],
+    selector: 'app-multi-selector',
+    templateUrl: './multi-selector.component.html',
+    styleUrls: ['./multi-selector.component.scss'],
+    standalone: false
 })
 export class MultiSelectorComponent implements OnInit {
   @Input() items: FullConfigurationItem[] = [];

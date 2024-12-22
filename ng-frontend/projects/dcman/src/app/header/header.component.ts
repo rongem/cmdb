@@ -15,9 +15,10 @@ import { ExtendedAppConfigService } from '../shared/app-config.service';
 import { llc } from '../shared/store/functions';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: false
 })
 export class HeaderComponent implements OnInit {
   menuOpen = false;
