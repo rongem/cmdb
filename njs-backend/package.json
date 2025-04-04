@@ -2,15 +2,15 @@
   "name": "njs-backend",
   "version": "1.0.152",
   "description": "CMDB backend on NodeJS",
-  "main": "./dist/app.ts",
+  "main": "./dist/indext.ts",
   "scripts": {
     "test": "jest --no-cache --detectOpenHandles --covarage=true --runInBand",
     "prep": "tsc --declaration && mocha -r ts-node/register test/**/*.ts --timeout 5000 && grunt bump",
     "comp": "tsc --declaration",
-    "dev": "nodemon -r dotenv/config ./src/app.ts",
-    "prod": "tsc && node ./build/app.js",
+    "dev": "nodemon -r dotenv/config ./src/index.ts",
+    "prod": "tsc && node ./build/index.js",
     "docker": "docker build -t rongem/cmdb-backend .",
-    "start": "node dist/app.js"
+    "start": "node dist/index.js"
   },
   "jest": {
     "preset": "ts-jest",
