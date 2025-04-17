@@ -22,7 +22,7 @@ app.use(preventCORSError);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(openApiDocumentation));
 
 app.use('/login', express.json());
-app.get('/login', (req, res, next) => res.json(endpoint.authMode()));
+app.get('/login', (req, res, next) => {res.json(endpoint.authMode());});
 
 switch (endpoint.authMode()) {
   case 'ntlm':

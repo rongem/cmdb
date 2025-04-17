@@ -24,7 +24,7 @@ import {
 
 // Read
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-    return res.json(req.authentication);
+    res.json(req.authentication);
 }
 
 export const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +42,7 @@ export const searchUsersInDataBase = (req: Request, res: Response, next: NextFun
 }
 
 export const getRoleForUser = (req: Request, res: Response, next: NextFunction) => {
-    return res.json((req.authentication ?? { role: 0 }).role);
+    res.json((req.authentication ?? { role: 0 }).role);
 }
 
 // Create
@@ -52,7 +52,7 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     const passphrase = req.body[passphraseField] as string;
     createUserHandler(name, role, passphrase).then(user => {
         socket.emit(createAction, userCtx, user);
-        return res.status(201).json(user);
+        res.status(201).json(user);
     })
         .catch((error: any) => serverError(next, error));
 }
@@ -65,7 +65,7 @@ export const updateUser = (req: Request, res: Response, next: NextFunction) => {
     userModelUpdate(name, role, passphrase).then((user: UserAccount) => {
         if (user) {
             socket.emit(updateAction, userCtx, user);
-            return res.json(user);
+            res.json(user);
         }
     }).catch((error: HttpError) => {
         if (error.httpStatusCode === 304) {
@@ -84,7 +84,7 @@ export const updateUserPassword = (req: Request, res: Response, next: NextFuncti
         .then((user: UserAccount) => {
             if (user) {
                 socket.emit(updateAction, userCtx, user);
-                return res.json(user);
+                res.json(user);
             }
         })
         .catch((error: HttpError) => {
@@ -103,7 +103,7 @@ export const deleteUser = (req: Request, res: Response, next: NextFunction) => {
     userModelDelete(name, withResponsibilities)
         .then((result) => {
             socket.emit(result.deleted ? deleteAction : updateAction, userCtx, result.user);
-            return res.json(result);
+            res.json(result);
         })
         .catch((error: any) => serverError(next, error));
 }

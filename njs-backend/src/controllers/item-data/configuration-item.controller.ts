@@ -72,7 +72,7 @@ import { itemTypeModelFindSingle } from '../../models/abstraction-layer/meta-dat
 // Read
 export const getConfigurationItems = (req: Request, res: Response, next: NextFunction) => {
   const max = 1000;
-  const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
+  const page = +(req.query[pageField] ?? req.params[pageField] ?? (req.body ? req.body[pageField] : 1) ?? 1);
   configurationItemModelFindAll(page, max)
     .then((result) => res.json(result))
     .catch((error: any) => serverError(next, error));

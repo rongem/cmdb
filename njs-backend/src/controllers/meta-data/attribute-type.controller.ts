@@ -23,7 +23,7 @@ import { modelGetCorrespondingValuesOfType } from '../../models/abstraction-laye
 export const getAttributeTypes = (req: Request, res: Response, next: NextFunction) => {
     attributeTypeModelFindAll()
         .then((attributeTypes: AttributeType[]) => {
-            return res.json(attributeTypes.map(at => at));
+            res.json(attributeTypes.map(at => at));
         })
         .catch((error: any) => serverError(next, error));
 }

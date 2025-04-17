@@ -91,7 +91,7 @@ export const createConnectionRule = (req: Request, res: Response, next: NextFunc
     connectionRuleModelCreate(connectionType, upperItemType, lowerItemType, validationExpression, maxConnectionsToLower, maxConnectionsToUpper)
         .then(connectionRule => {
             socket.emit(createAction, connectionRuleCtx, connectionRule);
-            return res.status(201).json(connectionRule);
+            res.status(201).json(connectionRule);
         })
         .catch((error: any) => serverError(next, error));
 }
@@ -110,7 +110,7 @@ export const updateConnectionRule = (req: Request, res: Response, next: NextFunc
         .then((connectionRule) => {
             if (connectionRule) {
                 socket.emit(updateAction, connectionRuleCtx, connectionRule);
-                return res.json(connectionRule);
+                res.json(connectionRule);
             }
         })
         .catch((error: HttpError) => {
@@ -128,7 +128,7 @@ export const deleteConnectionRule = (req: Request, res: Response, next: NextFunc
         .then((connectionRule) => {
             if (connectionRule) {
                 socket.emit(deleteAction, connectionRuleCtx, connectionRule);
-                return res.json(connectionRule);
+                res.json(connectionRule);
             }
         })
         .catch((error: any) => serverError(next, error));

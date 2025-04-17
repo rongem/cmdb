@@ -93,7 +93,7 @@ export const updateItemType = (req: Request, res: Response, next: NextFunction) 
         .then((itemType: ItemType) => {
             if (itemType) {
                 socket.emit(updateAction, itemTypeCtx, itemType);
-                return res.json(itemType);
+                res.json(itemType);
             }
         })
         .catch((error: HttpError) => {
@@ -111,7 +111,7 @@ export const deleteItemType = (req: Request, res: Response, next: NextFunction) 
     itemTypeModelDelete(itemId)
         .then((itemType: ItemType) => {
             socket.emit(updateAction, itemTypeCtx, itemType);
-            return res.json(itemType);
+            res.json(itemType);
         })
         .catch((error: any) => serverError(next, error));
 }

@@ -48,7 +48,7 @@ export const createAttributeGroup = (req: Request, res: Response, next: NextFunc
     attributeGroupModelCreate(name)
         .then(attributeGroup => {
             socket.emit(createAction, attributeGroupCtx, attributeGroup);
-            return res.status(201).json(attributeGroup);
+            res.status(201).json(attributeGroup);
         })
         .catch((error: any) => serverError(next, error));
 }

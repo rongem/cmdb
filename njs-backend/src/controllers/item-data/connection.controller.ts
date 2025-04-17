@@ -30,7 +30,7 @@ import { Types } from 'mongoose';
 export const getConnections = async (req: Request, res: Response, next: NextFunction) => {
     const max = 1000;
     const totalConnections = await connectionsCount();
-    const page = +(req.query[pageField] ?? req.params[pageField] ?? req.body[pageField] ?? 1);
+    const page = +(req.query[pageField] ?? req.params[pageField] ?? (req.body ? req.body[pageField] : 1) ?? 1);
     connectionModelFindAll(page, max)
       .then((connections: Connection[]) =>
         res.json({
@@ -72,7 +72,7 @@ export const getConnectionByContent = (req: Request, res: Response, next: NextFu
             if (!connection) {
                 throw notFoundError;
             }
-            return res.json(connection);
+            res.json(connection);
         })
         .catch((error: any) => serverError(next, error));
 }
@@ -101,7 +101,7 @@ export const updateConnection = (req: Request, res: Response, next: NextFunction
         .then((connection) => {
             if (connection) {
                 socket.emit(updateAction, connectionCtx, connection);
-                return res.json(connection);
+                res.json(connection);
             }
         })
         .catch((error: HttpError) => {
@@ -121,7 +121,7 @@ export const deleteConnection = (req: Request, res: Response, next: NextFunction
         .then((connection: Connection) => {
             if (connection) {
                 socket.emit(deleteAction, connectionCtx, connection);
-                return res.json(connection);
+                res.json(connection);
             }
         })
         .catch((error: any) => serverError(next, error));

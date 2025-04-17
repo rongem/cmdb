@@ -79,7 +79,7 @@ export const deleteConnectionType = (req: Request, res: Response, next: NextFunc
         .then((connectionType) => {
             if (connectionType) {
                 socket.emit(deleteAction, connectionTypeCtx, connectionType);
-                return res.json(connectionType);
+                res.json(connectionType);
             }
         })
         .catch((error: any) => serverError(next, error));
