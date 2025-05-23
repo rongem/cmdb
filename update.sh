@@ -23,4 +23,5 @@ grunt bump
 npm prune
 tsc --declaration && npm run test
 npm outdate
+echo Done!
 read -n 1
