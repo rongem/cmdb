@@ -45,7 +45,7 @@
     "@types/express-ntlm": "^2.3.2",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.0",
-    "@types/multer": "^1.4.6",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.0.1",
     "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.2",
