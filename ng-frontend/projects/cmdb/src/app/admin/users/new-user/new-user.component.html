@@ -39,15 +39,17 @@
             {{error}}
         </p>
         <ul *ngIf="errorDetails">
-            <li *ngFor="let detail of errorDetails" [ngSwitch]="detail">
-                <ng-container *ngSwitchCase="'passphrase: Invalid value'" i18n="Password does not meet complexity criteria">
-                    Das Kennwort entspricht nicht den Komplexitätskriterien.
-                </ng-container>
-                <ng-container *ngSwitchCase="'accountName: Cannot create a user with an already existing name.'" i18n="Cannot create a user with an already existing name">
-                    Der Benutzername existiert schon bei einem anderen Benutzer.
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                    {{detail}}
+            <li *ngFor="let detail of errorDetails">
+                <ng-container [ngSwitch]="detail">
+                    <ng-container *ngSwitchCase="'passphrase: Invalid value'" i18n="Password does not meet complexity criteria">
+                        Das Kennwort entspricht nicht den Komplexitätskriterien.
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'accountName: Cannot create a user with an already existing name.'" i18n="Cannot create a user with an already existing name">
+                        Der Benutzername existiert schon bei einem anderen Benutzer.
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        {{detail}}
+                    </ng-container>
                 </ng-container>
             </li>
         </ul>
