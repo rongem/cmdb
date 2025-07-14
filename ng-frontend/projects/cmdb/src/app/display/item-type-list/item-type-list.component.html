@@ -1,16 +1,22 @@
 <div class="box-top flex__space-between">
-    <span i18n="Item types">Item-Typen</span>
-    <button type="button" (click)="hidden = !hidden">
-        <span *ngIf="hidden">v</span>
-        <span *ngIf="!hidden">&lt;</span>
-    </button>
+  <span i18n="Item types">Item-Typen</span>
+  <button type="button" (click)="hidden = !hidden">
+    @if (hidden) {
+      <span>v</span>
+    }
+    @if (!hidden) {
+      <span>&lt;</span>
+    }
+  </button>
 </div>
 <div class="box-body" [ngClass]="{hidden: hidden}">
-    <ul class="menu">
-        <li class="menu-item no-wrap" *ngFor="let itemType of (itemTypes | async)" routerLinkActive="active">
-            <a [routerLink]="['/display', 'item-type', itemType.id]">
-                {{itemType.name}}
-            </a>
-        </li>
-    </ul>
+  <ul class="menu">
+    @for (itemType of (itemTypes | async); track itemType) {
+      <li class="menu-item no-wrap" routerLinkActive="active">
+        <a [routerLink]="['/display', 'item-type', itemType.id]">
+          {{itemType.name}}
+        </a>
+      </li>
+    }
+  </ul>
 </div>

@@ -1,106 +1,122 @@
-<app-busy *ngIf="(metaDataReady | async) === false" i18n="Loading data...">
+@if ((metaDataReady | async) === false) {
+  <app-busy i18n="Loading data...">
     Lade Daten...
 </app-busy>
-<form *ngIf="(metaDataReady | async)" (ngSubmit)="onSubmit()">
+}
+@if ((metaDataReady | async)) {
+  <form (ngSubmit)="onSubmit()">
     <table class="table" [formGroup]="form">
-        <thead>
-            <tr>
-                <th i18n="Property">Eigenschaft</th>
-                <th i18n="Value">Wert</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td i18n="Item-type">Item-Typ</td>
-                <td>
-                    <ng-container *ngIf="!itemTypeId">
-                        <select formControlName="typeId">
-                            <option *ngFor="let type of (itemTypes | async)" [value]="type.id">
-                                {{type.name}}
-                            </option>
-                        </select>
-                    </ng-container>
-                    <ng-container *ngIf="itemTypeId">
-                        {{(itemType | async).name}}
-                        <span [style.border]="'1px dotted black'" [style.background]="(itemType | async).backColor">
-                            &nbsp;&nbsp;
-                        </span>
-                    </ng-container>
-                </td>
-            </tr>
-            <tr *ngIf="!itemTypeId">
-                <td colspan="2">
-                    <button type="button" (click)="setItemType()" i18n="Choose item type">
+      <thead>
+        <tr>
+          <th i18n="Property">Eigenschaft</th>
+          <th i18n="Value">Wert</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td i18n="Item-type">Item-Typ</td>
+          <td>
+            @if (!itemTypeId) {
+              <select formControlName="typeId">
+                @for (type of (itemTypes | async); track type) {
+                  <option [value]="type.id">
+                    {{type.name}}
+                  </option>
+                }
+              </select>
+            }
+            @if (itemTypeId) {
+              {{(itemType | async).name}}
+              <span [style.border]="'1px dotted black'" [style.background]="(itemType | async).backColor">
+                &nbsp;&nbsp;
+              </span>
+            }
+          </td>
+        </tr>
+        @if (!itemTypeId) {
+          <tr>
+            <td colspan="2">
+              <button type="button" (click)="setItemType()" i18n="Choose item type">
                         Item-Typ ausw&auml;hlen
                     </button>
-                </td>
-            </tr>
-            <ng-container *ngIf="itemTypeId">
-                <tr>
-                    <td>
-                        <label for="name" i18n="Name">Name</label>
-                    </td>
-                    <td colspan="2">
-                        <input type="text" id="name" formControlName="name">
-                    </td>
-                </tr>
-                <ng-container *ngIf="(attributeTypes | async).length > 0" formArrayName="attributes">
-                    <tr>
-                        <th colspan="2" i18n="Attributes">
+            </td>
+          </tr>
+        }
+        @if (itemTypeId) {
+          <tr>
+            <td>
+              <label for="name" i18n="Name">Name</label>
+            </td>
+            <td colspan="2">
+              <input type="text" id="name" formControlName="name">
+            </td>
+          </tr>
+          @if ((attributeTypes | async).length > 0) {
+            <ng-container formArrayName="attributes">
+              <tr>
+                <th colspan="2" i18n="Attributes">
                             Attribute
                         </th>
-                    </tr>
-                    <tr *ngFor="let attributeType of (attributeTypes | async); let i = index" [formGroupName]="i">
-                        <td>
-                            <label [for]="attributeType.name">
-                                {{attributeType.name}} ({{attributeType.validationExpression}})
-                            </label>
-                        </td>
-                        <td colspan="2">
-                            <input type="text" [id]="attributeType.name" formControlName="value">
-                        </td>
-                    </tr>
-                </ng-container>
-                <ng-container formArrayName="links">
-                    <tr>
-                        <th i18n="Links">Links</th>
-                        <td>
-                            <button type="button" class="selectable" (click)="onAddLink()" i18n="Add link">
+              </tr>
+              @for (attributeType of (attributeTypes | async); track attributeType; let i = $index) {
+                <tr [formGroupName]="i">
+                  <td>
+                    <label [for]="attributeType.name">
+                      {{attributeType.name}} ({{attributeType.validationExpression}})
+                    </label>
+                  </td>
+                  <td colspan="2">
+                    <input type="text" [id]="attributeType.name" formControlName="value">
+                  </td>
+                </tr>
+              }
+            </ng-container>
+          }
+          <ng-container formArrayName="links">
+            <tr>
+              <th i18n="Links">Links</th>
+              <td>
+                <button type="button" class="selectable" (click)="onAddLink()" i18n="Add link">
                                 Link hinzuf&uuml;gen
                             </button>
-                        </td>
-                    </tr>
-                    <tr *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
-                        <td>
-                            {{i + 1}})
-                        </td>
-                        <td>
-                            <div>
-                                <label [for]="'linkdescription'" i18n="Link description">
+              </td>
+            </tr>
+            @for (link of links.controls; track link; let i = $index) {
+              <tr [formGroupName]="i">
+                <td>
+                  {{i + 1}})
+                </td>
+                <td>
+                  <div>
+                    <label [for]="'linkdescription'" i18n="Link description">
                                      Beschreibung: 
                                 </label>
-                                <input type="text" [id]="'linkdescription'" formControlName="description">
-                            </div>
-                            <div>
-                                <label [for]="'linkuri'" i18n="Link uri">
+                    <input type="text" [id]="'linkdescription'" formControlName="description">
+                  </div>
+                  <div>
+                    <label [for]="'linkuri'" i18n="Link uri">
                                     URL: 
                                 </label>
-                                <input type="url" [id]="'linkuri'" formControlName="uri">
-                            </div>
-                            <div>
-                                <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="Delete link">
+                    <input type="url" [id]="'linkuri'" formControlName="uri">
+                  </div>
+                  <div>
+                    <button type="button" class="red-button selectable" (click)="onDeleteLink(i)" i18n="Delete link">
                                     Link l&ouml;schen
                                 </button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-container>
-            </ng-container>
-        </tbody>
+                  </div>
+                </td>
+              </tr>
+            }
+          </ng-container>
+        }
+      </tbody>
     </table>
-    <p *ngIf="itemTypeId">
+    @if (itemTypeId) {
+      <p>
         <button type="submit" i18n="Create item" [disabled]="form.invalid" class="selectable">
             Neues Item erstellen
         </button>
-    </p>
-</form>
+      </p>
+    }
+  </form>
+}

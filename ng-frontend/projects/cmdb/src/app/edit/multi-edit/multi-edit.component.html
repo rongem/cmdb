@@ -1,163 +1,202 @@
 <h1 class="page-title" i18n="Edit multiple items">Mehrere Configuration Items gleichzeitig bearbeiten</h1>
 <app-help>
-    <p i18n="With this function you may edit multiple configuration items at once. If you click on the column header, a menu will open that will let you choose the desired change for all of the items.">
+  <p i18n="With this function you may edit multiple configuration items at once. If you click on the column header, a menu will open that will let you choose the desired change for all of the items.">
         Mit dieser Funktion k&ouml;nnen Sie mehrere Configuration Items auf einmal editieren. Wenn Sie auf die Spaltenk&ouml;pfe klicken, &ouml;ffnet
         sich ein Men&uuml;, in dem Sie die gew&uuml;nschte &Auml;nderung f&uuml;r alle Items durchf&uuml;hren k&ouml;nnen.
     </p>
-    <p i18n="If you want to remove an item from the list, hit the button marked with a red x on the left side of each row. The item will not be deleted, but no longer shown for editing. This may result in changing the menu structure on the column headers.">
+  <p i18n="If you want to remove an item from the list, hit the button marked with a red x on the left side of each row. The item will not be deleted, but no longer shown for editing. This may result in changing the menu structure on the column headers.">
         Falls Sie ein Item aus der Liste entfernen wollen, k&ouml;nnen Sie auf den Knopf mit dem roten X am Anfang der Zeile klicken. Das Item wird nicht gel&ouml;scht,
         sondern nur nicht mehr zum editieren angezeigt. Dadurch k&ouml;nnen sich auch die Optionen im Men&uuml; im Spaltenkopf &auml;ndern.
     </p>
-    <p i18n="As an alternative, you may select a cell by clicking it, and expand the selection with shift and the arrow keys. With Ctrl + V you may paste contents from the clipboard. Invalid values will result in a red border in the table. If only one row is found in the clipboard, and there are multiple rows selected, the row will be multiplied. The same is done with columns.">
+  <p i18n="As an alternative, you may select a cell by clicking it, and expand the selection with shift and the arrow keys. With Ctrl + V you may paste contents from the clipboard. Invalid values will result in a red border in the table. If only one row is found in the clipboard, and there are multiple rows selected, the row will be multiplied. The same is done with columns.">
         Alternativ besteht auch die M&ouml;glichkeit, eine Zelle durch klicken auszuw&auml;hlen und mit den Shift + Pfeiltasten die Markierung zu erweitern.
         Dort lassen sich mittels Strg + V Werte aus der Zwischenablage einf&uuml;gen. Dabei werden unzul&auml;ssige Werte in der Tabelle mit einem roten Rahmen versehen.
         Wird nur eine Zeile in der Zwischenablage gefunden, aber mehrere sind ausgew&auml;hlt, wird die einzelne Zeile wiederholt. Dasselbe gilt f&uuml;r Spalten.
     </p>
-    <p i18n="You can drag and drop column headers, so that the target structure of the table meets the content structure from the clipboard.">
+  <p i18n="You can drag and drop column headers, so that the target structure of the table meets the content structure from the clipboard.">
         Sie k&ouml;nnen die Spaltek&ouml;pfe auch per Drag and Drop tauschen, so dass das Einf&uuml;gen aus der Zwischenablage auf eine passende Tabellenstruktur trifft.
     </p>
 </app-help>
 <table class="table">
-    <thead>
-        <tr>
-            <th>&nbsp;</th>
-            <th *ngFor="let column of columns; let i = index"
-                draggable="true"
-                (dragstart)="onDragStart($event, i)"
-                (dragend)="onDragEnd()"
-                (dragover)="onDragOver($event, i)"
-                (drop)="onDrop(i)"
-                [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i}"
-                class="position-relative" appClickOpen>
-                <ng-container *ngIf="columnContents[column] === 'name'" i18n="Configuration item">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      @for (column of columns; track column; let i = $index) {
+        <th
+          draggable="true"
+          (dragstart)="onDragStart($event, i)"
+          (dragend)="onDragEnd()"
+          (dragover)="onDragOver($event, i)"
+          (drop)="onDrop(i)"
+          [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i}"
+          class="position-relative" appClickOpen>
+          @if (columnContents[column] === 'name') {
+            <ng-container i18n="Configuration item">
                     Configuration Item
                 </ng-container>
-                <ng-container *ngIf="columnContents[column] === 'links'">
-                    <button type="menu" class="dropdown-toggle selectable" i18n="External links">
+          }
+          @if (columnContents[column] === 'links') {
+            <button type="menu" class="dropdown-toggle selectable" i18n="External links">
                         Externe Links
                     </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <button type="button" class="red-button selectable" (click)="onDeleteAllLinks()" i18n="Delete all links">
+            <ul class="dropdown-menu">
+              <li>
+                <button type="button" class="red-button selectable" (click)="onDeleteAllLinks()" i18n="Delete all links">
                                 Alle Links l&ouml;schen
                             </button>
-                        </li>
-                        <li *ngFor="let uri of (uniqueLinks | async)">
-                            <button type="button" class="red-button selectable" (click)="onDeleteLink(uri)">
-                                {{uri}}
-                                <ng-container i18n="Delete">
+              </li>
+              @for (uri of (uniqueLinks | async); track uri) {
+                <li>
+                  <button type="button" class="red-button selectable" (click)="onDeleteLink(uri)">
+                    {{uri}}
+                    <ng-container i18n="Delete">
                                     l&ouml;schen
                                 </ng-container>
-                            </button>
-                        </li>
-                        <li [formGroup]="linkForm">
-                            <label for="newUri" i18n="URI">URL</label>
-                            <input id="newUri" type="text" (click)="stopPropagation($event)" formControlName="uri">
-                            <label for="newDescription" i18n="Description">Beschreibung</label>
-                            <input id="newDescription" type="text" (click)="stopPropagation($event)" formControlName="description">
-                            <button type="button" class="selectable" (click)="onAddLink()"
-                                [disabled]="linkForm.invalid" i18n="Save">
+                  </button>
+                </li>
+              }
+              <li [formGroup]="linkForm">
+                <label for="newUri" i18n="URI">URL</label>
+                <input id="newUri" type="text" (click)="stopPropagation($event)" formControlName="uri">
+                <label for="newDescription" i18n="Description">Beschreibung</label>
+                <input id="newDescription" type="text" (click)="stopPropagation($event)" formControlName="description">
+                <button type="button" class="selectable" (click)="onAddLink()"
+                  [disabled]="linkForm.invalid" i18n="Save">
                                 Speichern
                             </button>
-                        </li>
-                    </ul>
-                </ng-container>
-                <ng-container *ngIf="columnContents[column].startsWith('a:') || columnContents[column].startsWith('ctl:')">
-                    <button type="menu" class="dropdown-toggle selectable" [disabled]="(working | async) > 0"
-                        *ngIf="columnContents[column].startsWith('a:') || (columnContents[column].startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(columnContents[column])).length > 0 || getConnectionRuleAllowsAdding(clearKey(columnContents[column])))); else labelOnly">
-                        {{ getResultColumn(columnContents[column]) | async }}
-                    </button>
-                    <ng-template #labelOnly>
-                        {{ getResultColumn(columnContents[column]) | async }}
-                    </ng-template>
-                    <ul class="dropdown-menu" *ngIf="columnContents[column].startsWith('a:')" [formGroup]="attributeForm">
-                        <li>
-                            <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(columnContents[column]), undefined)" i18n="Delete all values">
+              </li>
+            </ul>
+          }
+          @if (columnContents[column].startsWith('a:') || columnContents[column].startsWith('ctl:')) {
+            @if (columnContents[column].startsWith('a:') || (columnContents[column].startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(columnContents[column])).length > 0 || getConnectionRuleAllowsAdding(clearKey(columnContents[column]))))) {
+              <button type="menu" class="dropdown-toggle selectable" [disabled]="(working | async) > 0"
+                >
+                {{ getResultColumn(columnContents[column]) | async }}
+              </button>
+            } @else {
+              {{ getResultColumn(columnContents[column]) | async }}
+            }
+            @if (columnContents[column].startsWith('a:')) {
+              <ul class="dropdown-menu" [formGroup]="attributeForm">
+                <li>
+                  <button type="button" class="red-button selectable" (click)="onChangeAttribute(clearKey(columnContents[column]), undefined)" i18n="Delete all values">
                                 Alle Werte l&ouml;schen
                             </button>
-                        </li>
-                        <li>
-                            <label for="newAttributeValue" i18n="Custom value">Eigener Wert</label>
-                            <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(columnContents[column])">
-                            <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(columnContents[column]), newAtt.value)"
-                                [disabled]="attributeForm.get(clearKey(columnContents[column])).invalid" i18n="Save">
+                </li>
+                <li>
+                  <label for="newAttributeValue" i18n="Custom value">Eigener Wert</label>
+                  <input id="newAttributeValue" type="text" #newAtt (click)="stopPropagation($event)" [formControlName]="clearKey(columnContents[column])">
+                  <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(columnContents[column]), newAtt.value)"
+                    [disabled]="attributeForm.get(clearKey(columnContents[column])).invalid" i18n="Save">
                                 Speichern
                             </button>
-                        </li>
-                        <ng-container *ngIf="(getValuesForAttributeType(clearKey(columnContents[column])) | async).length > 1">
-                            <li i18n="Existing values">Vorhandene Werte</li>
-                            <li *ngFor="let value of (getValuesForAttributeType(clearKey(columnContents[column])) | async)">
-                                <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(columnContents[column]), value)">{{value}}</button>
-                            </li>
-                        </ng-container>
-                    </ul>
-                    <ul class="dropdown-menu" [formGroup]="connectionForm"
-                        *ngIf="columnContents[column].startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(columnContents[column])).length > 0 || getConnectionRuleAllowsAdding(clearKey(columnContents[column])))">
-                        <li *ngFor="let connection of getDeletableConnectionsForRule(clearKey(columnContents[column]))">
-                            <button type="button" class="red-button selectable" (click)="onDeleteConnections(connection)">
-                                <ng-container i18n="Delete connection to ">L&ouml;sche Verbindung zu </ng-container>
-                                {{connection.targetName}}
-                            </button>
-                        </li>
-                        <li class="flex-vertical__full-width" *ngIf="getConnectionRuleAllowsAdding(clearKey(columnContents[column]))" [formGroupName]="clearKey(columnContents[column])">
-                            <label [for]="columnContents[column]" i18n="Item">Item</label>
-                            <select [id]="columnContents[column]" (click)="stopPropagation($event)" formControlName="targetId">
-                                <option *ngFor="let item of (getAvailableItems(clearKey(columnContents[column]), (items | async)) | async)" [value]="item.id">
-                                    {{item.name}}
-                                </option>
-                            </select>
-                            <label [for]="'d' + columnContents[column]" i18n="Description" class="selectable">Beschreibung</label>
-                            <input [id]="'d' + columnContents[column]" type="text" class="selectable" (click)="stopPropagation($event)" formControlName="description">
-                            <button type="button" class="selectable" i18n="Save" (click)="onAddConnection(clearKey(columnContents[column]))"
-                                [disabled]="connectionForm.get(clearKey(columnContents[column])).invalid">
+                </li>
+                @if ((getValuesForAttributeType(clearKey(columnContents[column])) | async).length > 1) {
+                  <li i18n="Existing values">Vorhandene Werte</li>
+                  @for (value of (getValuesForAttributeType(clearKey(columnContents[column])) | async); track value) {
+                    <li>
+                      <button type="button" class="selectable" (click)="onChangeAttribute(clearKey(columnContents[column]), value)">{{value}}</button>
+                    </li>
+                  }
+                }
+              </ul>
+            }
+            @if (columnContents[column].startsWith('ctl:') && (getDeletableConnectionsForRule(clearKey(columnContents[column])).length > 0 || getConnectionRuleAllowsAdding(clearKey(columnContents[column])))) {
+              <ul class="dropdown-menu" [formGroup]="connectionForm"
+                >
+                @for (connection of getDeletableConnectionsForRule(clearKey(columnContents[column])); track connection) {
+                  <li>
+                    <button type="button" class="red-button selectable" (click)="onDeleteConnections(connection)">
+                      <ng-container i18n="Delete connection to ">L&ouml;sche Verbindung zu </ng-container>
+                      {{connection.targetName}}
+                    </button>
+                  </li>
+                }
+                @if (getConnectionRuleAllowsAdding(clearKey(columnContents[column]))) {
+                  <li class="flex-vertical__full-width" [formGroupName]="clearKey(columnContents[column])">
+                    <label [for]="columnContents[column]" i18n="Item">Item</label>
+                    <select [id]="columnContents[column]" (click)="stopPropagation($event)" formControlName="targetId">
+                      @for (item of (getAvailableItems(clearKey(columnContents[column]), (items | async)) | async); track item) {
+                        <option [value]="item.id">
+                          {{item.name}}
+                        </option>
+                      }
+                    </select>
+                    <label [for]="'d' + columnContents[column]" i18n="Description" class="selectable">Beschreibung</label>
+                    <input [id]="'d' + columnContents[column]" type="text" class="selectable" (click)="stopPropagation($event)" formControlName="description">
+                    <button type="button" class="selectable" i18n="Save" (click)="onAddConnection(clearKey(columnContents[column]))"
+                      [disabled]="connectionForm.get(clearKey(columnContents[column])).invalid">
                                 Speichern
                             </button>
-                        </li>
-                    </ul>
-                </ng-container>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of (items | async); let row = index">
-            <td>
-                <app-working *ngIf="(getIsItemProcessed(item.id) | async) === true"></app-working>
-                <button class="red-button selectable smaller-font" *ngIf="(working | async) === 0" (click)="onRemoveItem(item)">
-                    X
-                    <span class="visually-hidden" i18n="Remove item from list">
+                  </li>
+                }
+              </ul>
+            }
+          }
+        </th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (item of (items | async); track item; let row = $index) {
+      <tr>
+        <td>
+          @if ((getIsItemProcessed(item.id) | async) === true) {
+            <app-working></app-working>
+          }
+          @if ((working | async) === 0) {
+            <button class="red-button selectable smaller-font" (click)="onRemoveItem(item)">
+              X
+              <span class="visually-hidden" i18n="Remove item from list">
                         Item aus der Liste entfernen
                     </span>
-                </button>
-            </td>
-            <td *ngFor="let column of columns; let col = index" (paste)="onPaste($event)"
-                (focus)="onCellClick($event)" (focusout)="onCellClick($event)" (keyup)="onCellKeyPress($event)" tabindex="0"
-                [ngClass]="{highlighted: isInsideSelection(col, row), 'upper-border': isOnUpperBorder(col, row), 'lower-border': isOnLowerBorder(col, row), 'left-border': isOnLeftBorder(col, row), 'right-border': isOnRightBorder(col, row), 'red-border': hasError(item.id, columnContents[column])}"
-                #td>
-                <div *ngIf="columnContents[column] === 'name'" class="flex__space-between">
-                    <a [routerLink]="['/display', 'configuration-item', item.id]">
-                        {{item.name}}
+            </button>
+          }
+        </td>
+        @for (column of columns; track column; let col = $index) {
+          <td (paste)="onPaste($event)"
+            (focus)="onCellClick($event)" (focusout)="onCellClick($event)" (keyup)="onCellKeyPress($event)" tabindex="0"
+            [ngClass]="{highlighted: isInsideSelection(col, row), 'upper-border': isOnUpperBorder(col, row), 'lower-border': isOnLowerBorder(col, row), 'left-border': isOnLeftBorder(col, row), 'right-border': isOnRightBorder(col, row), 'red-border': hasError(item.id, columnContents[column])}"
+            #td>
+            @if (columnContents[column] === 'name') {
+              <div class="flex__space-between">
+                <a [routerLink]="['/display', 'configuration-item', item.id]">
+                  {{item.name}}
+                </a>
+              </div>
+            }
+            @if (columnContents[column] === 'links') {
+              <div class="link-list">
+                @for (link of item.links; track link) {
+                  <div>
+                    <a [href]="link.uri">
+                      {{link.description}}
                     </a>
+                  </div>
+                }
+              </div>
+            }
+            @if (columnContents[column].startsWith('a:')) {
+              {{ getValue(item, clearKey(columnContents[column])) }}
+            }
+            @if (columnContents[column].startsWith('ctl:') || columnContents[column].startsWith('ctu:')) {
+              <div class="link-list">
+                @for (connection of getConnections(item, columnContents[column]); track connection) {
+                  <div class="link-list__item">
+                    &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
+                  {{ connection.targetName}}</a>
+                  @if (connection.description) {
+                    <span>
+                      ({{ connection.description }})
+                    </span>
+                  }
                 </div>
-                <div *ngIf="columnContents[column] === 'links'" class="link-list">
-                    <div *ngFor="let link of item.links">
-                        <a [href]="link.uri">
-                            {{link.description}}
-                        </a>
-                    </div>
-                </div>
-                <ng-container *ngIf="columnContents[column].startsWith('a:')">
-                    {{ getValue(item, clearKey(columnContents[column])) }}
-                </ng-container>
-                <div *ngIf="columnContents[column].startsWith('ctl:') || columnContents[column].startsWith('ctu:')" class="link-list">
-                    <div *ngFor="let connection of getConnections(item, columnContents[column])" class="link-list__item">
-                        &nbsp; <a [routerLink]="['/display', 'configuration-item', connection.targetId]">
-                        {{ connection.targetName}}</a>
-                        <span *ngIf="connection.description">
-                            ({{ connection.description }})
-                        </span>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
+              }
+            </div>
+          }
+        </td>
+      }
+    </tr>
+  }
+</tbody>
 </table>

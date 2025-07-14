@@ -1,119 +1,128 @@
 <app-help>
-    <p>
-        Configuration Items sind die zentralen Objekte. Jedes Configuration Item
-        besitzt einen eindeutigen Typ. 
-        Innerhalb des Typs muss der Name des Configuration Items eindeutig sein.
-    </p>
-    <p>
-        An Item-Typen h&auml;ngen alle weiteren Daten im System wie Verbindungstypen,
-        Attribut-Typen, Attributgruppen und Verbindungsregeln.
-    </p>
+  <p>
+    Configuration Items sind die zentralen Objekte. Jedes Configuration Item
+    besitzt einen eindeutigen Typ.
+    Innerhalb des Typs muss der Name des Configuration Items eindeutig sein.
+  </p>
+  <p>
+    An Item-Typen h&auml;ngen alle weiteren Daten im System wie Verbindungstypen,
+    Attribut-Typen, Attributgruppen und Verbindungsregeln.
+  </p>
 </app-help>
 <table class="table">
-    <thead>
-        <tr>
-            <th class="table-cell table-header">
-                <span class="mobile-only">1: </span>
-                <span i18n="Item type name">Name des Item-Typs</span>
-                
-            </th>
-            <th class="table-cell table-header">
-                <span class="mobile-only">2: </span>
-                <span i18n="Go background color">Hintergrundfarbe</span>
-            </th>
-            <th class="table-cell table-header">
-                <span class="mobile-only">3: </span>
-                <span i18n="Actions">Aktionen</span>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let itemType of (itemTypes | async)">
-            <td class="table-cell">
-                <span class="mobile-only">1: </span>
-                <button class="input__content-button selectable" type="button"
-                    *ngIf="activeType !== itemType.id"
-                    (click)="onSetType(itemType)">
-                    {{ itemType.name }}
-                    <span class="visually-hidden" i18n="Click to change name">
+  <thead>
+    <tr>
+      <th class="table-cell table-header">
+        <span class="mobile-only">1: </span>
+        <span i18n="Item type name">Name des Item-Typs</span>
+
+      </th>
+      <th class="table-cell table-header">
+        <span class="mobile-only">2: </span>
+        <span i18n="Go background color">Hintergrundfarbe</span>
+      </th>
+      <th class="table-cell table-header">
+        <span class="mobile-only">3: </span>
+        <span i18n="Actions">Aktionen</span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (itemType of (itemTypes | async); track itemType) {
+      <tr>
+        <td class="table-cell">
+          <span class="mobile-only">1: </span>
+          @if (activeType !== itemType.id) {
+            <button class="input__content-button selectable" type="button"
+              (click)="onSetType(itemType)">
+              {{ itemType.name }}
+              <span class="visually-hidden" i18n="Click to change name">
                         Klicken, um den Namen zu &auml;ndern
                     </span>
-                </button>
-                <app-text-input *ngIf="activeType===itemType.id"
-                    [originalText]="itemType.name"
-                    [minimumLength]="4"
-                    (accept)="onChangeItemTypeName($event, itemType)"
-                    (cancel)="onCancel()">
-                </app-text-input>
-            </td>
-            <td class="table-cell">
-                <span class="mobile-only">2: </span>
-                <app-color-picker [color]="itemType.backColor"
-                    (colorChange)="onChangeItemBackgroundColor($event, itemType)"
-                    (colorPickerOpen)="onCancel()">
-                </app-color-picker>
-            </td>
-            <td class="table-cell position-relative" appClickOpen>
-                <span class="mobile-only">3: </span>
-                <button type="button" class="dropdown-toggle">
-                    ...
-                    <span class="visually-hidden" i18n="Click to open action menu">
+            </button>
+          }
+          @if (activeType===itemType.id) {
+            <app-text-input
+              [originalText]="itemType.name"
+              [minimumLength]="4"
+              (accept)="onChangeItemTypeName($event, itemType)"
+              (cancel)="onCancel()">
+            </app-text-input>
+          }
+        </td>
+        <td class="table-cell">
+          <span class="mobile-only">2: </span>
+          <app-color-picker [color]="itemType.backColor"
+            (colorChange)="onChangeItemBackgroundColor($event, itemType)"
+            (colorPickerOpen)="onCancel()">
+          </app-color-picker>
+        </td>
+        <td class="table-cell position-relative" appClickOpen>
+          <span class="mobile-only">3: </span>
+          <button type="button" class="dropdown-toggle">
+            ...
+            <span class="visually-hidden" i18n="Click to open action menu">
                         Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                     </span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <button type="button" class="red-button selectable"
-                            [routerLink]="['delete', itemType.id]">
-                            <ng-container i18n="Delete item type">Item-Typ l&ouml;schen</ng-container>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" class="selectable" [routerLink]="['..', 'item-type', itemType.id]">
-                            <ng-container i18="manage mappings of attribute groups">Zuordnung von Attributgruppen verwalten</ng-container>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" class="selectable"
-                            [cdkCopyToClipboard]="itemType.id">
-                            <ng-container i18n="Copy id">Id kopieren</ng-container>
-                        </button>
-                        <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <button type="button" class="red-button selectable"
+                [routerLink]="['delete', itemType.id]">
+                <ng-container i18n="Delete item type">Item-Typ l&ouml;schen</ng-container>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="selectable" [routerLink]="['..', 'item-type', itemType.id]">
+                <ng-container i18="manage mappings of attribute groups">Zuordnung von Attributgruppen verwalten</ng-container>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="selectable"
+                [cdkCopyToClipboard]="itemType.id">
+                <ng-container i18n="Copy id">Id kopieren</ng-container>
+              </button>
+              <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
                             Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                         </span>
-                    </li>
-                </ul>
-            </td>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    }
+    @if (!createMode) {
+      <tr>
+        <td colspan="3" class="table-cell">
+          <button type="button" class="selectable" (click)="onCreate()">
+            <ng-container i18n="Create new item type">Item-Typ erstellen</ng-container>
+          </button>
+        </td>
+      </tr>
+    }
+    @if (createMode) {
+      <tr>
+        <td class="table-cell">
+          <span class="mobile-only">1: </span>
+          <input autofocus type="text" [(ngModel)]="typeName" class="selectable"
+            (keyup.escape)="onCancel()"
+            placeholder="Name" i18n-placeholder="Name" />
+          </td>
+          <td class="table-cell">
+            <span class="mobile-only">2: </span>
+            <app-color-picker [color]="typeBackColor" (colorChange)="onSelectColor($event)">
+            </app-color-picker>
+          </td>
+          <td class="table-cell">
+            <button class="btn-ok selectable" type="button"
+              [disabled]="typeName.length < minLength"
+              (click)="onCreateItemType()">
+              <ng-container i18n="Save">Speichern</ng-container>
+            </button>
+            <button class="btn-cancel selectable" type="button" (click)="onCancel()">
+              <ng-container i18n="Cancel">Abbrechen</ng-container>
+            </button>
+          </td>
         </tr>
-        <tr *ngIf="!createMode">
-            <td colspan="3" class="table-cell">
-                <button type="button" class="selectable" (click)="onCreate()">
-                    <ng-container i18n="Create new item type">Item-Typ erstellen</ng-container>
-                </button>
-            </td>
-        </tr>
-        <tr *ngIf="createMode">
-            <td class="table-cell">
-                <span class="mobile-only">1: </span>
-                <input autofocus type="text" [(ngModel)]="typeName" class="selectable"
-                    (keyup.escape)="onCancel()"
-                    placeholder="Name" i18n-placeholder="Name" />
-            </td>
-            <td class="table-cell">
-                <span class="mobile-only">2: </span>
-                <app-color-picker [color]="typeBackColor" (colorChange)="onSelectColor($event)">
-                </app-color-picker>
-            </td>
-            <td class="table-cell">
-                <button class="btn-ok selectable" type="button"
-                    [disabled]="typeName.length < minLength"
-                    (click)="onCreateItemType()">
-                    <ng-container i18n="Save">Speichern</ng-container>
-                </button>
-                <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                    <ng-container i18n="Cancel">Abbrechen</ng-container>
-                </button>
-            </td>
-        </tr>
+      }
     </tbody>
-</table>
+  </table>

@@ -1,27 +1,31 @@
 <div class="border" [ngStyle]="{'border-color': mountable.statusColor}">
-    <h1>
-        {{mountable.item.type}}: {{mountable.name}}
-    </h1>
-    <p><em>{{mountable.statusName}}</em></p>
-    <p>({{mountable.statusDescription}})</p>
-    <h2>{{enclosureName}}: {{enclosure.name}} </h2>
-    <p><em>{{enclosure.statusName}}</em></p>
-    <p>({{enclosure.statusDescription}})</p>
+  <h1>
+    {{mountable.item.type}}: {{mountable.name}}
+  </h1>
+  <p><em>{{mountable.statusName}}</em></p>
+  <p>({{mountable.statusDescription}})</p>
+  <h2>{{enclosureName}}: {{enclosure.name}} </h2>
+  <p><em>{{enclosure.statusName}}</em></p>
+  <p>({{enclosure.statusDescription}})</p>
 </div>
-<div class="error" *ngIf="!mountable.model" i18n>
+@if (!mountable.model) {
+  <div class="error" i18n>
     No model configured for this asset. Please change to asset management and configure asset correctly.
 </div>
-<div class="error" *ngIf="mountable.status !== enclosure.status">
+}
+@if (mountable.status !== enclosure.status) {
+  <div class="error">
     <p i18n>Status of asset and its container must be equal. Correct status to</p>
     <button type="button" (click)="setStatus(enclosure.status)">{{getStatusName(enclosure.status)}}</button>
-</div>
-<ng-container *ngIf="!!mountable.model">
-    <ng-container i18n>Remove the system from the</ng-container> {{enclosureName}}
-    <ng-container i18n> and set status to:</ng-container>
-    <div>
-        <button type="button" (click)="setStatus(0)">{{getStatusName(0)}}</button>
-    </div>
-    <div>
-        <button type="button" (click)="setStatus(8)">{{getStatusName(8)}}</button>
-    </div>
-</ng-container>
+  </div>
+}
+@if (!!mountable.model) {
+  <ng-container i18n>Remove the system from the</ng-container> {{enclosureName}}
+  <ng-container i18n> and set status to:</ng-container>
+  <div>
+    <button type="button" (click)="setStatus(0)">{{getStatusName(0)}}</button>
+  </div>
+  <div>
+    <button type="button" (click)="setStatus(8)">{{getStatusName(8)}}</button>
+  </div>
+}

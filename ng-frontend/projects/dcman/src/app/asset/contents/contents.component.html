@@ -1,57 +1,65 @@
 <div class="list-container">
-    <h1 class="headline" i18n>Asset management</h1>
-    <div class="list">
-        <div class="list-item">
-            <h2 class="headline">{{rackName}}s</h2>
-            <div class="list">
-                <div class="list-item clickable"
-                    [ngClass]="{error: (getModelsForTargetType(rackName) | async).length === 0, clickable: (getModelsForTargetType(rackName) | async).length > 0}"
-                    [routerLink]="(getModelsForTargetType(rackName) | async).length > 0 ? ['/asset', 'racks'] : []">
-                    <h3 class="headline">{{rackName}}</h3>
-                    <p>
-                        <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(rackName) | async).length}}
-                    </p>
-                    <p *ngIf="(getAssetsWithoutModel(rackName) | async).length > 0" class="error">
-                        <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(rackName) | async).length}}
-                    </p>
-                </div>
-            </div>
+  <h1 class="headline" i18n>Asset management</h1>
+  <div class="list">
+    <div class="list-item">
+      <h2 class="headline">{{rackName}}s</h2>
+      <div class="list">
+        <div class="list-item clickable"
+          [ngClass]="{error: (getModelsForTargetType(rackName) | async).length === 0, clickable: (getModelsForTargetType(rackName) | async).length > 0}"
+          [routerLink]="(getModelsForTargetType(rackName) | async).length > 0 ? ['/asset', 'racks'] : []">
+          <h3 class="headline">{{rackName}}</h3>
+          <p>
+            <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(rackName) | async).length}}
+          </p>
+          @if ((getAssetsWithoutModel(rackName) | async).length > 0) {
+            <p class="error">
+              <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(rackName) | async).length}}
+            </p>
+          }
         </div>
-        <div class="list-item">
-            <h2 class="headline" i18n>Rack mountable assets</h2>
-            <div class="list flex-row flex-wrap">
-                <div class="list-item"
-                    *ngFor="let itemType of (rackMountableTypes | async)"
-                    [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
-                    [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">
-                    <h3 class="headline">{{itemType.name}}</h3>
-                    <p>
-                        <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
-                    </p>
-                    <p *ngIf="(getAssetsWithoutModel(itemType.name) | async).length > 0" class="error">
-                        <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(itemType.name) | async).length}}
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="list-item">
-            <h2 class="headline" i18n>Enclosure mountable assets</h2>
-            <div class="list flex-row flex-wrap">
-                <div class="list-item"
-                    *ngFor="let itemType of (enclosureMountableTypes | async)"
-                    [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
-                    [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">
-                    <h3 class="headline">
-                        {{itemType.name}}
-                    </h3>
-                    <p>
-                        <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
-                    </p>
-                    <p *ngIf="(getAssetsWithoutModel(itemType.name) | async).length > 0" class="error">
-                        <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(itemType.name) | async).length}}
-                    </p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="list-item">
+      <h2 class="headline" i18n>Rack mountable assets</h2>
+      <div class="list flex-row flex-wrap">
+        @for (itemType of (rackMountableTypes | async); track itemType) {
+          <div class="list-item"
+            [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
+            [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">
+            <h3 class="headline">{{itemType.name}}</h3>
+            <p>
+              <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
+            </p>
+            @if ((getAssetsWithoutModel(itemType.name) | async).length > 0) {
+              <p class="error">
+                <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(itemType.name) | async).length}}
+              </p>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="list-item">
+      <h2 class="headline" i18n>Enclosure mountable assets</h2>
+      <div class="list flex-row flex-wrap">
+        @for (itemType of (enclosureMountableTypes | async); track itemType) {
+          <div class="list-item"
+            [ngClass]="{error: (getModelsForTargetType(itemType.name) | async).length === 0, clickable: (getModelsForTargetType(itemType.name) | async).length > 0}"
+            [routerLink]="(getModelsForTargetType(itemType.name) | async).length > 0 ? ['/asset', itemType.id] : []">
+            <h3 class="headline">
+              {{itemType.name}}
+            </h3>
+            <p>
+              <ng-container i18n>Models</ng-container>: {{(getModelsForTargetType(itemType.name) | async).length}}
+            </p>
+            @if ((getAssetsWithoutModel(itemType.name) | async).length > 0) {
+              <p class="error">
+                <ng-container i18n>Items without model:</ng-container> {{(getAssetsWithoutModel(itemType.name) | async).length}}
+              </p>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 </div>

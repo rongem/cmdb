@@ -1,55 +1,75 @@
 <div class="list-container">
-    <h1 class="headline"><ng-container i18n>Asset management</ng-container> - {{rackName}}</h1>
-    <div class="list flex-column">
-        <div class="list-item error" *ngIf="(racksWithoutModel | async).length > 0">
-            <h2>{{rackName}}<ng-container i18n>s without </ng-container>{{modelName}}</h2>
-            <div class="list flexrow flex-wrap">
-                <div class="list-item clickable error relative" *ngFor="let rack of (racksWithoutModel | async)" (click)="selectRack(rack)">
-                    <h3>{{rack.name}}</h3>
-                    <p *ngIf="rack.connectionToRoom">
-                        {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
-                    </p>
-                    <p>
-                        {{rack.statusName}}
-                    </p>
-                    <p class="list-item__warning" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
-                </div>
+  <h1 class="headline"><ng-container i18n>Asset management</ng-container> - {{rackName}}</h1>
+  <div class="list flex-column">
+    @if ((racksWithoutModel | async).length > 0) {
+      <div class="list-item error">
+        <h2>{{rackName}}<ng-container i18n>s without </ng-container>{{modelName}}</h2>
+        <div class="list flexrow flex-wrap">
+          @for (rack of (racksWithoutModel | async); track rack) {
+            <div class="list-item clickable error relative" (click)="selectRack(rack)">
+              <h3>{{rack.name}}</h3>
+              @if (rack.connectionToRoom) {
+                <p>
+                  {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
+                </p>
+              }
+              <p>
+                {{rack.statusName}}
+              </p>
+              @if (!rack.item.userIsResponsible) {
+                <p class="list-item__warning" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
+              }
             </div>
+          }
         </div>
-        <ng-container *ngFor="let model of (models | async)">
-            <div class="list-item">
-                <div class="flex-row space-between">
-                    <div>
-                        <h2>{{model.name}}</h2>
-                        <p *ngIf="model.manufacturer && model.manufacturer !== ''">{{model.manufacturer}}</p>
-                    </div>
-                    <div>
-                        <button type="button" (click)="selectedModel = model" i18n>Create</button>
-                    </div>
-                </div>
-                <div class="list flex-row flex-wrap">
-                    <div class="list-item clickable relative"
-                        *ngFor="let rack of (getRacksForModel(model) | async)" [ngClass]="{error: !rack.connectionToRoom}"
-                        (click)="selectRack(rack)">
-                        <h3>{{rack.name}}</h3>
-                        <p *ngIf="rack.connectionToRoom">
-                            {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
-                        </p>
-                        <p>
-                            {{rack.statusName}}
-                        </p>
-                        <p class="list-item__warning" *ngIf="!rack.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
-                    </div>
-                </div>
+      </div>
+    }
+    @for (model of (models | async); track model) {
+      <div class="list-item">
+        <div class="flex-row space-between">
+          <div>
+            <h2>{{model.name}}</h2>
+            @if (model.manufacturer && model.manufacturer !== '') {
+              <p>{{model.manufacturer}}</p>
+            }
+          </div>
+          <div>
+            <button type="button" (click)="selectedModel = model" i18n>Create</button>
+          </div>
+        </div>
+        <div class="list flex-row flex-wrap">
+          @for (rack of (getRacksForModel(model) | async); track rack) {
+            <div class="list-item clickable relative"
+              [ngClass]="{error: !rack.connectionToRoom}"
+              (click)="selectRack(rack)">
+              <h3>{{rack.name}}</h3>
+              @if (rack.connectionToRoom) {
+                <p>
+                  {{(getRoom(rack.connectionToRoom.roomId) | async)?.name}}
+                </p>
+              }
+              <p>
+                {{rack.statusName}}
+              </p>
+              @if (!rack.item.userIsResponsible) {
+                <p class="list-item__warning" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
+              }
             </div>
-        </ng-container>
-    </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
 </div>
 
-<app-form-popup *ngIf="selectedRack" (closed)="selectedRack = undefined">
+@if (selectedRack) {
+  <app-form-popup (closed)="selectedRack = undefined">
     <app-rack-form [rack]="selectedRack" (submitted)="onSubmitUpdate($event)"></app-rack-form>
-</app-form-popup>
+  </app-form-popup>
+}
 
-<app-form-popup *ngIf="selectedModel" (closed)="selectedModel = undefined">
+@if (selectedModel) {
+  <app-form-popup (closed)="selectedModel = undefined">
     <app-create-asset-form [model]="selectedModel" [existingNames]="(existingRackNames | async)" (submitted)="onSubmitCreated($event)"></app-create-asset-form>
-</app-form-popup>
+  </app-form-popup>
+}

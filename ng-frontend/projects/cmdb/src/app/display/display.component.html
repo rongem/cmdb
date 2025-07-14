@@ -1,22 +1,26 @@
-<app-busy *ngIf="(searching | async)" i18n="Searching">
+@if ((searching | async)) {
+  <app-busy i18n="Searching">
     Suche
 </app-busy>
+}
 <main class="grid__layout">
-    <app-menu id="main-menu">
-        <app-action-list></app-action-list>
-        <app-item-type-list></app-item-type-list>
-    </app-menu>
-    <div class="fixed-height__layout">
-        <h1 class="page-title" i18n="Search items">Configuration Items suchen</h1>
-        <app-help>
-            <p i18n="You may narrow down the results by selecting filters. The main filter is the item type in the menu on the left.">
+  <app-menu id="main-menu">
+    <app-action-list></app-action-list>
+    <app-item-type-list></app-item-type-list>
+  </app-menu>
+  <div class="fixed-height__layout">
+    <h1 class="page-title" i18n="Search items">Configuration Items suchen</h1>
+    <app-help>
+      <p i18n="You may narrow down the results by selecting filters. The main filter is the item type in the menu on the left.">
                 Durch die Auswahl von Filtern k&ouml;nnen Sie die Ergebnisse weiter eingrenzen. Der wichtigste Filter ist der Item-Typ auf der linken Seite im Menü.
             </p>
-            <p *ngIf="(userRole | async) > 0" i18n="If you chose an item type, you also may select multiple items at once and edit them.">
+      @if ((userRole | async) > 0) {
+        <p i18n="If you chose an item type, you also may select multiple items at once and edit them.">
                 Wenn Sie einen Item-Typ gewählt haben, können Sie auch mehrere Configuration Items ausw&auml;hlen und gemeinsam editieren.
             </p>
-        </app-help>
-        <app-filter-form></app-filter-form>
-        <app-item-list></app-item-list>
-    </div>
+      }
+    </app-help>
+    <app-filter-form></app-filter-form>
+    <app-item-list></app-item-list>
+  </div>
 </main>

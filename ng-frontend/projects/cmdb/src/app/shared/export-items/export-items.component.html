@@ -1,41 +1,55 @@
 <div class="flex-vertical__full-width" style="padding-left: 0.5rem;">
-    <label for="exportType" i18n="Choose export format: ">Export-Format: </label>
-    <select id="exportType" [(ngModel)]="exportType">
-        <option value="excel" i18n="Excel">Excel</option>
-        <option value="csv" i18n="CSV">CSV</option>
-        <option value="clipboard" i18n="Clipboard">Zwischenablage</option>
-    </select>
-    <button i18n="Export" (click)="exportFile()" class="selectable">Exportieren</button>
-    <table #table style="display: none;">
-        <thead>
-            <tr>
-                <th i18n="Name">Name</th>
-                <th i18n="Item type">Item-Typ</th>
-                <th *ngFor="let attributeType of (attributeTypes | async)">
-                    {{attributeType.name}}
-                </th>
-                <th *ngFor="let rule of (downwardConnectionRules | async)">
-                    {{getConnectionRuleText(rule, 'down') | async}}
-                </th>
-                <th *ngFor="let rule of (upwardConnectionRules | async)">
-                    {{getConnectionRuleText(rule, 'up') | async}}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of items">
-                <td>{{item.name}}</td>
-                <td>{{item.type}}</td>
-                <td *ngFor="let attributeType of (attributeTypes | async)">
-                    {{getAttributeValue(attributeType.id, item)}}
-                </td>
-                <td *ngFor="let rule of (downwardConnectionRules | async)">
-                    {{getConnectionRuleItems(rule.id, item.connectionsToLower)}}
-                </td>
-                <td *ngFor="let rule of (upwardConnectionRules | async)">
-                    {{getConnectionRuleItems(rule.id, item.connectionsToUpper)}}
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <label for="exportType" i18n="Choose export format: ">Export-Format: </label>
+  <select id="exportType" [(ngModel)]="exportType">
+    <option value="excel" i18n="Excel">Excel</option>
+    <option value="csv" i18n="CSV">CSV</option>
+    <option value="clipboard" i18n="Clipboard">Zwischenablage</option>
+  </select>
+  <button i18n="Export" (click)="exportFile()" class="selectable">Exportieren</button>
+  <table #table style="display: none;">
+    <thead>
+      <tr>
+        <th i18n="Name">Name</th>
+        <th i18n="Item type">Item-Typ</th>
+        @for (attributeType of (attributeTypes | async); track attributeType) {
+          <th>
+            {{attributeType.name}}
+          </th>
+        }
+        @for (rule of (downwardConnectionRules | async); track rule) {
+          <th>
+            {{getConnectionRuleText(rule, 'down') | async}}
+          </th>
+        }
+        @for (rule of (upwardConnectionRules | async); track rule) {
+          <th>
+            {{getConnectionRuleText(rule, 'up') | async}}
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of items; track item) {
+        <tr>
+          <td>{{item.name}}</td>
+          <td>{{item.type}}</td>
+          @for (attributeType of (attributeTypes | async); track attributeType) {
+            <td>
+              {{getAttributeValue(attributeType.id, item)}}
+            </td>
+          }
+          @for (rule of (downwardConnectionRules | async); track rule) {
+            <td>
+              {{getConnectionRuleItems(rule.id, item.connectionsToLower)}}
+            </td>
+          }
+          @for (rule of (upwardConnectionRules | async); track rule) {
+            <td>
+              {{getConnectionRuleItems(rule.id, item.connectionsToUpper)}}
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

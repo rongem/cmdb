@@ -1,49 +1,65 @@
 <table class="table" #table>
-    <thead>
-        <tr>
-            <th appClickOpen *ngIf="(userRole | async) > 0 && (searchItemType | async)">
-                <app-multi-selector [items]="resultList | async"></app-multi-selector>
-            </th>
-            <th i18n="Item name">Item-Name</th>
-            <th i18n="Item type">Item-Typ</th>
-            <th i18n="Last change">Letzte &Auml;nderung</th>
-            <ng-container *ngIf="(searchItemType | async)">
-                <th *ngFor="let attributeType of displayedAttributeTypesList">
-                    {{attributeType.name}}
-                </th>
-                <th *ngFor="let connectionType of displayedConnectionTypesList">
-                    {{connectionType.name}}
-                </th>
-            </ng-container>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of (resultList | async)">
-            <td *ngIf="(userRole | async) > 0 && (searchItemType | async)">
-                <app-item-selector [itemId]="item.id"></app-item-selector>
-            </td>
+  <thead>
+    <tr>
+      @if ((userRole | async) > 0 && (searchItemType | async)) {
+        <th appClickOpen>
+          <app-multi-selector [items]="resultList | async"></app-multi-selector>
+        </th>
+      }
+      <th i18n="Item name">Item-Name</th>
+      <th i18n="Item type">Item-Typ</th>
+      <th i18n="Last change">Letzte &Auml;nderung</th>
+      @if ((searchItemType | async)) {
+        @for (attributeType of displayedAttributeTypesList; track attributeType) {
+          <th>
+            {{attributeType.name}}
+          </th>
+        }
+        @for (connectionType of displayedConnectionTypesList; track connectionType) {
+          <th>
+            {{connectionType.name}}
+          </th>
+        }
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (item of (resultList | async); track item) {
+      <tr>
+        @if ((userRole | async) > 0 && (searchItemType | async)) {
+          <td>
+            <app-item-selector [itemId]="item.id"></app-item-selector>
+          </td>
+        }
+        <td>
+          <a [routerLink]="['/display', 'configuration-item', item.id]">
+            {{item.name}}
+          </a>
+        </td>
+        <td>
+          {{item.type}}
+        </td>
+        <td>
+          {{item.lastChange | date:'short'}}
+        </td>
+        @if ((searchItemType | async)) {
+          @for (attributeType of displayedAttributeTypesList; track attributeType) {
             <td>
-                <a [routerLink]="['/display', 'configuration-item', item.id]">
-                    {{item.name}}
-                </a>
+              {{getAttributeValue(item, attributeType.id)}}
             </td>
+          }
+          @for (connectionType of displayedConnectionTypesList; track connectionType) {
             <td>
-                {{item.type}}
+              {{connectionType.name}}
             </td>
-            <td>
-                {{item.lastChange | date:'short'}}
-            </td>
-            <ng-container *ngIf="(searchItemType | async)">
-                <td *ngFor="let attributeType of displayedAttributeTypesList">
-                    {{getAttributeValue(item, attributeType.id)}}
-                </td>
-                <td *ngFor="let connectionType of displayedConnectionTypesList">
-                    {{connectionType.name}}
-                </td>
-            </ng-container>
-        </tr>
-    </tbody>
+          }
+        }
+      </tr>
+    }
+  </tbody>
 </table>
-<div class="error" *ngIf="(resultList | async).length === 0" i18n="No items found that match the search criteria">
+@if ((resultList | async).length === 0) {
+  <div class="error" i18n="No items found that match the search criteria">
     Keine Items gefunden, die den Suchkriterien entsprechen.
 </div>
+}

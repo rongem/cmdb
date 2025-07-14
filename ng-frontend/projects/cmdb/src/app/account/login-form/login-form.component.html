@@ -1,17 +1,19 @@
 <main class="page-layout">
-    <h1 class="page-title" i18n="Login">Anmeldung</h1>
-    <div class="grid">
-        <label for="accountName" class="cell" i18n="Username">Benutzername:</label>
-        <input type="text" id="accountName" name="accountName" [(ngModel)]="accountName" class="cell selectable">
-        <label for="passphrase" class="cell" i18n="Password">Kennwort:</label>
-        <input type="password" id="passphrase" name="passphrase" [(ngModel)]="passphrase" class="cell selectable">
-        <div class="cell">
-            <button class="button selectable" (click)="doLogin()" i18n="Log in">
+  <h1 class="page-title" i18n="Login">Anmeldung</h1>
+  <div class="grid">
+    <label for="accountName" class="cell" i18n="Username">Benutzername:</label>
+    <input type="text" id="accountName" name="accountName" [(ngModel)]="accountName" class="cell selectable">
+    <label for="passphrase" class="cell" i18n="Password">Kennwort:</label>
+    <input type="password" id="passphrase" name="passphrase" [(ngModel)]="passphrase" class="cell selectable">
+    <div class="cell">
+      <button class="button selectable" (click)="doLogin()" i18n="Log in">
                 Anmelden
             </button>
-        </div>
     </div>
-    <div class="error" *ngIf="error">
-        {{error}}
+  </div>
+  @if (error) {
+    <div class="error">
+      {{error}}
     </div>
+  }
 </main>

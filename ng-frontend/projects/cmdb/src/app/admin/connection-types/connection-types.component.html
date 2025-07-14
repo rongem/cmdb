@@ -1,16 +1,16 @@
 <app-help>
-    <p i18n="Connection types are the labels on the arrow between two configuration items">
+  <p i18n="Connection types are the labels on the arrow between two configuration items">
         Verbindungstypen sind die Beschriftungen auf dem Pfeil zwischen zwei 
         Configuration Items.
     </p>
-    <p i18n="Connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
+  <p i18n="Connections always possess a direction, i.e. you always have an upper and a lower configurtion item. You will be able to build whole trees of connected items, e.g. from a room to a rack to a server hardware. you should choose a strategy for connections in the very beginning and use it all the time">
         Verbindungen sind immer &quot;gerichtet&quot;, d. h. es gibt ein oberes und ein 
         untere Configuration Item. So lassen sich ganze B&auml;ume von miteinander verbundenen
         Configuration Items realiseren, z. B. Raum zu Rack zu Server-Hardware. Es empfiehlt sich,
         am Anfang eine Systematik zur Bef&uuml;llung festzulegen und diese dann konsequent
         durchzuhalten.
     </p>
-    <p i18n="Every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is 'built into' a rack. From the viewpoint of the rack, the reverse name of the same connection is 'contains' the server hardware">
+  <p i18n="Every connection has two names, to reflect the view point from which it is contemplated. the name of the connection from the viewpoint of the server hardware is 'built into' a rack. From the viewpoint of the rack, the reverse name of the same connection is 'contains' the server hardware">
         Eine Verbindung besitzt immer zwei Namen, um die Richtung widerzuspiegeln, aus der die 
         Verbindung betrachtet wird. So lautet der Name der Verbindung aus Sicht einer
         Server-Hardware, die Server-Hardware &quot;ist eingebaut in&quot; ein Rack. 
@@ -19,110 +19,123 @@
     </p>
 </app-help>
 <table class="table" [formGroup]="form">
-    <thead>
-        <tr>
-            <th class="table-cell table-header">
-                <span class="mobile-only">1: </span>
-                <span i18n="Connection type name">Name des Verbindungstyps</span>
-            </th>
-            <th class="table-cell table-header">
-                <span class="mobile-only">2: </span>
-                <span i18n="Connection type reverse name">R&uuml;ckw&auml;rtsname</span>
-            </th>
-            <th class="table-cell table-header">
-                <span class="mobile-only">3: </span>
-                <span i18n="Actions">Aktionen</span>
-            </th>
-        </tr>
-    </thead>
-    <tr *ngFor="let connectionType of (connectionTypes | async); let i = index">
-        <td class="table-cell">
-            <span class="mobile-only">1: </span>
-            <button class="input__content-button selectable" type="button"
-                (click)="onSetActiveLine(connectionType, i, 1)"
-                *ngIf="activeLine !== i"
-                [ngClass]="{changed: lastNameChange === i}">
-                {{ connectionType.name }}
-            </button>
-            <input type="text" #nameInput *ngIf="activeLine === i" formControlName="name" (keyup.escape)="onCancel()">
-        </td>
-        <td class="table-cell">
-            <span class="mobile-only">2: </span>
-            <button class="input__content-button selectable" type="button"
-                (click)="onSetActiveLine(connectionType, i, 2)"
-                *ngIf="activeLine !== i"
-                [ngClass]="{changed: lastReverseNameChange === i}">
-                {{ connectionType.reverseName }}
-            </button>
-            <input type="text" #reverseNameInput *ngIf="activeLine === i" formControlName="reverseName" (keyup.escape)="onCancel()">
-        </td>
-        <td class="table-cell position-relative" appClickOpen>
-            <ng-container *ngIf="activeLine === -1 && !createMode">
-                <span class="mobile-only">3: </span>
-                <button type="button" class="dropdown-toggle">
-                    ...
-                    <span class="visually-hidden" i18n="Click to open action menu">
+  <thead>
+    <tr>
+      <th class="table-cell table-header">
+        <span class="mobile-only">1: </span>
+        <span i18n="Connection type name">Name des Verbindungstyps</span>
+      </th>
+      <th class="table-cell table-header">
+        <span class="mobile-only">2: </span>
+        <span i18n="Connection type reverse name">R&uuml;ckw&auml;rtsname</span>
+      </th>
+      <th class="table-cell table-header">
+        <span class="mobile-only">3: </span>
+        <span i18n="Actions">Aktionen</span>
+      </th>
+    </tr>
+  </thead>
+  @for (connectionType of (connectionTypes | async); track connectionType; let i = $index) {
+    <tr>
+      <td class="table-cell">
+        <span class="mobile-only">1: </span>
+        @if (activeLine !== i) {
+          <button class="input__content-button selectable" type="button"
+            (click)="onSetActiveLine(connectionType, i, 1)"
+            [ngClass]="{changed: lastNameChange === i}">
+            {{ connectionType.name }}
+          </button>
+        }
+        @if (activeLine === i) {
+          <input type="text" #nameInput formControlName="name" (keyup.escape)="onCancel()">
+        }
+      </td>
+      <td class="table-cell">
+        <span class="mobile-only">2: </span>
+        @if (activeLine !== i) {
+          <button class="input__content-button selectable" type="button"
+            (click)="onSetActiveLine(connectionType, i, 2)"
+            [ngClass]="{changed: lastReverseNameChange === i}">
+            {{ connectionType.reverseName }}
+          </button>
+        }
+        @if (activeLine === i) {
+          <input type="text" #reverseNameInput formControlName="reverseName" (keyup.escape)="onCancel()">
+        }
+      </td>
+      <td class="table-cell position-relative" appClickOpen>
+        @if (activeLine === -1 && !createMode) {
+          <span class="mobile-only">3: </span>
+          <button type="button" class="dropdown-toggle">
+            ...
+            <span class="visually-hidden" i18n="Click to open action menu">
                         Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                     </span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              @if (canDelete(connectionType, (connectionRules | async))) {
+                <button type="button" class="red-button selectable"
+                  (click)="onDeleteConnectionType(connectionType)">
+                  <ng-container i18n="Delete connection type">Verbindungstyp l&ouml;schen</ng-container>
                 </button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <button type="button" class="red-button selectable"
-                            *ngIf="canDelete(connectionType, (connectionRules | async))"
-                            (click)="onDeleteConnectionType(connectionType)">
-                            <ng-container i18n="Delete connection type">Verbindungstyp l&ouml;schen</ng-container>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" class="selectable" [cdkCopyToClipboard]="connectionType.id">
-                            <ng-container i18n="Copy id to clipboard">Id kopieren</ng-container>
-                            <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
+              }
+            </li>
+            <li>
+              <button type="button" class="selectable" [cdkCopyToClipboard]="connectionType.id">
+                <ng-container i18n="Copy id to clipboard">Id kopieren</ng-container>
+                <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
                                 Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                             </span>
-                        </button>
-                    </li>
-                </ul>
-            </ng-container>
-            <ng-container *ngIf="activeLine === i">
-                <button class="btn-ok selectable" type="button" [disabled]="form.pristine || form.invalid" (click)="onChangeConnectionType()">
-                    <ng-container i18n="Save">Speichern</ng-container>
-                </button>
-                <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                    <ng-container i18n="Cancel">Abbrechen</ng-container>
-                </button>
-            </ng-container>
-        </td>
+              </button>
+            </li>
+          </ul>
+        }
+        @if (activeLine === i) {
+          <button class="btn-ok selectable" type="button" [disabled]="form.pristine || form.invalid" (click)="onChangeConnectionType()">
+            <ng-container i18n="Save">Speichern</ng-container>
+          </button>
+          <button class="btn-cancel selectable" type="button" (click)="onCancel()">
+            <ng-container i18n="Cancel">Abbrechen</ng-container>
+          </button>
+        }
+      </td>
     </tr>
-    <tr *ngIf="!createMode">
-        <td class="table-cell" colspan="3">
-            <button type="button" class="selectable" (click)="onCreate()">
-                <ng-container i18n="Add new connection type">
+  }
+  @if (!createMode) {
+    <tr>
+      <td class="table-cell" colspan="3">
+        <button type="button" class="selectable" (click)="onCreate()">
+          <ng-container i18n="Add new connection type">
                     Neuen Verbindungstyp hinzuf&uuml;gen
                 </ng-container>
         </button>
-        </td>
+      </td>
     </tr>
-    <tr *ngIf="createMode">
-        <td class="table-cell">
-            <span class="mobile-only">1: </span>
-            <input autofocus type="text" formControlName="name"
-                (keyup.escape)="onCancel()" class="selectable"
-                placeholder="Name" i18n-placeholder="Name" />
+  }
+  @if (createMode) {
+    <tr>
+      <td class="table-cell">
+        <span class="mobile-only">1: </span>
+        <input autofocus type="text" formControlName="name"
+          (keyup.escape)="onCancel()" class="selectable"
+          placeholder="Name" i18n-placeholder="Name" />
         </td>
         <td class="table-cell">
-            <span class="mobile-only">2: </span>
-            <input type="text" formControlName="reverseName"
-                (keyup.escape)="onCancel()" class="selectable"
-                placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="Reverse name" />
-        </td>
-        <td class="table-cell">
+          <span class="mobile-only">2: </span>
+          <input type="text" formControlName="reverseName"
+            (keyup.escape)="onCancel()" class="selectable"
+            placeholder="R&uuml;ckw&auml;rtsname" i18n-placeholder="Reverse name" />
+          </td>
+          <td class="table-cell">
             <button class="btn-ok selectable" type="button" [disabled]="form.pristine || form.invalid" (click)="onCreateConnectionType()">
-                <ng-container i18n="Save">Speichern</ng-container>
+              <ng-container i18n="Save">Speichern</ng-container>
             </button>
             <button class="btn-cancel selectable" type="button" (click)="onCancel()">
-                <ng-container i18n="Cancel">Abbrechen</ng-container>
+              <ng-container i18n="Cancel">Abbrechen</ng-container>
             </button>
-        </td>
-    </tr>
-</table>
+          </td>
+        </tr>
+      }
+    </table>
 

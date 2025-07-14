@@ -1,30 +1,40 @@
-<form [formGroup]="form" *ngIf="form" (submit)="submit()">
+@if (form) {
+  <form [formGroup]="form" (submit)="submit()">
     <label for="name" i18n>Name:</label>
     <input type="text" id="name" formControlName="name" />
     <label for="manufacturer">{{attributeTypeNames.Manufacturer}}:</label>
     <input type="text" id="manufacturer" formControlName="manufacturer" />
     <label for="targetType">{{attributeTypeNames.TargetTypeName}}:</label>
-    <select id="targetType" formControlName="targetType" *ngIf="!itemType" (change)="onChange($event.target)">
-        <option *ngFor="let name of itemTypeNames" [value]="name.toLocaleLowerCase()">{{name}}</option>
-    </select>
-    <span class="readonly-box" *ngIf="itemType">{{itemType.name}}</span>
-    <ng-container *ngIf="enclosureMountable || bladeEnclosure">
-        <label for="height">{{attributeTypeNames.Height}}:</label>
-        <input type="number" id="height" formControlName="height" />
-        <label for="width">{{attributeTypeNames.Width}}:</label>
-        <input type="number" id="width" formControlName="width" />
-    </ng-container>
-    <ng-container *ngIf="bladeEnclosure">
-        <label for="backsideslots">{{attributeTypeNames.BackSideSlots}}:</label>
-        <input type="number" id="backsideslots" formControlName="backSideSlots" />
-    </ng-container>
-    <ng-container *ngIf="rackMountable || rack">
-        <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
-        <input type="number" id="heightUnits" formControlName="heightUnits" />
-    </ng-container>
+    @if (!itemType) {
+      <select id="targetType" formControlName="targetType" (change)="onChange($event.target)">
+        @for (name of itemTypeNames; track name) {
+          <option [value]="name.toLocaleLowerCase()">{{name}}</option>
+        }
+      </select>
+    }
+    @if (itemType) {
+      <span class="readonly-box">{{itemType.name}}</span>
+    }
+    @if (enclosureMountable || bladeEnclosure) {
+      <label for="height">{{attributeTypeNames.Height}}:</label>
+      <input type="number" id="height" formControlName="height" />
+      <label for="width">{{attributeTypeNames.Width}}:</label>
+      <input type="number" id="width" formControlName="width" />
+    }
+    @if (bladeEnclosure) {
+      <label for="backsideslots">{{attributeTypeNames.BackSideSlots}}:</label>
+      <input type="number" id="backsideslots" formControlName="backSideSlots" />
+    }
+    @if (rackMountable || rack) {
+      <label for="heightUnits">{{attributeTypeNames.HeightUnits}}:</label>
+      <input type="number" id="heightUnits" formControlName="heightUnits" />
+    }
     <div class="flex space-between">
-        <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
-        <button type="button" *ngIf="!createMode" i18n [disabled]="model.assetsCount > 0" (click)="delete()">Delete this model</button>
+      <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
+      @if (!createMode) {
+        <button type="button" i18n [disabled]="model.assetsCount > 0" (click)="delete()">Delete this model</button>
+      }
     </div>
-</form>
+  </form>
+}
 

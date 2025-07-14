@@ -1,6 +1,10 @@
-<app-busy *ngIf="(itemReady | async) === false" i18n="Loading data...">
+@if ((itemReady | async) === false) {
+  <app-busy i18n="Loading data...">
     Lade Daten...
 </app-busy>
-<div *ngIf="(itemReady | async)" style="position: absolute; margin: 1rem;">
+}
+@if ((itemReady | async)) {
+  <div style="position: absolute; margin: 1rem;">
     <app-graph-item [item]="(item | async)"></app-graph-item>
-</div>
+  </div>
+}

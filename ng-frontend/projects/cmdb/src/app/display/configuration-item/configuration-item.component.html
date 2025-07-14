@@ -1,136 +1,158 @@
-<app-busy *ngIf="(itemReady | async) === false" i18n="Loading data for configuration item">
+@if ((itemReady | async) === false) {
+  <app-busy i18n="Loading data for configuration item">
     Lade Daten des Configuration Items...
 </app-busy>
-<ng-container *ngIf="(itemReady | async)">
-    <table class="table table-enhance__last-column">
-        <thead>
-            <tr>
-                <th i18n="Property">Eigenschaft</th>
-                <th i18n="Value">Wert</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td i18n="Item-type">Item-Typ</td>
-                <td>
-                    {{(configurationItem | async).type}}
-                    <span [style.border]="'1px dotted black'" [style.background]="(configurationItem | async).color">
-                        &nbsp;&nbsp;
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td i18n="Name">Name</td>
-                <td>
-                    {{(configurationItem | async).name}}
-                </td>
-            </tr>
-            <ng-container *ngIf="(attributeTypes | async).length > 0">
-                <tr>
-                    <th colspan="2" i18n="Attributes">Attribute</th>
-                </tr>
-                <tr *ngFor="let attributeType of (attributeTypes | async)">
-                    <td>
-                        {{attributeType.name}}
-                    </td>
-                    <td>
-                        {{getAttributeValue(attributeType) | async}}
-                    </td>
-                </tr>
-            </ng-container>
-            <ng-container *ngIf="(configurationItem | async).responsibleUsers.length > 0">
-                <tr>
-                    <th colspan="2" i18n="Responsible persons">Verantwortliche</th>
-                </tr>
-                <tr *ngFor="let user of (configurationItem | async).responsibleUsers">
-                    <td i18n="Name">
+}
+@if ((itemReady | async)) {
+  <table class="table table-enhance__last-column">
+    <thead>
+      <tr>
+        <th i18n="Property">Eigenschaft</th>
+        <th i18n="Value">Wert</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td i18n="Item-type">Item-Typ</td>
+        <td>
+          {{(configurationItem | async).type}}
+          <span [style.border]="'1px dotted black'" [style.background]="(configurationItem | async).color">
+            &nbsp;&nbsp;
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td i18n="Name">Name</td>
+        <td>
+          {{(configurationItem | async).name}}
+        </td>
+      </tr>
+      @if ((attributeTypes | async).length > 0) {
+        <tr>
+          <th colspan="2" i18n="Attributes">Attribute</th>
+        </tr>
+        @for (attributeType of (attributeTypes | async); track attributeType) {
+          <tr>
+            <td>
+              {{attributeType.name}}
+            </td>
+            <td>
+              {{getAttributeValue(attributeType) | async}}
+            </td>
+          </tr>
+        }
+      }
+      @if ((configurationItem | async).responsibleUsers.length > 0) {
+        <tr>
+          <th colspan="2" i18n="Responsible persons">Verantwortliche</th>
+        </tr>
+        @for (user of (configurationItem | async).responsibleUsers; track user) {
+          <tr>
+            <td i18n="Name">
                         Name
                     </td>
-                    <td [ngClass]="{enhanced: user === (userName | async)}">
-                        {{user}}
-                        <span *ngIf="user === (userName | async)" i18n="(you)"> (Sie)</span>
-                    </td>
-                </tr>
-            </ng-container>
-            <ng-container *ngIf="(configurationItem | async).connectionsToLower.length > 0">
-                <tr>
-                    <th colspan="2">
-                        <ng-container i18n="Connections to lower">
+            <td [ngClass]="{enhanced: user === (userName | async)}">
+              {{user}}
+              @if (user === (userName | async)) {
+                <span i18n="(you)"> (Sie)</span>
+              }
+            </td>
+          </tr>
+        }
+      }
+      @if ((configurationItem | async).connectionsToLower.length > 0) {
+        <tr>
+          <th colspan="2">
+            <ng-container i18n="Connections to lower">
                             Verbindungen nach unten
                         </ng-container>
-                        (&darr;)
-                    </th>
-                </tr>
-                <ng-container *ngFor="let typeId of (connectionTypesToLower | async)">
-                    <tr *ngFor="let ruleId of (getConnectionRuleIdsToLower(typeId) | async)">
-                        <td>
-                            <em>
-                                {{(getConnectionType(typeId) | async).name}}
-                            </em>
-                            {{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToLower)}}
-                        </td>
-                        <td>
-                            <ul class="connections-rule__container">
-                                <li class="connection" 
-                                    *ngFor="let connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower)">
-                                    <a [routerLink]="['..', connection.targetId]" class="selectable">
-                                        {{connection.targetName}}
-                                    </a>
-                                    <span *ngIf="connection.description"> ({{connection.description}})</span>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf="(configurationItem | async).connectionsToUpper.length > 0">
-                <tr>
-                    <th colspan="2">
-                        <ng-container i18n="Connections to upper">
+            (&darr;)
+          </th>
+        </tr>
+        @for (typeId of (connectionTypesToLower | async); track typeId) {
+          @for (ruleId of (getConnectionRuleIdsToLower(typeId) | async); track ruleId) {
+            <tr>
+              <td>
+                <em>
+                  {{(getConnectionType(typeId) | async).name}}
+                </em>
+                {{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToLower)}}
+              </td>
+              <td>
+                <ul class="connections-rule__container">
+                  @for (connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToLower); track connection) {
+                    <li class="connection"
+                      >
+                      <a [routerLink]="['..', connection.targetId]" class="selectable">
+                        {{connection.targetName}}
+                      </a>
+                      @if (connection.description) {
+                        <span> ({{connection.description}})</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              </td>
+            </tr>
+          }
+        }
+      }
+      @if ((configurationItem | async).connectionsToUpper.length > 0) {
+        <tr>
+          <th colspan="2">
+            <ng-container i18n="Connections to upper">
                             Verbindungen nach unten
                         </ng-container>
-                        (&darr;)
-                    </th>
-                </tr>
-                <ng-container *ngFor="let typeId of (connectionTypesToUpper | async)">
-                    <tr *ngFor="let ruleId of (getConnectionRuleIdsToUpper(typeId) | async)">
-                        <td>
-                            <em>
-                                {{(getConnectionType(typeId) | async).reverseName}}
-                            </em>
-                            {{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToUpper)}}
-                        </td>
-                        <td>
-                            <ul class="connections-rule__container">
-                                <li class="connection" 
-                                    *ngFor="let connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToUpper)">
-                                    <a [routerLink]="['..', connection.targetId]" class="selectable">
-                                        {{connection.targetName}}
-                                    </a>
-                                    <span *ngIf="connection.description"> ({{connection.description}})</span>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                </ng-container>
-            </ng-container>
-            <ng-container *ngIf="(configurationItem | async).links.length > 0">
-                <tr>
-                    <th colspan="2" i18n="Links">
+            (&darr;)
+          </th>
+        </tr>
+        @for (typeId of (connectionTypesToUpper | async); track typeId) {
+          @for (ruleId of (getConnectionRuleIdsToUpper(typeId) | async); track ruleId) {
+            <tr>
+              <td>
+                <em>
+                  {{(getConnectionType(typeId) | async).reverseName}}
+                </em>
+                {{getTargetItemTypeByRule(ruleId, (configurationItem | async).connectionsToUpper)}}
+              </td>
+              <td>
+                <ul class="connections-rule__container">
+                  @for (connection of getConnectionsByRule(ruleId, (configurationItem | async).connectionsToUpper); track connection) {
+                    <li class="connection"
+                      >
+                      <a [routerLink]="['..', connection.targetId]" class="selectable">
+                        {{connection.targetName}}
+                      </a>
+                      @if (connection.description) {
+                        <span> ({{connection.description}})</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              </td>
+            </tr>
+          }
+        }
+      }
+      @if ((configurationItem | async).links.length > 0) {
+        <tr>
+          <th colspan="2" i18n="Links">
                         Hyperlinks
                     </th>
-                </tr>
-                <tr *ngFor="let link of (configurationItem | async).links">
-                    <td>
-                        {{link.description}}
-                    </td>
-                    <td>
-                        <a [href]="link.uri" target="external">
-                            {{link.uri}}
-                        </a>
-                    </td>
-                </tr>
-            </ng-container>
-        </tbody>
-    </table>
-</ng-container>
+        </tr>
+        @for (link of (configurationItem | async).links; track link) {
+          <tr>
+            <td>
+              {{link.description}}
+            </td>
+            <td>
+              <a [href]="link.uri" target="external">
+                {{link.uri}}
+              </a>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+}

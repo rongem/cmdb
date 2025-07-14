@@ -1,46 +1,48 @@
 <div class="box">
-    <h1 i18n="Manage mappings">Verwalten der Zuordnungen</h1>
-    <p>
-        <ng-container i18n="between the item type">Zuordnungen zwischen dem Item-Typ </ng-container>
-        {{itemType?.name}}<br/>
-        <ng-container i18n="and the attribute groups">und den Attributgruppen</ng-container>
-    </p>
-    <ul style="list-style-type: none;">
-        <li *ngFor="let attributeGroup of (attributeGroups | async)">
-            <input [id]="'check' + attributeGroup.id" type="checkbox" [checked]="isSelected(attributeGroup.id)" (change)="onChange($event, attributeGroup)">
-            <label [for]="'check' + attributeGroup.id">
-                {{ attributeGroup.name }}
-            </label>
-            <ng-container *ngIf="attributeGroup === selectedAttributeGroup">
-                <p>
-                    <ng-container i18n="You want to delete the mapping of the">Sie wollen eine Zuordnung der</ng-container>
-                    <ng-container i18n="Attribute group">Attributgruppe </ng-container>
-                    <b>
-                        {{ attributeGroup.name }}
-                    </b>
-                    <ng-container i18n="to the item type">zum Item-Typ </ng-container>
-                    <b>
-                        {{ itemType.name }}
-                    </b>
-                    <ng-container i18n="This will also delete"> l&ouml;schen. Dadurch werden </ng-container>
-                    <b>
-                        {{ mappingsCount }}
-                    </b>
-                    <ng-container i18n="Attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>
-                </p>
-                <p i18n="Are you sure you want to delete the mapping?">Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>
-                <p>
-                    <button type="button" class="selectable" i18n="No" (click)="cancelUpdate()">
+  <h1 i18n="Manage mappings">Verwalten der Zuordnungen</h1>
+  <p>
+    <ng-container i18n="between the item type">Zuordnungen zwischen dem Item-Typ </ng-container>
+    {{itemType?.name}}<br/>
+    <ng-container i18n="and the attribute groups">und den Attributgruppen</ng-container>
+  </p>
+  <ul style="list-style-type: none;">
+    @for (attributeGroup of (attributeGroups | async); track attributeGroup) {
+      <li>
+        <input [id]="'check' + attributeGroup.id" type="checkbox" [checked]="isSelected(attributeGroup.id)" (change)="onChange($event, attributeGroup)">
+        <label [for]="'check' + attributeGroup.id">
+          {{ attributeGroup.name }}
+        </label>
+        @if (attributeGroup === selectedAttributeGroup) {
+          <p>
+            <ng-container i18n="You want to delete the mapping of the">Sie wollen eine Zuordnung der</ng-container>
+            <ng-container i18n="Attribute group">Attributgruppe </ng-container>
+            <b>
+              {{ attributeGroup.name }}
+            </b>
+            <ng-container i18n="to the item type">zum Item-Typ </ng-container>
+            <b>
+              {{ itemType.name }}
+            </b>
+            <ng-container i18n="This will also delete"> l&ouml;schen. Dadurch werden </ng-container>
+            <b>
+              {{ mappingsCount }}
+            </b>
+            <ng-container i18n="Attributes"> Attribute ebenfalls gel&ouml;scht.</ng-container>
+          </p>
+          <p i18n="Are you sure you want to delete the mapping?">Sind Sie sicher, dass Sie die Zuordnung l&ouml;schen m&ouml;chten?</p>
+          <p>
+            <button type="button" class="selectable" i18n="No" (click)="cancelUpdate()">
                         Nein
                     </button>
-                    <button type="button" class="selectable" i18n="Yes, delete" (click)="removeMapping()">
+            <button type="button" class="selectable" i18n="Yes, delete" (click)="removeMapping()">
                         Ja, l&ouml;schen
                     </button>
-                </p>
-            </ng-container>
-        </li>
-    </ul>
-    <p>
-        <button i18n="Go back to item types" (click)="returnToItemTypes()">Zur&uuml;ck zu den Item-Typen</button>
-    </p>
+          </p>
+        }
+      </li>
+    }
+  </ul>
+  <p>
+    <button i18n="Go back to item types" (click)="returnToItemTypes()">Zur&uuml;ck zu den Item-Typen</button>
+  </p>
 </div>

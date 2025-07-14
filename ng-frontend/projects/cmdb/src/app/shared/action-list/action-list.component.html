@@ -1,85 +1,119 @@
 <div class="box-top flex__space-between">
-    <span i18n="Actions">Aktionen</span>
-    <button type="button" (click)="hidden = !hidden">
-        <span *ngIf="hidden">v</span>
-        <span *ngIf="!hidden">&lt;</span>
-    </button>
+  <span i18n="Actions">Aktionen</span>
+  <button type="button" (click)="hidden = !hidden">
+    @if (hidden) {
+      <span>v</span>
+    }
+    @if (!hidden) {
+      <span>&lt;</span>
+    }
+  </button>
 </div>
 <div class="box-body" [ngClass]="{hidden: hidden}">
-    <ul class="menu">
-        <li class="menu-item" *ngIf="(userRole | async) > 1">
-            <button type="button" class="no-wrap" [routerLink]="['/admin']" i18n="Administration">
+  <ul class="menu">
+    @if ((userRole | async) > 1) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="['/admin']" i18n="Administration">
                 Administration
             </button>
-        </li>
-        <li class="menu-item" *ngIf="!insideList">
-            <button type="button" class="no-wrap" i18n="Search / results" (click)="gotoList()">
+      </li>
+    }
+    @if (!insideList) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" i18n="Search / results" (click)="gotoList()">
                 Suchen / Ergebnisse
             </button>
-        </li>
-        <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (areMultipleItemsSelected | async) === true">
-            <button type="button" class="no-wrap" [@showButton]
-                (click)="onMultiEditItemList()" i18n="Edit multiple items">
+      </li>
+    }
+    @if (insideList && (searchItemType | async) && (areMultipleItemsSelected | async) === true) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [@showButton]
+          (click)="onMultiEditItemList()" i18n="Edit multiple items">
                 Gemeinsam editieren
             </button>
-        </li>
-        <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (areMultipleItemsSelected | async) === true">
-            <button type="button" class="no-wrap" [@showButton] (click)="onMultiDeleteItems()" i18n="Delete items">
+      </li>
+    }
+    @if (insideList && (searchItemType | async) && (areMultipleItemsSelected | async) === true) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [@showButton] (click)="onMultiDeleteItems()" i18n="Delete items">
                 Items l&ouml;schen
             </button>
-        </li>
-        <li class="menu-item" *ngIf="insideList && (searchItemType | async) && (resultList | async).length > 0">
-            <button type="button" class="no-wrap" (click)="showExport = !showExport" i18n="Export list">
+      </li>
+    }
+    @if (insideList && (searchItemType | async) && (resultList | async).length > 0) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" (click)="showExport = !showExport" i18n="Export list">
                 Liste exportieren
             </button>
-            <app-export-items *ngIf="showExport" [items]="(resultList | async)" [searchItemType]="(searchItemType | async)" (exported)="showExport = false">
-            </app-export-items>
-        </li>
-        <li class="menu-item" *ngIf="pathExt === 'neighbors' && (areMultipleItemsSelected | async) === true">
-            <button type="button" class="no-wrap" [@showButton]
-                (click)="onMultiEditItemList()" i18n="Edit multiple items">
+        @if (showExport) {
+          <app-export-items [items]="(resultList | async)" [searchItemType]="(searchItemType | async)" (exported)="showExport = false">
+          </app-export-items>
+        }
+      </li>
+    }
+    @if (pathExt === 'neighbors' && (areMultipleItemsSelected | async) === true) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [@showButton]
+          (click)="onMultiEditItemList()" i18n="Edit multiple items">
                 Gemeinsam editieren
             </button>
-        </li>
-        <li class="menu-item" *ngIf="(userRole | async) > 0">
-            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, 'create']" i18n="Create new item">
+      </li>
+    }
+    @if ((userRole | async) > 0) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, 'create']" i18n="Create new item">
                 Neues Item hinzuf&uuml;gen
             </button>
-        </li>
-        <li class="menu-item" *ngIf="itemId && (userRole | async) > 0 && pathExt !== 'edit'">
-            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId]" i18n="Edit item">
+      </li>
+    }
+    @if (itemId && (userRole | async) > 0 && pathExt !== 'edit') {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId]" i18n="Edit item">
                 Bearbeiten
             </button>
-        </li>
-        <li class="menu-item" *ngIf="itemId && (userRole | async) > 0">
-            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId, 'copy']" i18n="Copy item">
+      </li>
+    }
+    @if (itemId && (userRole | async) > 0) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[editBaseLink, itemLinkPart, itemId, 'copy']" i18n="Copy item">
                 Kopieren
             </button>
-        </li>
-        <li class="menu-item" *ngIf="itemId && pathExt">
-            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId]" i18n="View item">
+      </li>
+    }
+    @if (itemId && pathExt) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId]" i18n="View item">
                 Item ansehen
             </button>
-        </li>
-        <li class="menu-item" *ngIf="itemId && pathExt !== 'graph'">
-            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'graph']" i18n="View graph">
+      </li>
+    }
+    @if (itemId && pathExt !== 'graph') {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'graph']" i18n="View graph">
                 Grafik ansehen
             </button>
-        </li>
-        <li class="menu-item" *ngIf="itemId && pathExt !== 'history'">
-            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'history']" i18n="View history">
+      </li>
+    }
+    @if (itemId && pathExt !== 'history') {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'history']" i18n="View history">
                 Versionsverlauf ansehen
             </button>
-        </li>
-        <li class="menu-item" *ngIf="itemId && pathExt !== 'neighbors'">
-            <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'neighbors']" i18n="Search neighbors">
+      </li>
+    }
+    @if (itemId && pathExt !== 'neighbors') {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[displayBaseLink, itemLinkPart, itemId, 'neighbors']" i18n="Search neighbors">
                 Nachbarn suchen
             </button>
-        </li>
-        <li class="menu-item" *ngIf="(userRole | async) > 0">
-            <button type="button" class="no-wrap" [routerLink]="[editBaseLink, 'import']" i18n="Import items">
+      </li>
+    }
+    @if ((userRole | async) > 0) {
+      <li class="menu-item">
+        <button type="button" class="no-wrap" [routerLink]="[editBaseLink, 'import']" i18n="Import items">
                 Items importieren
             </button>
-        </li>
-    </ul>
+      </li>
+    }
+  </ul>
 </div>

@@ -1,33 +1,47 @@
-<div class="list-container" *ngIf="(ready | async) && (room | async)">
+@if ((ready | async) && (room | async)) {
+  <div class="list-container">
     <div class="flex space-between" [ngClass]="{warning: (room | async).item.userIsResponsible === false, error: (room | async).building === '(n/a)'}">
-        <h1>
-            {{(room | async).name}}
-        </h1>
-        <button type="button" class="clickable" (click)="formOpen = true" *ngIf="(room | async).item?.userIsResponsible" i18n>Edit room</button>
-        <button type="button" class="clickable" (click)="takeResponsibility()" *ngIf="!(room | async).item?.userIsResponsible" i18n>Take responsiblity</button>
+      <h1>
+        {{(room | async).name}}
+      </h1>
+      @if ((room | async).item?.userIsResponsible) {
+        <button type="button" class="clickable" (click)="formOpen = true" i18n>Edit room</button>
+      }
+      @if (!(room | async).item?.userIsResponsible) {
+        <button type="button" class="clickable" (click)="takeResponsibility()" i18n>Take responsiblity</button>
+      }
     </div>
     <p>
-        <a [routerLink]="['/rooms']">
-            <ng-container i18n>Building</ng-container>: {{(room | async).building}}
-        </a>
+      <a [routerLink]="['/rooms']">
+        <ng-container i18n>Building</ng-container>: {{(room | async).building}}
+      </a>
     </p>
     <div class="list flex-row flex-wrap">
-        <div class="list-item clickable" *ngFor="let rack of (racks | async)" [ngClass]="{warning: !rack.item.userIsResponsible, error: !rack.model || !rack.heightUnits || rack.heightUnits < 1}"
-            role="button" [routerLink]="['/asset', 'rack', rack.id]">
-            <h2>
-                {{ rack.name }}
-            </h2>
-            <ul class="content-list">
-                <li class="content-list__element" *ngIf="(getEnclosuresInRack(rack) | async).length > 0">
-                    {{names.BladeEnclosure}}: {{(getEnclosuresInRack(rack) | async).length}}
-                </li>
-                <li class="content-list__element" *ngIf="(getServersInRack(rack) | async).length > 0">
-                    {{names.RackServerHardware}}: {{(getServersInRack(rack) | async).length}}
-                </li>
-            </ul>
+      @for (rack of (racks | async); track rack) {
+        <div class="list-item clickable" [ngClass]="{warning: !rack.item.userIsResponsible, error: !rack.model || !rack.heightUnits || rack.heightUnits < 1}"
+          role="button" [routerLink]="['/asset', 'rack', rack.id]">
+          <h2>
+            {{ rack.name }}
+          </h2>
+          <ul class="content-list">
+            @if ((getEnclosuresInRack(rack) | async).length > 0) {
+              <li class="content-list__element">
+                {{names.BladeEnclosure}}: {{(getEnclosuresInRack(rack) | async).length}}
+              </li>
+            }
+            @if ((getServersInRack(rack) | async).length > 0) {
+              <li class="content-list__element">
+                {{names.RackServerHardware}}: {{(getServersInRack(rack) | async).length}}
+              </li>
+            }
+          </ul>
         </div>
+      }
     </div>
-</div>
-<app-form-popup *ngIf="formOpen" (closed)="formOpen = false">
+  </div>
+}
+@if (formOpen) {
+  <app-form-popup (closed)="formOpen = false">
     <app-room-form [room]="(room | async)" (submitted)="onSubmit($event)" (deleted)="onDelete()"></app-room-form>
-</app-form-popup>
+  </app-form-popup>
+}

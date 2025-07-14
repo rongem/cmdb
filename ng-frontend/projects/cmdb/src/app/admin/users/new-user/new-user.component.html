@@ -1,61 +1,77 @@
 <div class="box">
-    <h2 i18n="Create user">Benutzer erstellen</h2>
-    <form [formGroup]="userForm">
-        <div class="form-container">
-            <label i18n="User name" for="username">Benutzername</label>
-            <input type="text" formControlName="userName" id="username" required class="selectable"
-                (input)="onTextChange($event.target)"
-                placeholder="Benutzername" i18n-placeholde="user name"/>
-            <!-- <mat-autocomplete #autoUser="matAutocomplete">
-                <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
-                    {{ user.accountName }}
-                </mat-option>
-            </mat-autocomplete> -->
+  <h2 i18n="Create user">Benutzer erstellen</h2>
+  <form [formGroup]="userForm">
+    <div class="form-container">
+      <label i18n="User name" for="username">Benutzername</label>
+      <input type="text" formControlName="userName" id="username" required class="selectable"
+        (input)="onTextChange($event.target)"
+        placeholder="Benutzername" i18n-placeholde="user name"/>
+        <!-- <mat-autocomplete #autoUser="matAutocomplete">
+        <mat-option *ngFor="let user of (userProposals | async)" [value]="user.accountName">
+          {{ user.accountName }}
+        </mat-option>
+      </mat-autocomplete> -->
+    </div>
+    <div class="form-container">
+      <label i18n="User role">Rolle (Rechte des Benutzers)</label>
+      <select formControlName="role" required class="selectable">
+        <option value="0" i18n="Reader">Leseberechtigung</option>
+        <option value="1" i18n="Editor">Editor (Schreibberechtigung)</option>
+        <option value="2" i18n="Administrator">Administrator</option>
+      </select>
+    </div>
+    <div class="form-container">
+      <label i18n="Password" for="password">Kennwort</label>
+      <input type="password" formControlName="password" id="password" autocomplete="new-password" required
+        class="selectable" placeholder="Kennwort" i18n-placeholder="Password"/>
+      </div>
+      <div class="form-container">
+        <label for="passwordRepeat" i18n="Repeat password">Kennwort wiederholen</label>
+        <input type="password" formControlName="passwordRepeat" id="passwordRepeat" required class="selectable"
+          placeholder="Kennwort wiederholen" i18n-placeholder="Repeat password"/>
         </div>
-        <div class="form-container">
-            <label i18n="User role">Rolle (Rechte des Benutzers)</label>
-            <select formControlName="role" required class="selectable">
-                <option value="0" i18n="Reader">Leseberechtigung</option>
-                <option value="1" i18n="Editor">Editor (Schreibberechtigung)</option>
-                <option value="2" i18n="Administrator">Administrator</option>
-            </select>
-        </div>
-        <div class="form-container">
-            <label i18n="Password" for="password">Kennwort</label>
-            <input type="password" formControlName="password" id="password" autocomplete="new-password" required
-                class="selectable" placeholder="Kennwort" i18n-placeholder="Password"/>
-        </div>
-        <div class="form-container">
-            <label for="passwordRepeat" i18n="Repeat password">Kennwort wiederholen</label>
-            <input type="password" formControlName="passwordRepeat" id="passwordRepeat" required class="selectable"
-                placeholder="Kennwort wiederholen" i18n-placeholder="Repeat password"/>
-            </div>
-    </form>
-    <div *ngIf="error" class="error">
-        <ng-container [ngSwitch]="error">
-            <p *ngSwitchCase="'Server validation error'" i18n="Server validation error">
+      </form>
+      @if (error) {
+        <div class="error">
+          @switch (error) {
+            @case ('Server validation error') {
+              <p i18n="Server validation error">
                 Der Server hat Fehler bei der Validierung der Regeln festgestellt.
             </p>
-            <p *ngSwitchDefault>
+            }
+            @default {
+              <p>
                 {{error}}
-            </p>
-        </ng-container>
-        <ul *ngIf="errorDetails">
-            <li *ngFor="let detail of errorDetails" [ngSwitch]="detail">
-                <ng-container *ngSwitchCase="'passphrase: Invalid value'" i18n="Password does not meet complexity criteria">
+              </p>
+            }
+          }
+          @if (errorDetails) {
+            <ul>
+              @for (detail of errorDetails; track detail) {
+                <li>
+                  @switch (detail) {
+                    @case ('passphrase: Invalid value') {
+                      <ng-container i18n="Password does not meet complexity criteria">
                     Das Kennwort entspricht nicht den Komplexitätskriterien.
                 </ng-container>
-                <ng-container *ngSwitchCase="'accountName: Cannot create a user with an already existing name.'" i18n="Cannot create a user with an already existing name">
+                    }
+                    @case ('accountName: Cannot create a user with an already existing name.') {
+                      <ng-container i18n="Cannot create a user with an already existing name">
                     Der Benutzername existiert schon bei einem anderen Benutzer.
                 </ng-container>
-                <ng-container *ngSwitchDefault>
-                    {{detail}}
-                </ng-container>
-            </li>
-        </ul>
-    </div>
-    <div>
+                    }
+                    @default {
+                      {{detail}}
+                    }
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+      <div>
         <button (click)="createUser()" [disabled]="userForm.invalid" i18n="Create user" class="selectable">Benutzer erstellen</button>
         <button i18n="Cancel" class="selectable">Abbrechen</button>
+      </div>
     </div>
-</div>

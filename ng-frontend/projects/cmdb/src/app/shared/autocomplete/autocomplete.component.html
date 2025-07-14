@@ -1,9 +1,13 @@
 <ng-template #root>
-    <div class="autocomplete" *ngIf="content">
+  @if (content) {
+    <div class="autocomplete">
       <ng-container *ngTemplateOutlet="content.tpl"></ng-container>
     </div>
-    <div *ngIf="!content">
+  }
+  @if (!content) {
+    <div>
       Nix da
     </div>
+  }
 </ng-template>
 

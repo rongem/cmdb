@@ -1,338 +1,448 @@
-<app-busy *ngIf="busy" i18n="analyzing">Analysiere...</app-busy>
+@if (busy) {
+  <app-busy i18n="analyzing">Analysiere...</app-busy>
+}
 <h1 class="page-title" i18n="Import configuration items">Configuration Items importieren</h1>
-<form [formGroup]="form" (submit)="onSubmit()" *ngIf="!resultList">
-    <table class="table" *ngIf="!fileContent">
+@if (!resultList) {
+  <form [formGroup]="form" (submit)="onSubmit()">
+    @if (!fileContent) {
+      <table class="table">
         <thead>
-            <tr>
-                <th colspan="2" i18n="Common settings">Allgemeine Einstellungen</th>
-            </tr>
+          <tr>
+            <th colspan="2" i18n="Common settings">Allgemeine Einstellungen</th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    <label for="itemType" i18n="Item type to import">Typ der zu importierenden Items: </label>
-                </td>
-                <td>
-                    <select name="type" id="itemType" formControlName="itemTypeId">
-                        <option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id">
-                            {{itemType.name}}
-                        </option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <th colspan="2" i18n="Additional elements to import">Welche weiteren Elemente sollen importiert werden?</th>
-            </tr>
-            <tr>
-                <td>
-                    <label for="attributes" i18n="Attributes">Attribute</label>
-                </td>
-                <td>
-                    <input type="checkbox" id="attributes" name="attributes" formControlName="attributes">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="connectionsToLower" i18n="Downward connections">Verbindungen nach unten</label>
-                </td>
-                <td>
-                    <input type="checkbox" id="connectionsToLower" name="connectionsToLower" formControlName="connectionsToLower">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="connectionsToUpper" i18n="Downward connections">Verbindungen nach oben</label>
-                </td>
-                <td>
-                    <input type="checkbox" id="connectionsToUpper" name="connectionsToUpper" formControlName="connectionsToUpper">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="links" i18n="Links">Hyperlinks</label>
-                </td>
-                <td>
-                    <input type="checkbox" id="links" name="links" formControlName="links">
-                </td>
-            </tr>
-            <tr>
-                <th colspan="2" i18n="more settings">Weitere Einstellungen</th>
-            </tr>
-            <tr>
-                <td>
-                    <label for="ignoreExisting">
-                        <ng-container i18n="ignore item names that already exist">
+          <tr>
+            <td>
+              <label for="itemType" i18n="Item type to import">Typ der zu importierenden Items: </label>
+            </td>
+            <td>
+              <select name="type" id="itemType" formControlName="itemTypeId">
+                @for (itemType of (itemTypes | async); track itemType) {
+                  <option [value]="itemType.id">
+                    {{itemType.name}}
+                  </option>
+                }
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" i18n="Additional elements to import">Welche weiteren Elemente sollen importiert werden?</th>
+          </tr>
+          <tr>
+            <td>
+              <label for="attributes" i18n="Attributes">Attribute</label>
+            </td>
+            <td>
+              <input type="checkbox" id="attributes" name="attributes" formControlName="attributes">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="connectionsToLower" i18n="Downward connections">Verbindungen nach unten</label>
+            </td>
+            <td>
+              <input type="checkbox" id="connectionsToLower" name="connectionsToLower" formControlName="connectionsToLower">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="connectionsToUpper" i18n="Downward connections">Verbindungen nach oben</label>
+            </td>
+            <td>
+              <input type="checkbox" id="connectionsToUpper" name="connectionsToUpper" formControlName="connectionsToUpper">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="links" i18n="Links">Hyperlinks</label>
+            </td>
+            <td>
+              <input type="checkbox" id="links" name="links" formControlName="links">
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" i18n="more settings">Weitere Einstellungen</th>
+          </tr>
+          <tr>
+            <td>
+              <label for="ignoreExisting">
+                <ng-container i18n="ignore item names that already exist">
                             CIs, deren Namen bereits vorhanden ist, sollen ignoriert werden.
                         </ng-container>
-                        <span class="visually-hidden" i18n="only CIs are created, if the name does not exist. if it does, nothing will be changed">
+                <span class="visually-hidden" i18n="only CIs are created, if the name does not exist. if it does, nothing will be changed">
                             Es werden nur neue CIs angelegt, vorhandene werden nicht ver&auml;ndert, wenn diese Option gew&auml;hlt ist.
                         </span>
-                    </label>
-                </td>
-                <td>
-                    <input type="checkbox" id="ignoreExisting" formControlName="ignoreExisting">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="headlines">
-                        <ng-container i18n="The first line of the file contains column headers">
+              </label>
+            </td>
+            <td>
+              <input type="checkbox" id="ignoreExisting" formControlName="ignoreExisting">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="headlines">
+                <ng-container i18n="The first line of the file contains column headers">
                             Die erste Zeile der Datei enth&auml;lt die Spalten&uuml;berschriften.
                         </ng-container>
-                        <span class="visually-hidden" i18n="The column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file">
+                <span class="visually-hidden" i18n="The column headers will be compared with the name of the elements (e.g. attributes and connections) for a quicker re-import of an exported file">
                             Die Spalten&uuml;berschriften werden mit den Namen der Elemente (z. B. Attribute und Verbindungen) verglichen und bei &Uuml;bereinstimmung zugeordnet.
                             So kann eine exportierte Datei schnell wieder importiert werden.
                         </span>
-                    </label>
-                </td>
-                <td>
-                    <input type="checkbox" id="headlines" formControlName="headlines">
-                </td>
-            </tr>
-            <tr *ngIf="form.get('itemTypeId').valid">
-                <td>
-                    <label class="mat-button" for="file">
-                        <ng-container i18n="Choose file">
+              </label>
+            </td>
+            <td>
+              <input type="checkbox" id="headlines" formControlName="headlines">
+            </td>
+          </tr>
+          @if (form.get('itemTypeId').valid) {
+            <tr>
+              <td>
+                <label class="mat-button" for="file">
+                  <ng-container i18n="Choose file">
                             Datei ausw&auml;hlen
                         </ng-container>
-                        <div class="mat-button-focus-overlay"></div>
-                    </label>
+                  <div class="mat-button-focus-overlay"></div>
+                </label>
+              </td>
+              <td>
+                <input class="inputfile" type="file" id="file" #file formControlName="file"
+                  (change)="handleFileInput($event.target)" class="selectable">
                 </td>
-                <td>
-                    <input class="inputfile" type="file" id="file" #file formControlName="file"
-                        (change)="handleFileInput($event.target)" class="selectable">
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table" *ngIf="fileContent && !dataTable">
-        <thead>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if (fileContent && !dataTable) {
+        <table class="table">
+          <thead>
             <tr>
-                <th i18n="Item type">Item-Typ</th>
-                <th>{{(selectedItemType | async).name}}</th>
+              <th i18n="Item type">Item-Typ</th>
+              <th>{{(selectedItemType | async).name}}</th>
             </tr>
-        </thead>
-        <tbody *ngIf="!sheet">
-            <tr>
+          </thead>
+          @if (!sheet) {
+            <tbody>
+              <tr>
                 <th colspan="2" i18n="Select sheet">Tabellenblatt ausw&auml;hlen</th>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td>
-                    <label for="sheetIndex" i18n="Sheet">Tabellenblatt</label>
+                  <label for="sheetIndex" i18n="Sheet">Tabellenblatt</label>
                 </td>
                 <td>
-                    <select id="sheetIndex" name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
-                        <option *ngFor="let sheet of fileContent.sheets; let i = index" [value]="i">{{sheet.name}}</option>
-                    </select>
-                    <button type="button" (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
+                  <select id="sheetIndex" name="sheetIndex" [(ngModel)]="sheetIndex" [ngModelOptions]="{standalone: true}">
+                    @for (sheet of fileContent.sheets; track sheet; let i = $index) {
+                      <option [value]="i">{{sheet.name}}</option>
+                    }
+                  </select>
+                  <button type="button" (click)="onSelectSheet(sheetIndex)" [disabled]="!fileContent.sheets[sheetIndex]">Ausw&auml;hlen</button>
                 </td>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <th colspan="2" i18n="Data preview">Vorschau auf die Daten</th>
-            </tr>
-            <tr>
+              </tr>
+              <tr>
                 <td colspan="2">
-                    <table class="box-body__sub" *ngIf="fileContent.sheets[sheetIndex]" style="width: 100%;">
-                        <tr *ngFor="let line of previewLines; let i = index">
-                            <td>{{i}}</td>
-                            <td *ngFor="let cell of getPreviewCells(line)">{{cell}}</td>
-                            <td *ngIf="line.length > 5">...</td>
+                  @if (fileContent.sheets[sheetIndex]) {
+                    <table class="box-body__sub" style="width: 100%;">
+                      @for (line of previewLines; track line; let i = $index) {
+                        <tr>
+                          <td>{{i}}</td>
+                          @for (cell of getPreviewCells(line); track cell) {
+                            <td>{{cell}}</td>
+                          }
+                          @if (line.length > 5) {
+                            <td>...</td>
+                          }
                         </tr>
-                        <tr *ngIf="fileContent.sheets[sheetIndex].lines.length > 5"><td>....</td></tr>
+                      }
+                      @if (fileContent.sheets[sheetIndex].lines.length > 5) {
+                        <tr><td>....</td></tr>
+                      }
                     </table>
+                  }
                 </td>
-            </tr>
-        </tbody>
-        <tbody *ngIf="sheet && !dataTable">
-            <tr>
+              </tr>
+            </tbody>
+          }
+          @if (sheet && !dataTable) {
+            <tbody>
+              <tr>
                 <th colspan="2" i18n="Column mappings">Spaltenzuordnungen</th>
-            </tr>
-            <tr formArrayName="columns" *ngFor="let name of columnNames; let i = index">
-                <td>
+              </tr>
+              @for (name of columnNames; track name; let i = $index) {
+                <tr formArrayName="columns">
+                  <td>
                     <label [for]="i">({{i}}) {{name}}: </label>
-                </td>
-                <td>
+                  </td>
+                  <td>
                     <select [id]="i" [formControlName]="i">
-                        <option *ngFor="let keyvalue of (targetColumns | async)" [value]="keyvalue.key">
-                            {{keyvalue.value}}
+                      @for (keyvalue of (targetColumns | async); track keyvalue) {
+                        <option [value]="keyvalue.key">
+                          {{keyvalue.value}}
                         </option>
+                      }
                     </select>
-                </td>
-            </tr>
-            <tr>
+                  </td>
+                </tr>
+              }
+              <tr>
                 <td>
-                    <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
+                  <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
                 </td>
                 <td>
-                    <button type="button" i18n="Continue" [disabled]="form.invalid" class="selectable"
-                        (click)="onContinue()">
+                  <button type="button" i18n="Continue" [disabled]="form.invalid" class="selectable"
+                    (click)="onContinue()">
                         Weiter
                     </button>
                 </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table" *ngIf="dataTable && dataTable.rows.length > 0">
-        <tr>
+              </tr>
+            </tbody>
+          }
+        </table>
+      }
+      @if (dataTable && dataTable.rows.length > 0) {
+        <table class="table">
+          <tr>
             <th [colSpan]="dataTable.columns.length" i18n="Elements that can be imported">Zu importierende Elemente</th>
-        </tr>
-        <tr>
-            <th *ngFor="let column of columns">
+          </tr>
+          <tr>
+            @for (column of columns; track column) {
+              <th>
                 {{column.caption}}
-            </th>
-        </tr>
-        <tr *ngFor="let row of dataTable.rows">
-            <td *ngFor="let column of columns; let i = index">
-                {{row[i]}}
-            </td>
-        </tr>
-    </table>
-    <div *ngIf="dataTable">
-        <ng-container *ngIf="errorList.length > 0">
+              </th>
+            }
+          </tr>
+          @for (row of dataTable.rows; track row) {
+            <tr>
+              @for (column of columns; track column; let i = $index) {
+                <td>
+                  {{row[i]}}
+                </td>
+              }
+            </tr>
+          }
+        </table>
+      }
+      @if (dataTable) {
+        <div>
+          @if (errorList.length > 0) {
             <h3 i18n="problems found">
                 Erkannte Probleme
             </h3>
             <table class="table">
-                <thead>
-                    <tr>
-                        <th i18n="Line">Zeile</th>
-                        <th i18n="Error message">Fehlermeldung</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let entry of errorList">
-                        <td>
-                            {{entry.index + 1}}
-                        </td>
-                        <td>
-                            <ng-container [ngSwitch]="entry.message">
-                                <span *ngSwitchCase="'existing item ignored'" i18n="Existing item ignored">
+              <thead>
+                <tr>
+                  <th i18n="Line">Zeile</th>
+                  <th i18n="Error message">Fehlermeldung</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (entry of errorList; track entry) {
+                  <tr>
+                    <td>
+                      {{entry.index + 1}}
+                    </td>
+                    <td>
+                      @switch (entry.message) {
+                        @case ('existing item ignored') {
+                          <span i18n="Existing item ignored">
                                     Ein Item mit diesem Namen existiert bereits. Entsprechend der Einstellung wird die Zeile ignoriert.
                                 </span>
-                                <span *ngSwitchCase="'Ignoring line with empty name.'" i18n="ignoring line with empty name">
+                        }
+                        @case ('Ignoring line with empty name.') {
+                          <span i18n="ignoring line with empty name">
                                     Der Name des Items darf nicht leer sein. Die Zeile wird ignoriert.
                                 </span>
-                                <span *ngSwitchCase="'Ignoring line with duplicate name.'" i18n="ignoring line with duplicate name">
+                        }
+                        @case ('Ignoring line with duplicate name.') {
+                          <span i18n="ignoring line with duplicate name">
                                     Der Name des Items ist mehrfach vorhanden. Die Zeile wird ignoriert.
                                 </span>
-                                <span *ngSwitchCase="'No item matches this name and type.'" i18n="No item matches this name and type">
+                        }
+                        @case ('No item matches this name and type.') {
+                          <span i18n="No item matches this name and type">
                                     Ein Item mit diesem Namen wurde nicht gefunden.
                                 </span>
-                            </ng-container>
-                        </td>
-                    </tr>                    
-                </tbody>
+                        }
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
             </table>
-        </ng-container>
-        <div *ngIf="dataTable.rows.length === 0" class="red"
-            i18n="There are no lines to import. Please retry with another file or other settings.">
+          }
+          @if (dataTable.rows.length === 0) {
+            <div class="red"
+              i18n="There are no lines to import. Please retry with another file or other settings.">
             Es gibt keine Zeilen zum Importieren. Bitte versuchen Sie es mit einer anderen Datei oder anderen Einstellungen.
         </div>
-        <div class="margin">
+          }
+          <div class="margin">
             <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Zur&uuml;ck</button>
             <button type="submit" i18n="Import items" [disabled]="form.invalid || dataTable.rows.length === 0" class="selectable">
                 Items importieren
             </button>
+          </div>
         </div>
-    </div>
-</form>
-<div *ngIf="resultList">
-    <div *ngIf="errorsInResults" class="red" i18n="Errors encountered. Please check log">
+      }
+    </form>
+  }
+  @if (resultList) {
+    <div>
+      @if (errorsInResults) {
+        <div class="red" i18n="Errors encountered. Please check log">
         Es sind Fehler aufgetreten. Bitte pr&uuml;fen Sie das Protokoll.
     </div>
-    <table class="table">
+      }
+      <table class="table">
         <thead>
-            <tr>
-                <th i18n="Line">Zeile</th>
-                <th i18n="Subject">Betroffenes Item</th>
-                <th i18n="Severity">Kategorie</th>
-                <th i18n="message">Meldung</th>
-                <th i18n="Details">Details</th>
-            </tr>
+          <tr>
+            <th i18n="Line">Zeile</th>
+            <th i18n="Subject">Betroffenes Item</th>
+            <th i18n="Severity">Kategorie</th>
+            <th i18n="message">Meldung</th>
+            <th i18n="Details">Details</th>
+          </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let entry of resultList">
-                <td>
-                    {{entry.index + 1}}
-                </td>
-                <td>
-                    {{entry.subject}}
-                </td>
-                <td>
-                    <ng-container [ngSwitch]="entry.severity">
-                        <span *ngSwitchCase="1" i18n="Warning">Warnhinweis</span>
-                        <span *ngSwitchCase="2" i18n="Error">Fehler</span>
-                        <span *ngSwitchCase="3" i18n="Fatal">Abbruch</span>
-                        <span *ngSwitchDefault i18n="Info">Information</span>
-                    </ng-container>
-                </td>
-                <td>
-                    <ng-container [ngSwitch]="entry.message">
-                        <span *ngSwitchCase="'No lines in table.'" i18n="table contains no rows">
+          @for (entry of resultList; track entry) {
+            <tr>
+              <td>
+                {{entry.index + 1}}
+              </td>
+              <td>
+                {{entry.subject}}
+              </td>
+              <td>
+                @switch (entry.severity) {
+                  @case (1) {
+                    <span i18n="Warning">Warnhinweis</span>
+                  }
+                  @case (2) {
+                    <span i18n="Error">Fehler</span>
+                  }
+                  @case (3) {
+                    <span i18n="Fatal">Abbruch</span>
+                  }
+                  @default {
+                    <span i18n="Info">Information</span>
+                  }
+                }
+              </td>
+              <td>
+                @switch (entry.message) {
+                  @case ('No lines in table.') {
+                    <span i18n="table contains no rows">
                             Die Tabelle ent&auml;t keine Zeilen.
                         </span>
-                        <span *ngSwitchCase="'server error'" i18n="Server error">Fehler auf dem Server</span>
-                        <span *ngSwitchCase="'error'" i18n="general error">Allgemeiner Fehler</span>
-                        <span *ngSwitchCase="'Updated item.'" i18n="Updated existing item">
+                  }
+                  @case ('server error') {
+                    <span i18n="Server error">Fehler auf dem Server</span>
+                  }
+                  @case ('error') {
+                    <span i18n="general error">Allgemeiner Fehler</span>
+                  }
+                  @case ('Updated item.') {
+                    <span i18n="Updated existing item">
                             Das vorhandene Configuration Item wurde aktualisiert.
                         </span>
-                        <span *ngSwitchCase="'New item created.'" i18n="Created new item">
+                  }
+                  @case ('New item created.') {
+                    <span i18n="Created new item">
                             Ein neues Configuration Item wurde erzeugt.
                         </span>
-                        <span *ngSwitchCase="'No valid attribute value.'" i18n="Attribute value does not comply to the validation rule">
+                  }
+                  @case ('No valid attribute value.') {
+                    <span i18n="Attribute value does not comply to the validation rule">
                             Der Attributwert entspricht nicht den Validierungsregeln.
                         </span>
-                        <span *ngSwitchCase="'Attribute type is not allowed for this item type.'" i18n="Attribute type is not allowed for this item type">
+                  }
+                  @case ('Attribute type is not allowed for this item type.') {
+                    <span i18n="Attribute type is not allowed for this item type">
                             Der Attributtyp darf f&uuml;r diesen Item-Typ nicht verwendet werden.
                         </span>
-                        <span *ngSwitchCase="'Updated connection description.'" i18n="Updated connection description">
+                  }
+                  @case ('Updated connection description.') {
+                    <span i18n="Updated connection description">
                             Die Beschreibung der Verbindung wurde aktualisiert.
                         </span>
-                        <span *ngSwitchCase="'No valid description.'" i18n="The description does not match the validation criteria">
+                  }
+                  @case ('No valid description.') {
+                    <span i18n="The description does not match the validation criteria">
                             Die Beschreibung entspricht nicht den Validierungsregeln.
                         </span>
-                        <span *ngSwitchCase="'Created connection.'" i18n="Connection was created">
+                  }
+                  @case ('Created connection.') {
+                    <span i18n="Connection was created">
                             Die Verbindung wurde angelegt.
                         </span>
-                        <span *ngSwitchCase="'The maximum number of connections is reached. No more connections for the upper item are allowed.'"
-                            i18n="The maximum number of connections is reached. No more connections for the upper item are allowed">
+                  }
+                  @case ('The maximum number of connections is reached. No more connections for the upper item are allowed.') {
+                    <span
+                      i18n="The maximum number of connections is reached. No more connections for the upper item are allowed">
                             Die maximale Anzahl an Verbindungen f&uuml;r das obere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt.
                         </span>
-                        <span *ngSwitchCase="'The maximum number of connections is reached. No more connections for the lower item are allowed.'"
-                            i18n="The maximum number of connections is reached. No more connections for the lower item are allowed">
+                  }
+                  @case ('The maximum number of connections is reached. No more connections for the lower item are allowed.') {
+                    <span
+                      i18n="The maximum number of connections is reached. No more connections for the lower item are allowed">
                             Die maximale Anzahl an Verbindungen f&uuml;r das untere Configuration Item wurden erreich. Keine weiteren Verbindungen erlaubt.
                         </span>
-                        <span *ngSwitchCase="'no valid url'" i18n="No valid url given">
+                  }
+                  @case ('no valid url') {
+                    <span i18n="No valid url given">
                             Die angegebene URL ist nicht g&uuml;ltig.
                         </span>
-                        <span *ngSwitchCase="'hyperlink created'" i18n="hyperlink created">Hyperlink erzeugt</span>
-                        <span *ngSwitchCase="'error creating hyperlink'" i18n="Error while creating hyperlink">
+                  }
+                  @case ('hyperlink created') {
+                    <span i18n="hyperlink created">Hyperlink erzeugt</span>
+                  }
+                  @case ('error creating hyperlink') {
+                    <span i18n="Error while creating hyperlink">
                             Fehler beim Erstellen des Hyperlinks
                         </span>
-                        <span *ngSwitchCase="'connection created'" i18n="Connection created">Verbindung erzeugt</span>
-                        <span *ngSwitchCase="'error creating connection'" i18n="Error creating connection">
+                  }
+                  @case ('connection created') {
+                    <span i18n="Connection created">Verbindung erzeugt</span>
+                  }
+                  @case ('error creating connection') {
+                    <span i18n="Error creating connection">
                             Fehler beim Erzeugen der Verbindung
                         </span>
-                        <span *ngSwitchCase="'skipping existing connection'" i18n="Skipping existing connection">
+                  }
+                  @case ('skipping existing connection') {
+                    <span i18n="Skipping existing connection">
                             Die bereits existierende Verbindung wurde nicht ver&auml;ndert.
                         </span>
-                        <span *ngSwitchCase="'changed connection description'" i18n="Changed connection description">
+                  }
+                  @case ('changed connection description') {
+                    <span i18n="Changed connection description">
                             Verbindungsbeschreibung wurde ge&auml;ndert.
                         </span>
-                        <span *ngSwitchCase="'error changing connection'" i18n="Error while changing connection">
+                  }
+                  @case ('error changing connection') {
+                    <span i18n="Error while changing connection">
                             Fehler beim Ver&auml;ndern der Verbindung
                         </span>
-                        <span *ngSwitchDefault>
-                            <ng-container i18n="Error message">Fehlermeldung: </ng-container>
-                            {{entry.message}}
-                        </span>
-                    </ng-container>
-                </td>
-                <td>
-                    {{entry.details}}
-                </td>
+                  }
+                  @default {
+                    <span>
+                      <ng-container i18n="Error message">Fehlermeldung: </ng-container>
+                      {{entry.message}}
+                    </span>
+                  }
+                }
+              </td>
+              <td>
+                {{entry.details}}
+              </td>
             </tr>
+          }
         </tbody>
-    </table>
-    <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
-</div>
+      </table>
+      <button type="button" i18n="Go back" (click)="onBackToFirst()" class="selectable">Neuer Import</button>
+    </div>
+  }

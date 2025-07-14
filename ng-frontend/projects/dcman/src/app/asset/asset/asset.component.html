@@ -1,49 +1,65 @@
 <div class="list-container">
-    <h1 class="headline"><ng-container i18n>Asset management</ng-container> - {{assetTypeName}}</h1>
-    <div class="list flex-column">
-        <div class="list-item error" *ngIf="(assetsWithoutModel | async).length > 0">
-            <h2>{{assetTypeName}}<ng-container i18n>s without </ng-container>{{modelName}}</h2>
-            <div class="list flexrow flex-wrap">
-                <div class="list-item clickable error relative" *ngFor="let asset of (assetsWithoutModel | async)" (click)="selectAsset(asset)">
-                    <h3>{{asset.name}}</h3>
-                    <p>
-                        {{asset.statusName}}
-                    </p>
-                    <p class="list-item__warning" *ngIf="!asset.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
-                </div>
+  <h1 class="headline"><ng-container i18n>Asset management</ng-container> - {{assetTypeName}}</h1>
+  <div class="list flex-column">
+    @if ((assetsWithoutModel | async).length > 0) {
+      <div class="list-item error">
+        <h2>{{assetTypeName}}<ng-container i18n>s without </ng-container>{{modelName}}</h2>
+        <div class="list flexrow flex-wrap">
+          @for (asset of (assetsWithoutModel | async); track asset) {
+            <div class="list-item clickable error relative" (click)="selectAsset(asset)">
+              <h3>{{asset.name}}</h3>
+              <p>
+                {{asset.statusName}}
+              </p>
+              @if (!asset.item.userIsResponsible) {
+                <p class="list-item__warning" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
+              }
             </div>
+          }
         </div>
-        <ng-container *ngFor="let model of (models | async)">
-            <div class="list-item">
-                <div class="flex-row space-between">
-                    <div>
-                        <h2>{{model.name}}</h2>
-                        <p *ngIf="model.manufacturer && model.manufacturer !== ''">{{model.manufacturer}}</p>
-                    </div>
-                    <div>
-                        <button type="button" (click)="this.selectedModel = model" i18n>Create</button>
-                    </div>
-                </div>
-                <div class="list flex-row flex-wrap">
-                    <div class="list-item clickable relative"
-                        *ngFor="let asset of (getAssetsForModel(model) | async)" (click)="selectAsset(asset)">
-                        <h3>{{asset.name}}</h3>
-                        <p>
-                            {{asset.statusName}}
-                        </p>
-                        <p class="list-item__warning" *ngIf="!asset.item.userIsResponsible" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
-                    </div>
-                </div>
+      </div>
+    }
+    @for (model of (models | async); track model) {
+      <div class="list-item">
+        <div class="flex-row space-between">
+          <div>
+            <h2>{{model.name}}</h2>
+            @if (model.manufacturer && model.manufacturer !== '') {
+              <p>{{model.manufacturer}}</p>
+            }
+          </div>
+          <div>
+            <button type="button" (click)="this.selectedModel = model" i18n>Create</button>
+          </div>
+        </div>
+        <div class="list flex-row flex-wrap">
+          @for (asset of (getAssetsForModel(model) | async); track asset) {
+            <div class="list-item clickable relative"
+              (click)="selectAsset(asset)">
+              <h3>{{asset.name}}</h3>
+              <p>
+                {{asset.statusName}}
+              </p>
+              @if (!asset.item.userIsResponsible) {
+                <p class="list-item__warning" i18n>You are not responsible. By clicking you will take responsibility for this item.</p>
+              }
             </div>
-        </ng-container>
-    </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
 </div>
 
-<app-form-popup *ngIf="selectedAsset" (closed)="selectedAsset = undefined">
+@if (selectedAsset) {
+  <app-form-popup (closed)="selectedAsset = undefined">
     <app-asset-form [asset]="selectedAsset" (submitted)="onSubmitUpdated($event)"></app-asset-form>
-</app-form-popup>
+  </app-form-popup>
+}
 
-<app-form-popup *ngIf="selectedModel" (closed)="selectedModel = undefined">
+@if (selectedModel) {
+  <app-form-popup (closed)="selectedModel = undefined">
     <app-create-asset-form [model]="selectedModel" [existingNames]="(existingAssetNames | async)" (submitted)="onSubmitCreated($event)"></app-create-asset-form>
-</app-form-popup>
+  </app-form-popup>
+}
 

@@ -1,10 +1,12 @@
 <div class="list-item clickable"
-    [ngClass]="{error: (isModelIncomplete(model.id) | async), selected: formOpen === true}"
-    (click)="formOpen=true">
-    <h4>{{model.name}}</h4>
-    <p>{{model.manufacturer}}</p>
+  [ngClass]="{error: (isModelIncomplete(model.id) | async), selected: formOpen === true}"
+  (click)="formOpen=true">
+  <h4>{{model.name}}</h4>
+  <p>{{model.manufacturer}}</p>
 </div>
 
-<app-form-popup *ngIf="formOpen" (closed)="formOpen = false">
+@if (formOpen) {
+  <app-form-popup (closed)="formOpen = false">
     <app-model-form [model]="model" [itemType]="itemType" (submitted)="onSubmit($event)" (deleted)="onDelete()"></app-model-form>
-</app-form-popup>
+  </app-form-popup>
+}

@@ -6,17 +6,18 @@
   </div>
   <nav class="page-header__nav">
     <ul class="header-nav__items">
-      <li *ngIf="(userName | async)?.length > 0" appClickOpen>
-        <button class="dropdown-toggle" class="selectable flex-horizontal__align-middle">
-          <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
-          <span i18n="account">Konto</span>
-        </button>
-        <ul class="dropdown-menu">
+      @if ((userName | async)?.length > 0) {
+        <li appClickOpen>
+          <button class="dropdown-toggle" class="selectable flex-horizontal__align-middle">
+            <img src="assets/images/user.png" alt="Benutzer" i18n-alt="user">
+            <span i18n="account">Konto</span>
+          </button>
+          <ul class="dropdown-menu">
             <li>
               <ng-container i18n="User name">Benutzer: </ng-container><b> {{(userName | async)}}</b>
             </li>
             <li><app-role-display [role]="(userRole | async)"></app-role-display></li>
-            <ng-container *ngIf="logoutPossible">
+            @if (logoutPossible) {
               <li>{{(remainingTime | async)}} </li>
               <li>
                 <button role="button" (click)="onChangePassword()" [routerLink]="['account', 'password']" i18n="Change password" class="selectable">
@@ -28,9 +29,10 @@
                   Abmelden
                 </button>
               </li>
-            </ng-container>
-        </ul>
-    </li>
+            }
+          </ul>
+        </li>
+      }
     </ul>
   </nav>
 </header>

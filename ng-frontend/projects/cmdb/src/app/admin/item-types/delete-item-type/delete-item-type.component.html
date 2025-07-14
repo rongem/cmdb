@@ -1,53 +1,69 @@
 <div class="box">
-    <h1>
-        <ng-container i18n="Delete item type">L&ouml;schen des Item-Typs </ng-container>{{itemType.name}}
-    </h1>
-    <app-busy *ngIf="!items" i18n="Loading data...">
+  <h1>
+    <ng-container i18n="Delete item type">L&ouml;schen des Item-Typs </ng-container>{{itemType.name}}
+  </h1>
+  @if (!items) {
+    <app-busy i18n="Loading data...">
         Lade Daten...
     </app-busy>
-    <div *ngIf="items && items.length > 0">
-        <p class="red">
-            <ng-container i18n="You cannot delete the item type, because ">
+  }
+  @if (items && items.length > 0) {
+    <div>
+      <p class="red">
+        <ng-container i18n="You cannot delete the item type, because ">
                 Bevor Sie den Item-Typen l&ouml;schen k&ouml;nnen, m&uuml;ssen Sie 
             </ng-container>
-            {{items?.length}} 
-            <ng-container i18n=" configuration items have to be deleted before">
+        {{items?.length}}
+        <ng-container i18n=" configuration items have to be deleted before">
                 Configuration Items dieses Typs l&ouml;schen.
             </ng-container>
-        </p>
-        <ul class="item-types__list">
-            <li *ngFor="let item of items">
-                <a [routerLink]="['display', 'configuration-item', item.id]">
-                    {{item.name}}
-                </a>
-            </li>
-        </ul>
+      </p>
+      <ul class="item-types__list">
+        @for (item of items; track item) {
+          <li>
+            <a [routerLink]="['display', 'configuration-item', item.id]">
+              {{item.name}}
+            </a>
+          </li>
+        }
+      </ul>
     </div>
-    <div *ngIf="items && items.length === 0">
-        <p i18n="If you continue, you are also deleting">
+  }
+  @if (items && items.length === 0) {
+    <div>
+      <p i18n="If you continue, you are also deleting">
             Wenn Sie diesen Item-Typ l&ouml;schen, dann wird folgendes ebenfalls gel&ouml;scht:
         </p>
-        <ul>
-            <li *ngIf="attributeGroups?.length > 0">
-                {{attributeGroups?.length}}
-                <ng-container i18n="mapped attribute groups with "> zugeordnete Attributgruppen mit </ng-container>
-                {{(attributeTypes | async)?.length}}
-                <ng-container i18n="Attribute types">Attributtypen</ng-container>
-            </li>
-            <li *ngIf="countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0">
-                    {{countRules((connectionRulesToLower | async), 
-                        (connectionRulesToUpper | async))}} 
-                <ng-container i18n="Connection rules">Verbindungsregeln</ng-container>
-            </li>
-        </ul>
-        <p i18n="Are you sure you want to proceed?">
+      <ul>
+        @if (attributeGroups?.length > 0) {
+          <li>
+            {{attributeGroups?.length}}
+            <ng-container i18n="mapped attribute groups with "> zugeordnete Attributgruppen mit </ng-container>
+            {{(attributeTypes | async)?.length}}
+            <ng-container i18n="Attribute types">Attributtypen</ng-container>
+          </li>
+        }
+        @if (countRules((connectionRulesToLower | async), (connectionRulesToUpper | async)) > 0) {
+          <li>
+            {{countRules((connectionRulesToLower | async),
+            (connectionRulesToUpper | async))}}
+            <ng-container i18n="Connection rules">Verbindungsregeln</ng-container>
+          </li>
+        }
+      </ul>
+      <p i18n="Are you sure you want to proceed?">
             Sind Sie sicher, dass Sie das wollen?
         </p>
     </div>
-    <div *ngIf="items">
-        <button type="button" i18n="Cancel" class="selectable" (click)="routeToItemTypes()">Abbrechen</button>
-        <button type="button" i18n="Delete" class="selectable red" *ngIf="items?.length === 0" (click)="onDeleteItemType()">
+  }
+  @if (items) {
+    <div>
+      <button type="button" i18n="Cancel" class="selectable" (click)="routeToItemTypes()">Abbrechen</button>
+      @if (items?.length === 0) {
+        <button type="button" i18n="Delete" class="selectable red" (click)="onDeleteItemType()">
             L&ouml;schen
         </button>
+      }
     </div>
+  }
 </div>

@@ -1,18 +1,24 @@
-<div class="list-container" *ngFor="let building of (buildings | async)">
+@for (building of (buildings | async); track building) {
+  <div class="list-container">
     <div class="flex space-between" [ngClass]="{error: building === '(n/a)'}">
-        <h1>{{building}}</h1>
-        <button type="button" class="clickable" (click)="currentBuilding = building" i18n>
+      <h1>{{building}}</h1>
+      <button type="button" class="clickable" (click)="currentBuilding = building" i18n>
             Create new room
         </button>
-        <app-form-popup *ngIf="currentBuilding === building" (closed)="currentBuilding = ''">
-            <app-room-form [building]="building" (submitted)="onCreateRoom($event)"></app-room-form>
+      @if (currentBuilding === building) {
+        <app-form-popup (closed)="currentBuilding = ''">
+          <app-room-form [building]="building" (submitted)="onCreateRoom($event)"></app-room-form>
         </app-form-popup>
+      }
     </div>
     <div class="list flex-row flex-wrap">
-        <div class="list-item clickable" *ngFor="let room of (getRoomsByBuilding(building) | async)"
-            role="button" [routerLink]="['/room', room.id]">
-            <h2>{{room.name}}</h2>
-            <div>Racks: {{(getRacksInRoom(room) | async).length}}</div>
+      @for (room of (getRoomsByBuilding(building) | async); track room) {
+        <div class="list-item clickable"
+          role="button" [routerLink]="['/room', room.id]">
+          <h2>{{room.name}}</h2>
+          <div>Racks: {{(getRacksInRoom(room) | async).length}}</div>
         </div>
+      }
     </div>
-</div>
+  </div>
+}

@@ -1,48 +1,66 @@
 <div class="flex" [@turnIn]>
-    <div class="item-boxes" *ngIf="expand && item.level <= 0">
-        <div class="item-box line-below bottom" *ngFor="let graphItem of (itemsAbove | async)">
-            <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
+  @if (expand && item.level <= 0) {
+    <div class="item-boxes">
+      @for (graphItem of (itemsAbove | async); track graphItem) {
+        <div class="item-box line-below bottom">
+          <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
         </div>
+      }
     </div>
-    <div class="line-up" *ngIf="(expand && (itemsAbove | async).length > 0) || item.level > 0"></div>
-    <div [style.background]="item.color" class="item-container" [ngClass]="{'outline': item.level === 0}" appClickOpen>
-        <button type="button" class="position-absolute mini-button over-top__horizontal-center"
-            (click)="expandClick()"
-            *ngIf="!expand && item.level < 0 && item.itemIdsAbove.length > 0">
-            +
-        </button>
-        <a role="button" style="cursor: pointer;">
-            <div>{{item.type}}</div>
-            <div>{{item.name}}</div>
-        </a>
-        <ul class="dropdown-menu" style="left: unset;">
-            <li>
-                <button type="button" [ngClass]="{vanished: item.level === 0, selectable: item.level !== 0}" i18n="Center on this item"
-                    [routerLink]="['/display', 'configuration-item', item.id, 'graph']">
+  }
+  @if ((expand && (itemsAbove | async).length > 0) || item.level > 0) {
+    <div class="line-up"></div>
+  }
+  <div [style.background]="item.color" class="item-container" [ngClass]="{'outline': item.level === 0}" appClickOpen>
+    @if (!expand && item.level < 0 && item.itemIdsAbove.length > 0) {
+      <button type="button" class="position-absolute mini-button over-top__horizontal-center"
+        (click)="expandClick()"
+        >
+        +
+      </button>
+    }
+    <a role="button" style="cursor: pointer;">
+      <div>{{item.type}}</div>
+      <div>{{item.name}}</div>
+    </a>
+    <ul class="dropdown-menu" style="left: unset;">
+      <li>
+        <button type="button" [ngClass]="{vanished: item.level === 0, selectable: item.level !== 0}" i18n="Center on this item"
+          [routerLink]="['/display', 'configuration-item', item.id, 'graph']">
                     Dieses Configuration Item zentrieren
                 </button>
-            </li>
-            <li [ngClass]="{vanished: item.attributesLength === 0}">
-                <ng-container i18n="Attributes">
+      </li>
+      <li [ngClass]="{vanished: item.attributesLength === 0}">
+        <ng-container i18n="Attributes">
                     Attribute
                 </ng-container>
-                <ul>
-                    <li class="no-wrap" *ngFor="let attribute of item.attributes">
-                        {{attribute}}
-                    </li>
-                </ul>
+        <ul>
+          @for (attribute of item.attributes; track attribute) {
+            <li class="no-wrap">
+              {{attribute}}
             </li>
+          }
         </ul>
-        <button type="button" class="mini-button position-absolute below-bottom__horizontal-center"
-            (click)="expandClick()"
-            *ngIf="!expand && item.level > 0 && item.itemIdsBelow.length > 0">
-            +
-        </button>
-    </div>
-    <div class="line-down" *ngIf="(expand && (itemsBelow | async).length) > 0 || item.level < 0"></div>
-    <div class="item-boxes" *ngIf="expand && item.level >= 0">
-        <div class="item-box line-above" *ngFor="let graphItem of (itemsBelow | async)">
-            <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
+      </li>
+    </ul>
+    @if (!expand && item.level > 0 && item.itemIdsBelow.length > 0) {
+      <button type="button" class="mini-button position-absolute below-bottom__horizontal-center"
+        (click)="expandClick()"
+        >
+        +
+      </button>
+    }
+  </div>
+  @if ((expand && (itemsBelow | async).length) > 0 || item.level < 0) {
+    <div class="line-down"></div>
+  }
+  @if (expand && item.level >= 0) {
+    <div class="item-boxes">
+      @for (graphItem of (itemsBelow | async); track graphItem) {
+        <div class="item-box line-above">
+          <app-graph-item [item]="graphItem" [expand]="false"></app-graph-item>
         </div>
+      }
     </div>
+  }
 </div>

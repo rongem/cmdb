@@ -1,49 +1,59 @@
-<app-busy *ngIf="!history" i18n="Loading data for configuration item">
+@if (!history) {
+  <app-busy i18n="Loading data for configuration item">
     Lade Daten des Configuration Items...
 </app-busy>
-<ng-container *ngIf="history">
-    <table class="table">
-        <thead>
-            <tr>
-                <th i18n="Date">Zeitpunkt</th>
-                <th class="position-relative" appClickOpen>
-                    <button type="menu" i18n="Subject">
+}
+@if (history) {
+  <table class="table">
+    <thead>
+      <tr>
+        <th i18n="Date">Zeitpunkt</th>
+        <th class="position-relative" appClickOpen>
+          <button type="menu" i18n="Subject">
                         Bezug
                     </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <button type="button" (click)="history.filter = ''" i18n="All subjects">
+          <ul class="dropdown-menu">
+            <li>
+              <button type="button" (click)="history.filter = ''" i18n="All subjects">
                                 Alle Bez&uuml;ge
                             </button>
-                        </li>
-                        <li *ngIf="history.allowedFilters.includes('I')">
-                            <button type="button" (click)="history.filter = 'I'" i18n="Configuration items">
+            </li>
+            @if (history.allowedFilters.includes('I')) {
+              <li>
+                <button type="button" (click)="history.filter = 'I'" i18n="Configuration items">
                                 Configuration Items
                             </button>
-                        </li>
-                        <li *ngIf="history.allowedFilters.includes('A')">
-                            <button type="button" (click)="history.filter = 'A'" i18n="Attributes">
+              </li>
+            }
+            @if (history.allowedFilters.includes('A')) {
+              <li>
+                <button type="button" (click)="history.filter = 'A'" i18n="Attributes">
                                 Attribute
                             </button>
-                        </li>
-                        <li *ngIf="history.allowedFilters.includes('C')">
-                            <button type="button" (click)="history.filter = 'C'" i18n="Connections">
+              </li>
+            }
+            @if (history.allowedFilters.includes('C')) {
+              <li>
+                <button type="button" (click)="history.filter = 'C'" i18n="Connections">
                                 Verbindungen
                             </button>
-                        </li>
-                    </ul>
-                </th>
-                <th i18n="Action">Aktion</th>
-                <th i18n="Who did this">Durchgef&uuml;hrt von</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let entry of history.entries">
-                <td>{{(entry.dateTime | date)}}</td>
-                <td>{{entry.subject}}</td>
-                <td>{{entry.text}}</td>
-                <td>{{entry.responsible}}</td>
-            </tr>
-        </tbody>
-    </table>
-</ng-container>
+              </li>
+            }
+          </ul>
+        </th>
+        <th i18n="Action">Aktion</th>
+        <th i18n="Who did this">Durchgef&uuml;hrt von</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of history.entries; track entry) {
+        <tr>
+          <td>{{(entry.dateTime | date)}}</td>
+          <td>{{entry.subject}}</td>
+          <td>{{entry.text}}</td>
+          <td>{{entry.responsible}}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

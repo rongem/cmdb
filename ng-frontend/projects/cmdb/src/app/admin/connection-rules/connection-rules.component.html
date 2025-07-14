@@ -1,10 +1,10 @@
 <app-help>
-    <p i18n="Connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists">
+  <p i18n="Connections rules control, which item types may be connected. Connections are allowed only if a rule explicitely exists">
         Verbindungsregeln steuern, welche Typen von Configuration Items miteinander
         verbunden werden d&uuml;rfen. Nur da, wo explizit eine Regel existiert,
         ist eine Verbindung m&ouml;glich.
     </p>
-    <p i18n="Together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don't have to create a connection of that type">
+  <p i18n="Together with the feasability of connecting you have to set the maximum number of connections for that rule. You may define 1:1, 1:n or n:m connections. The minimum is always 0, so you don't have to create a connection of that type">
         Neben der reinen M&ouml;glichkeit der Verbindung werden einer Regel auch erlaubte
         Anzahlen von Verbindungen m&ouml;glich. So sind Verbindungen 1:1, 1:n oder n:m denkbar.
         Die jeweils angegebene Zahl stellt dabei die Obergrenze dessen dar, was erlaubt ist.
@@ -13,118 +13,137 @@
     </p>
 </app-help>
 <div class="box">
-    <div i18n="Filter">
+  <div i18n="Filter">
         Filter
     </div>
-    <div class="flex__space-between">
-        <div>
-            <ng-container i18n="Upper item type">
+  <div class="flex__space-between">
+    <div>
+      <ng-container i18n="Upper item type">
                 Oberer Item-Typ
             </ng-container>
-            <div class="no-wrap inline-block position-relative" appClickOpen>
-                <button type="button" class="dropdown-toggle">
-                    <ng-container i18n="No filter" *ngIf="!upperItemType">
+      <div class="no-wrap inline-block position-relative" appClickOpen>
+        <button type="button" class="dropdown-toggle">
+          @if (!upperItemType) {
+            <ng-container i18n="No filter">
                         Kein Filter
                     </ng-container>
-                    <ng-container *ngIf="!!upperItemType">
-                        {{upperItemType.name}}
-                    </ng-container>
-                    <span class="arrow">v</span>
-                    <span class="visually-hidden" i18n="Click to open filter menu for upper item type">
+          }
+          @if (!!upperItemType) {
+            {{upperItemType.name}}
+          }
+          <span class="arrow">v</span>
+          <span class="visually-hidden" i18n="Click to open filter menu for upper item type">
                         Klicken, um Filtermen&uuml; f&uuml;r oberen Item-Typ zu &ouml;ffnen
                     </span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li *ngIf="!!upperItemType">
-                        <button type="button" class="red-button" i18n="Clear filter" (click)="upperItemType = undefined">
+        </button>
+        <ul class="dropdown-menu">
+          @if (!!upperItemType) {
+            <li>
+              <button type="button" class="red-button" i18n="Clear filter" (click)="upperItemType = undefined">
                             Filter l&ouml;schen
                         </button>
-                        <hr>
-                    </li>
-                    <ng-container *ngFor="let itemType of (itemTypes | async)">
-                        <li *ngIf="upperItemType?.id !== itemType.id">
-                            <button type="button" (click)="upperItemType = itemType">
-                                {{ itemType.name }}
-                            </button>
-                        </li>
-                    </ng-container>
-                </ul>
-            </div>
+              <hr>
+              </li>
+            }
+            @for (itemType of (itemTypes | async); track itemType) {
+              @if (upperItemType?.id !== itemType.id) {
+                <li>
+                  <button type="button" (click)="upperItemType = itemType">
+                    {{ itemType.name }}
+                  </button>
+                </li>
+              }
+            }
+          </ul>
         </div>
-        <div>
-            <ng-container i18n="Connection type">
+      </div>
+      <div>
+        <ng-container i18n="Connection type">
                 Verbindungstyp
             </ng-container>
-            <div class="no-wrap inline-block position-relative" appClickOpen>
-                <button type="button" class="dropdown-toggle">
-                    <ng-container i18n="No filter" *ngIf="!selectedConnectionType">
+        <div class="no-wrap inline-block position-relative" appClickOpen>
+          <button type="button" class="dropdown-toggle">
+            @if (!selectedConnectionType) {
+              <ng-container i18n="No filter">
                         Kein Filter
                     </ng-container>
-                    <ng-container *ngIf="!!selectedConnectionType">
-                        {{selectedConnectionType.name}} &darr;&nbsp;&uparrow; {{selectedConnectionType.reverseName}}
-                    </ng-container>
-                    <span class="arrow">v</span>
-                    <span class="visually-hidden" i18n="Click to open filter menu for connection type">
+            }
+            @if (!!selectedConnectionType) {
+              {{selectedConnectionType.name}} &darr;&nbsp;&uparrow; {{selectedConnectionType.reverseName}}
+            }
+            <span class="arrow">v</span>
+            <span class="visually-hidden" i18n="Click to open filter menu for connection type">
                         Klicken, um Filtermen&uuml; f&uuml;r Verbindungstypzu &ouml;ffnen
                     </span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li *ngIf="!!selectedConnectionType">
-                        <button type="button" class="red-button" i18n="Clear filter" (click)="selectedConnectionType = undefined">
+          </button>
+          <ul class="dropdown-menu">
+            @if (!!selectedConnectionType) {
+              <li>
+                <button type="button" class="red-button" i18n="Clear filter" (click)="selectedConnectionType = undefined">
                             Filter l&ouml;schen
                         </button>
-                        <hr>
-                    </li>
-                    <ng-container *ngFor="let connectionType of (connectionTypes | async)">
-                        <li *ngIf="selectedConnectionType?.id !== connectionType.id">
-                            <button type="button" (click)="selectedConnectionType = connectionType">
-                                {{ connectionType.name }} &darr;&nbsp;&uparrow; {{ connectionType.reverseName }}
-                            </button>
-                        </li>
-                    </ng-container>
-                </ul>
-            </div>
+                <hr>
+                </li>
+              }
+              @for (connectionType of (connectionTypes | async); track connectionType) {
+                @if (selectedConnectionType?.id !== connectionType.id) {
+                  <li>
+                    <button type="button" (click)="selectedConnectionType = connectionType">
+                      {{ connectionType.name }} &darr;&nbsp;&uparrow; {{ connectionType.reverseName }}
+                    </button>
+                  </li>
+                }
+              }
+            </ul>
+          </div>
         </div>
         <div>
-            <ng-container i18n="Lower item type">
+          <ng-container i18n="Lower item type">
                 Unterer Item-Typ
             </ng-container>
-            <div class="no-wrap inline-block position-relative" appClickOpen>
-                <button type="button" class="dropdown-toggle">
-                    <ng-container i18n="No filter" *ngIf="!lowerItemType">
+          <div class="no-wrap inline-block position-relative" appClickOpen>
+            <button type="button" class="dropdown-toggle">
+              @if (!lowerItemType) {
+                <ng-container i18n="No filter">
                         Kein Filter
                     </ng-container>
-                    <ng-container *ngIf="!!lowerItemType">
-                        {{lowerItemType.name}}
-                    </ng-container>
-                    <span class="arrow">v</span>
-                    <span class="visually-hidden" i18n="Click to open filter menu for lower item type">
+              }
+              @if (!!lowerItemType) {
+                {{lowerItemType.name}}
+              }
+              <span class="arrow">v</span>
+              <span class="visually-hidden" i18n="Click to open filter menu for lower item type">
                         Klicken, um Filtermen&uuml; f&uuml;r unter Item-Typ zu &ouml;ffnen
                     </span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li *ngIf="!!lowerItemType">
-                        <button type="button" class="red-button" i18n="Clear filter" (click)="lowerItemType = undefined">
+            </button>
+            <ul class="dropdown-menu">
+              @if (!!lowerItemType) {
+                <li>
+                  <button type="button" class="red-button" i18n="Clear filter" (click)="lowerItemType = undefined">
                             Filter l&ouml;schen
                         </button>
-                        <hr>
+                  <hr>
+                  </li>
+                }
+                @for (itemType of (itemTypes | async); track itemType) {
+                  @if (lowerItemType?.id !== itemType.id) {
+                    <li>
+                      <button type="button" (click)="lowerItemType = itemType">
+                        {{ itemType.name }}
+                      </button>
                     </li>
-                    <ng-container *ngFor="let itemType of (itemTypes | async)">
-                        <li *ngIf="lowerItemType?.id !== itemType.id">
-                            <button type="button" (click)="lowerItemType = itemType">
-                                {{ itemType.name }}
-                            </button>
-                        </li>
-                    </ng-container>
-                </ul>
+                  }
+                }
+              </ul>
             </div>
+          </div>
         </div>
-    </div>
-</div>
-<table class="table" *ngIf="(canCreateNew | async) === false">
-    <thead>
-        <tr>
-            <th class="table-cell table-header">
+      </div>
+      @if ((canCreateNew | async) === false) {
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="table-cell table-header">
                 <span class="mobile-only">1: </span>
                 <ng-container i18n="Upper item type">
                     Oberer Item-Typ
@@ -137,130 +156,137 @@
                 <ng-container i18n="Lower item type">
                     Unterer Item-Typ
                 </ng-container>
-            </th>
-            <th class="table-cell table-header">
+              </th>
+              <th class="table-cell table-header">
                 <span class="mobile-only">2: </span>
                 <ng-container i18n="Validation rule for description">
                     G&uuml;ltigkeitsregel f&uuml;r Beschreibung:
                 </ng-container>
-            </th>
-            <th class="table-cell table-header">
+              </th>
+              <th class="table-cell table-header">
                 <span class="mobile-only">3: </span>
                 <ng-container i18n="Connections count for connection rule">
                     Anzahl Verbindungen
                 </ng-container>
-            </th>
-            <th class="table-cell table-header">
+              </th>
+              <th class="table-cell table-header">
                 <span class="mobile-only">4: </span>
                 <ng-container i18n="Commands">
                     Befehle
                 </ng-container>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let rule of (filteredConnectionRules | async)">
-            <td class="table-cell">
-                <span class="mobile-only">1: </span>
-                <div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rule of (filteredConnectionRules | async); track rule) {
+              <tr>
+                <td class="table-cell">
+                  <span class="mobile-only">1: </span>
+                  <div>
                     {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
                     &darr;
                     {{ (getConnectionType(rule.connectionTypeId) | async).name }}
                     (&le; {{ rule.maxConnectionsToLower }})
                     &darr;
                     {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
-                </div>
-                <div>
+                  </div>
+                  <div>
                     {{ (getItemType(rule.lowerItemTypeId) | async)?.name }}
                     &uarr;
                     {{ (getConnectionType(rule.connectionTypeId) | async)?.reverseName }}
                     (&le; {{ rule.maxConnectionsToUpper }})
                     &uarr;
                     {{ (getItemType(rule.upperItemTypeId) | async)?.name }}
-                </div>
-            </td>
-            <td class="table-cell">
-                <span class="mobile-only">2: </span>
-                {{ rule.validationExpression }}
-            </td>
-            <td class="table-cell">
-                <span class="mobile-only">3: </span>
-                {{ (getRulesCount(rule) | async) }}
-            </td>
-            <td class="table-cell position-relative" appClickOpen>
-                <ng-container *ngIf="activeLine === -1">
+                  </div>
+                </td>
+                <td class="table-cell">
+                  <span class="mobile-only">2: </span>
+                  {{ rule.validationExpression }}
+                </td>
+                <td class="table-cell">
+                  <span class="mobile-only">3: </span>
+                  {{ (getRulesCount(rule) | async) }}
+                </td>
+                <td class="table-cell position-relative" appClickOpen>
+                  @if (activeLine === -1) {
                     <span class="mobile-only">4: </span>
                     <button type="button" class="dropdown-toggle">
-                        ...
-                        <span class="visually-hidden" i18n="Click to open action menu">
+                      ...
+                      <span class="visually-hidden" i18n="Click to open action menu">
                             Klicken, um Aktionsmen&uuml; zu &ouml;ffnen
                         </span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li>
-                            <button class="selectable" [routerLink]="['..', 'connection-rule', rule.id]">
-                                <span i18n="Edit connecion rule">Verbindungsregel bearbeiten</span>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="selectable"
-                                [cdkCopyToClipboard]="rule.id">
-                                <ng-container i18n="Copy Id">Id kopieren</ng-container>
-                                <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
+                      <li>
+                        <button class="selectable" [routerLink]="['..', 'connection-rule', rule.id]">
+                          <span i18n="Edit connecion rule">Verbindungsregel bearbeiten</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" class="selectable"
+                          [cdkCopyToClipboard]="rule.id">
+                          <ng-container i18n="Copy Id">Id kopieren</ng-container>
+                          <span class="visually-hidden" i18n="Click to copy the attribute type id into the clipbaord">
                                     Klicken, um die Id des Attributtyps in die Zwischenablage zu kopieren
                                 </span>
-                            </button>
+                        </button>
+                      </li>
+                      @if ((getRulesCount(rule) | async) === 0) {
+                        <li>
+                          <button type="button" class="red-button selectable"
+                            (click)="onDeleteRule(rule)">
+                            <ng-container i18n="Delete connection rule">Verbindungsregel l&ouml;schen</ng-container>
+                          </button>
                         </li>
-                        <li *ngIf="(getRulesCount(rule) | async) === 0">
-                            <button type="button" class="red-button selectable"
-                                (click)="onDeleteRule(rule)">
-                                <ng-container i18n="Delete connection rule">Verbindungsregel l&ouml;schen</ng-container>
-                            </button>
-                        </li>
+                      }
                     </ul>
-                </ng-container>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<div class="box" *ngIf="(canCreateNew | async) === true">
-    <form [formGroup]="ruleForm">
-        <p>
-            <span>&darr;</span>
-            {{ upperItemType.name }}
-            {{ selectedConnectionType.name }}
-            &le; 
-            <input type="number" formControlName="maxConnectionsToLower" class="selectable"
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if ((canCreateNew | async) === true) {
+        <div class="box">
+          <form [formGroup]="ruleForm">
+            <p>
+              <span>&darr;</span>
+              {{ upperItemType.name }}
+              {{ selectedConnectionType.name }}
+              &le;
+              <input type="number" formControlName="maxConnectionsToLower" class="selectable"
                 (keyup.enter)="onCreateRule()"
                 min="1" max="9999" />
-            {{ lowerItemType.name }}
-            <span>&darr;</span>
-        </p>
-        <p>
-            <span>&uarr;</span>
-            {{ lowerItemType.name }}
-            {{ selectedConnectionType.reverseName }}
-            &le; 
-            <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
-                (keyup.enter)="onCreateRule()"
-                min="1" max="9999" />
-            {{ upperItemType.name }}
-            <span>&uarr;</span>
-        </p>
-        <div>
-            <label for="validation" i18n="Validation rule (RegEx) for connection description">
+                {{ lowerItemType.name }}
+                <span>&darr;</span>
+              </p>
+              <p>
+                <span>&uarr;</span>
+                {{ lowerItemType.name }}
+                {{ selectedConnectionType.reverseName }}
+                &le;
+                <input type="number" formControlName="maxConnectionsToUpper" class="selectable"
+                  (keyup.enter)="onCreateRule()"
+                  min="1" max="9999" />
+                  {{ upperItemType.name }}
+                  <span>&uarr;</span>
+                </p>
+                <div>
+                  <label for="validation" i18n="Validation rule (RegEx) for connection description">
                 G&uuml;ltigtkeitsregel (regul&auml;rer Ausdruck) f&uuml;r Verbindungsbeschreibungen
             </label>
-            <input type="text" id="validation" formControlName="validationExpression" class="selectable"
-                placeholder="^.*$"
-                (keyup.enter)="onCreateRule()">
-        </div>
-        <div>
-            <button type="button" class="selectable" (click)="onCreateRule()" [disabled]="ruleForm.invalid">
-                <ng-container i18n="Add new connection rule">
+                  <input type="text" id="validation" formControlName="validationExpression" class="selectable"
+                    placeholder="^.*$"
+                    (keyup.enter)="onCreateRule()">
+                  </div>
+                  <div>
+                    <button type="button" class="selectable" (click)="onCreateRule()" [disabled]="ruleForm.invalid">
+                      <ng-container i18n="Add new connection rule">
                     Neue Verbindungsregel hinzuf&uuml;gen
                 </ng-container>
-            </button>
-        </div>
-    </form>
-</div>  
+                    </button>
+                  </div>
+                </form>
+              </div>
+            }

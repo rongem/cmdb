@@ -1,303 +1,380 @@
-<div class="fixed-height__layout" *ngIf="(itemReady | async)">
+@if ((itemReady | async)) {
+  <div class="fixed-height__layout">
     <h3>
-        <ng-container i18n="Originating from">Ausgehend von </ng-container>
-        {{(configurationItem | async)?.type}} {{(configurationItem | async)?.name}}
+      <ng-container i18n="Originating from">Ausgehend von </ng-container>
+      {{(configurationItem | async)?.type}} {{(configurationItem | async)?.name}}
     </h3>
     <form class="box flex__space-between" [formGroup]="form">
-        <div class="no-wrap">
-            <label for="itemType" i18n="Item type">Item-Typ: </label>
-            <select id="itemType" formControlName="itemTypeId">
-                <option *ngFor="let itemType of (itemTypes | async)" [value]="itemType.id">
-                    {{itemType.name}}
-                </option>
-            </select>
-        </div>
-        <div class="no-wrap">
-            <label for="searchDirection" i18n="Search direction">Richtung, in die gesucht wird: </label>
-            <select id="searchDirection" formControlName="searchDirection">
-                <option value="-1" i18n="Up">Aufw&auml;rts</option>
-                <option value="0" i18n="Both">Beide</option>
-                <option value="1" i18n="Down">Abw&auml;rts</option>
-            </select>
-        </div>
-        <div class="no-wrap">
-            <label for="maxLevels" i18n="Maximum number of levels to search:">Maximale Anzahl von Ebenen, die gesucht wird: </label>
-            <input type="number" id="maxLevels" min="1" max="5" formControlName="maxLevels">
-        </div>
+      <div class="no-wrap">
+        <label for="itemType" i18n="Item type">Item-Typ: </label>
+        <select id="itemType" formControlName="itemTypeId">
+          @for (itemType of (itemTypes | async); track itemType) {
+            <option [value]="itemType.id">
+              {{itemType.name}}
+            </option>
+          }
+        </select>
+      </div>
+      <div class="no-wrap">
+        <label for="searchDirection" i18n="Search direction">Richtung, in die gesucht wird: </label>
+        <select id="searchDirection" formControlName="searchDirection">
+          <option value="-1" i18n="Up">Aufw&auml;rts</option>
+          <option value="0" i18n="Both">Beide</option>
+          <option value="1" i18n="Down">Abw&auml;rts</option>
+        </select>
+      </div>
+      <div class="no-wrap">
+        <label for="maxLevels" i18n="Maximum number of levels to search:">Maximale Anzahl von Ebenen, die gesucht wird: </label>
+        <input type="number" id="maxLevels" min="1" max="5" formControlName="maxLevels">
+      </div>
     </form>
     <div class="filter-box">
-        <div class="flex-horizontal__align-middle">
-            <span i18n="Add filter">Filter hinzuf&uuml;gen</span>
-            <button type="button" class="selectable"
-                *ngIf="!((extraSearch | async).nameOrValue)" (click)="newFilterType = 'nameOrValue'"
-                [ngClass]="{selected: newFilterType === 'nameOrValue'}" i18n="Name or attribute value">
+      <div class="flex-horizontal__align-middle">
+        <span i18n="Add filter">Filter hinzuf&uuml;gen</span>
+        @if (!((extraSearch | async).nameOrValue)) {
+          <button type="button" class="selectable"
+            (click)="newFilterType = 'nameOrValue'"
+            [ngClass]="{selected: newFilterType === 'nameOrValue'}" i18n="Name or attribute value">
                 Name oder Attributwert
             </button>
-            <button type="button" class="selectable"
-                *ngIf="(allowedAttributeTypeList | async).length > 0" (click)="newFilterType = 'attributeType'"
-                [ngClass]="{selected: newFilterType === 'attributeType'}" i18n="Attribute type">
+        }
+        @if ((allowedAttributeTypeList | async).length > 0) {
+          <button type="button" class="selectable"
+            (click)="newFilterType = 'attributeType'"
+            [ngClass]="{selected: newFilterType === 'attributeType'}" i18n="Attribute type">
                 Attribut-Typ
             </button>
-            <button type="button" class="selectable"
-                *ngIf="(connectionTypesToUpperForCurrentItemType| async).length > 0" (click)="newFilterType = 'connectionTypesToUpper'"
-                [ngClass]="{selected: newFilterType === 'connectionTypesToUpper'}" i18n="Connections upward">
+        }
+        @if ((connectionTypesToUpperForCurrentItemType| async).length > 0) {
+          <button type="button" class="selectable"
+            (click)="newFilterType = 'connectionTypesToUpper'"
+            [ngClass]="{selected: newFilterType === 'connectionTypesToUpper'}" i18n="Connections upward">
                 Verbindungen nach oben (&uarr;)
             </button>
-            <button type="button" class="selectable"
-                *ngIf="(connectionTypesToLowerForCurrentItemType| async).length > 0" (click)="newFilterType = 'connectionTypesToLower'"
-                [ngClass]="{selected: newFilterType === 'connectionTypesToLower'}" i18n="Connections downward">
+        }
+        @if ((connectionTypesToLowerForCurrentItemType| async).length > 0) {
+          <button type="button" class="selectable"
+            (click)="newFilterType = 'connectionTypesToLower'"
+            [ngClass]="{selected: newFilterType === 'connectionTypesToLower'}" i18n="Connections downward">
                 Verbindungen nach unten (&darr;)
             </button>
-            <button type="button" class="selectable" (click)="newFilterType = 'changedBefore'"
-                *ngIf="(searchItemType | async)"
-                [ngClass]="{selected: newFilterType === 'changedBefore'}" i18n="Changed before">
+        }
+        @if ((searchItemType | async)) {
+          <button type="button" class="selectable" (click)="newFilterType = 'changedBefore'"
+            [ngClass]="{selected: newFilterType === 'changedBefore'}" i18n="Changed before">
                 Letzte &Auml;nderung vor
             </button>
-            <button type="button" class="selectable" (click)="newFilterType = 'changedAfter'"
-                *ngIf="(searchItemType | async)"
-                [ngClass]="{selected: newFilterType === 'changedAfter'}" i18n="Changed after">
+        }
+        @if ((searchItemType | async)) {
+          <button type="button" class="selectable" (click)="newFilterType = 'changedAfter'"
+            [ngClass]="{selected: newFilterType === 'changedAfter'}" i18n="Changed after">
                 Letzte &Auml;nderung nach
             </button>
-            <button type="button" class="selectable" (click)="onAddResponsibility()"
-                *ngIf="(searchItemType | async) && (extraSearch | async).responsibleToken !== (userName | async)"
-                i18n="Show only owned items">
+        }
+        @if ((searchItemType | async) && (extraSearch | async).responsibleToken !== (userName | async)) {
+          <button type="button" class="selectable" (click)="onAddResponsibility()"
+            i18n="Show only owned items">
                 Nur eigene Configuration Items
             </button>
-        </div>
-        <div class="flex">
-            <ng-container *ngIf="newFilterType === 'nameOrValue'">
-                <label for="nameOrValue" i18n="Search text">Suchtext</label>
-                <input type="text" id="nameOrValue" [(ngModel)]="newNameOrValue">
-                <!-- <app-autocomplete #autocomplete="appAutocomplete">  
-                    <ng-template appAutocompleteContent>  
-                        <ng-container *ngIf="(options | filter: control.value) as result">  
-                            <app-option *ngFor="let option of result" [value]="option.label">  
-                                {{ option.label }}  
-                            </app-option>  
-                            <app-option class="no-result" *ngIf="!result.length">No result...</app-option>  
-                        </ng-container>  
-                    </ng-template>  
-                </app-autocomplete>   -->
-                <button (click)="onChangeText()" i18n="Add filter" [disabled]="!newNameOrValue || newNameOrValue.length < 2">Filter hinzuf&uuml;gen</button>
+        }
+      </div>
+      <div class="flex">
+        @if (newFilterType === 'nameOrValue') {
+          <label for="nameOrValue" i18n="Search text">Suchtext</label>
+          <input type="text" id="nameOrValue" [(ngModel)]="newNameOrValue">
+          <!-- <app-autocomplete #autocomplete="appAutocomplete">
+          <ng-template appAutocompleteContent>
+            <ng-container *ngIf="(options | filter: control.value) as result">
+              <app-option *ngFor="let option of result" [value]="option.label">
+                {{ option.label }}
+              </app-option>
+              <app-option class="no-result" *ngIf="!result.length">No result...</app-option>
             </ng-container>
-            <ng-container *ngIf="newFilterType === 'attributeType'">
-                <label for="attributeType" i18n="Attribute type">Attribut-Typ</label>
-                <select id="attributeType" [(ngModel)]="newAttributeType">
-                    <option *ngFor="let attributeType of (allowedAttributeTypeList | async)" [value]="attributeType.id">
-                        {{attributeType.name}}
-                    </option>
-                </select>
-                <label for="attributeValue" i18n="Attribute value">Attribut-Wert</label>
-                <input type="text" id="attributeValue" [(ngModel)]="newAttributeValue">
-                <button type="button" (click)="onAddAttribute()" i18n="Add filter" [disabled]="!newAttributeType">Filter hinzuf&uuml;gen</button>
-                <app-help>
-                    <p i18n="Filter for configuration item that have given attributes">
+          </ng-template>
+        </app-autocomplete>   -->
+        <button (click)="onChangeText()" i18n="Add filter" [disabled]="!newNameOrValue || newNameOrValue.length < 2">Filter hinzuf&uuml;gen</button>
+      }
+      @if (newFilterType === 'attributeType') {
+        <label for="attributeType" i18n="Attribute type">Attribut-Typ</label>
+        <select id="attributeType" [(ngModel)]="newAttributeType">
+          @for (attributeType of (allowedAttributeTypeList | async); track attributeType) {
+            <option [value]="attributeType.id">
+              {{attributeType.name}}
+            </option>
+          }
+        </select>
+        <label for="attributeValue" i18n="Attribute value">Attribut-Wert</label>
+        <input type="text" id="attributeValue" [(ngModel)]="newAttributeValue">
+        <button type="button" (click)="onAddAttribute()" i18n="Add filter" [disabled]="!newAttributeType">Filter hinzuf&uuml;gen</button>
+        <app-help>
+          <p i18n="Filter for configuration item that have given attributes">
                         Filtern nach Configuration Items, die bestimmte Attribute besitzen
                     </p>
-                </app-help>
-            </ng-container>
-            <ng-container *ngIf="newFilterType === 'connectionTypesToLower'">
-                <label for="connectionTypesToLower" i18n="Connection type">Verbindungstyp &darr;</label>
-                <select id="connectionTypesToLower" [(ngModel)]="newConnectionTypeToLower">
-                    <option *ngFor="let connectionType of (connectionTypesToLowerForCurrentItemType | async)" [value]="connectionType.id">
-                        {{connectionType.name}}
-                    </option>
-                </select>
-                <ng-container *ngIf="newConnectionTypeToLower !== ''">
-                    <label for="itemTypesToLower" i18n="Item type">Item-Typ</label>
-                    <select id="itemTypesToLower" [(ngModel)]="newItemTypeToLower">
-                        <option *ngIf="(itemTypesToLowerForCurrentItemType | async)?.length > 1" value="{any type}" i18n="Any type">
+        </app-help>
+      }
+      @if (newFilterType === 'connectionTypesToLower') {
+        <label for="connectionTypesToLower" i18n="Connection type">Verbindungstyp &darr;</label>
+        <select id="connectionTypesToLower" [(ngModel)]="newConnectionTypeToLower">
+          @for (connectionType of (connectionTypesToLowerForCurrentItemType | async); track connectionType) {
+            <option [value]="connectionType.id">
+              {{connectionType.name}}
+            </option>
+          }
+        </select>
+        @if (newConnectionTypeToLower !== '') {
+          <label for="itemTypesToLower" i18n="Item type">Item-Typ</label>
+          <select id="itemTypesToLower" [(ngModel)]="newItemTypeToLower">
+            @if ((itemTypesToLowerForCurrentItemType | async)?.length > 1) {
+              <option value="{any type}" i18n="Any type">
                             (beliebigen Typ)
                         </option>
-                        <option *ngFor="let itemType of (itemTypesToLowerForCurrentItemType | async)" [value]="itemType.id">
-                            {{itemType.name}}
-                        </option>
-                    </select>
-                    <select id="connectionCount" [(ngModel)]="newConnectionCountToLower">
-                        <option value="0">0</option>
-                        <option value="1+">> 0</option>
-                        <option value="1">1</option>
-                        <option value="2+">> 1</option>
-                    </select>
-                    <button type="button" (click)="onAddConnectionToLower()" i18n="Add filter" [disabled]="!newItemTypeToLower || !newConnectionCountToLower">
+            }
+            @for (itemType of (itemTypesToLowerForCurrentItemType | async); track itemType) {
+              <option [value]="itemType.id">
+                {{itemType.name}}
+              </option>
+            }
+          </select>
+          <select id="connectionCount" [(ngModel)]="newConnectionCountToLower">
+            <option value="0">0</option>
+            <option value="1+">> 0</option>
+            <option value="1">1</option>
+            <option value="2+">> 1</option>
+          </select>
+          <button type="button" (click)="onAddConnectionToLower()" i18n="Add filter" [disabled]="!newItemTypeToLower || !newConnectionCountToLower">
                         Filter hinzuf&uuml;gen
                     </button>
-                </ng-container>
-                <app-help>
-                    <p i18n="Filter for configuration items that have given connections to lower items">
+        }
+        <app-help>
+          <p i18n="Filter for configuration items that have given connections to lower items">
                         Filtern nach Configuration Items, die bestimmte Verbindungen nach unten besitzen
                     </p>
-                </app-help>
-            </ng-container>
-            <ng-container *ngIf="newFilterType === 'connectionTypesToUpper'">
-                <label for="connectionTypesToUpper" i18n="Connection type">Verbindungstyp &darr;</label>
-                <select id="connectionTypesToUpper" [(ngModel)]="newConnectionTypeToUpper">
-                    <option *ngFor="let connectionType of (connectionTypesToUpperForCurrentItemType | async)" [value]="connectionType.id">
-                        {{connectionType.reverseName}}
-                    </option>
-                </select>
-                <ng-container *ngIf="newConnectionTypeToUpper !== ''">
-                    <label for="itemTypesToUpper" i18n="Item type">Item-Typ</label>
-                    <select id="itemTypesToUpper" [(ngModel)]="newItemTypeToUpper">
-                        <option *ngIf="(itemTypesToUpperForCurrentItemType | async)?.length > 1" value="{any type}" i18n="Any type">
+        </app-help>
+      }
+      @if (newFilterType === 'connectionTypesToUpper') {
+        <label for="connectionTypesToUpper" i18n="Connection type">Verbindungstyp &darr;</label>
+        <select id="connectionTypesToUpper" [(ngModel)]="newConnectionTypeToUpper">
+          @for (connectionType of (connectionTypesToUpperForCurrentItemType | async); track connectionType) {
+            <option [value]="connectionType.id">
+              {{connectionType.reverseName}}
+            </option>
+          }
+        </select>
+        @if (newConnectionTypeToUpper !== '') {
+          <label for="itemTypesToUpper" i18n="Item type">Item-Typ</label>
+          <select id="itemTypesToUpper" [(ngModel)]="newItemTypeToUpper">
+            @if ((itemTypesToUpperForCurrentItemType | async)?.length > 1) {
+              <option value="{any type}" i18n="Any type">
                             (beliebigen Typ)
                         </option>
-                        <option *ngFor="let itemType of (itemTypesToUpperForCurrentItemType | async)" [value]="itemType.id">
-                            {{itemType.name}}
-                        </option>
-                    </select>
-                    <select id="connectionCount" [(ngModel)]="newConnectionCountToUpper">
-                        <option value="0">0</option>
-                        <option value="1+">> 0</option>
-                        <option value="1">1</option>
-                        <option value="2+">> 1</option>
-                    </select>
-                    <button type="button" (click)="onAddConnectionToUpper()" i18n="Add filter" [disabled]="!newItemTypeToUpper || !newConnectionCountToUpper">
+            }
+            @for (itemType of (itemTypesToUpperForCurrentItemType | async); track itemType) {
+              <option [value]="itemType.id">
+                {{itemType.name}}
+              </option>
+            }
+          </select>
+          <select id="connectionCount" [(ngModel)]="newConnectionCountToUpper">
+            <option value="0">0</option>
+            <option value="1+">> 0</option>
+            <option value="1">1</option>
+            <option value="2+">> 1</option>
+          </select>
+          <button type="button" (click)="onAddConnectionToUpper()" i18n="Add filter" [disabled]="!newItemTypeToUpper || !newConnectionCountToUpper">
                         Filter hinzuf&uuml;gen
                     </button>
-                </ng-container>
-                <app-help>
-                    <p i18n="Filter for configuration items that have given connections to upper items">
+        }
+        <app-help>
+          <p i18n="Filter for configuration items that have given connections to upper items">
                         Filtern nach Configuration Items, die bestimmte Verbindungen nach oben besitzen
                     </p>
-                </app-help>
-            </ng-container>
-            <ng-container *ngIf="newFilterType === 'changedBefore'">
-                <label for="changedBefore" i18n="Date">
+        </app-help>
+      }
+      @if (newFilterType === 'changedBefore') {
+        <label for="changedBefore" i18n="Date">
                     Datum
                 </label>
-                <input type="date" id="changedBefore" [(ngModel)]="newChangedBefore">
-                <button type="button" (click)="onAddChangedBefore()" i18n="Add filter" [disabled]="!validateDateString(newChangedBefore, 1)">
+        <input type="date" id="changedBefore" [(ngModel)]="newChangedBefore">
+        <button type="button" (click)="onAddChangedBefore()" i18n="Add filter" [disabled]="!validateDateString(newChangedBefore, 1)">
                     Filter hinzuf&uuml;gen
                 </button>
-                <app-help>
-                    <p i18n="Filter for configurations items that have been changed before the given date">
+        <app-help>
+          <p i18n="Filter for configurations items that have been changed before the given date">
                         Filtern nach Configuration Items, die vor dem gegebenen Datum zuletzt ge&auml;ndert wurden
                     </p>
-                </app-help>
-            </ng-container>
-            <ng-container *ngIf="newFilterType === 'changedAfter'">
-                <label for="changedAfter" i18n="Date">
+        </app-help>
+      }
+      @if (newFilterType === 'changedAfter') {
+        <label for="changedAfter" i18n="Date">
                     Datum
                 </label>
-                <input type="date" id="changedAfter" [(ngModel)]="newChangedAfter">
-                <button type="button" (click)="onAddChangedAfter()" i18n="Add filter" [disabled]="!validateDateString(newChangedAfter, 1)">
+        <input type="date" id="changedAfter" [(ngModel)]="newChangedAfter">
+        <button type="button" (click)="onAddChangedAfter()" i18n="Add filter" [disabled]="!validateDateString(newChangedAfter, 1)">
                     Filter hinzuf&uuml;gen
                 </button>
-                <app-help>
-                    <p i18n="Filter for configurations items that have been changed after the given date">
+        <app-help>
+          <p i18n="Filter for configurations items that have been changed after the given date">
                         Filtern nach Configuration Items, die nach dem gegebenen Datum zuletzt ge&auml;ndert wurden
                     </p>
-                </app-help>
-            </ng-container>
+        </app-help>
+      }
+    </div>
+    <div class="flex-horizontal__align-middle">
+      @if ((extraSearch | async).nameOrValue) {
+        <div class="filter-item">
+          <ng-container i18n="Name or value">Name oder Attributwert: </ng-container>
+          {{(extraSearch | async).nameOrValue}}
+          <button type="button" class="selectable" (click)="onDeleteText()">X</button>
         </div>
-        <div class="flex-horizontal__align-middle">
-            <div class="filter-item" *ngIf="(extraSearch | async).nameOrValue">
-                <ng-container i18n="Name or value">Name oder Attributwert: </ng-container>
-                {{(extraSearch | async).nameOrValue}}
-                <button type="button" class="selectable" (click)="onDeleteText()">X</button>
-            </div>
-            <div class="filter-item" *ngFor="let attribute of (extraSearch | async).attributes">
-                {{getAttributeTypeName(attribute.typeId) | async}}: 
-                <ng-container [ngSwitch]="attribute.value">
-                    <span class="italic" *ngSwitchCase="''" i18n="(empty)">(leer)</span>
-                    <span class="italic" *ngSwitchCase="'!'" i18n="(not empty)">(nicht leer)</span>
-                    <span class="italic" *ngSwitchDefault>{{attribute.value}}</span>
-                </ng-container>
-                <button type="button" class="selectable" (click)="onDeleteAttribute(attribute.typeId)">X</button>
-            </div>
-            <div class="filter-item" *ngFor="let connection of (extraSearch | async).connectionsToLower; let i = index">
-                {{getConnectionToLowerContent(connection) | async}}
-                <ng-container [ngSwitch]="connection.count">
-                    <span *ngSwitchCase="'1+'"> > 0</span>
-                    <span *ngSwitchCase="'2+'"> > 1</span>
-                    <span *ngSwitchDefault>
-                        = {{connection.count}}
-                    </span>
-                </ng-container>
-                <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
-            </div>
-            <div class="filter-item" *ngFor="let connection of (extraSearch | async).connectionsToUpper; let i = index">
-                {{getConnectionToUpperContent(connection) | async}}
-                <ng-container [ngSwitch]="connection.count">
-                    <span *ngSwitchCase="'1+'"> > 0</span>
-                    <span *ngSwitchCase="'2+'"> > 1</span>
-                    <span *ngSwitchDefault>
-                        = {{connection.count}}
-                    </span>
-                </ng-container>
-                <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
-            </div>
-            <div class="filter-item" *ngIf="(extraSearch | async).changedBefore">
-                <ng-container i18n="Changed before">
+      }
+      @for (attribute of (extraSearch | async).attributes; track attribute) {
+        <div class="filter-item">
+          {{getAttributeTypeName(attribute.typeId) | async}}:
+          @switch (attribute.value) {
+            @case ('') {
+              <span class="italic" i18n="(empty)">(leer)</span>
+            }
+            @case ('!') {
+              <span class="italic" i18n="(not empty)">(nicht leer)</span>
+            }
+            @default {
+              <span class="italic">{{attribute.value}}</span>
+            }
+          }
+          <button type="button" class="selectable" (click)="onDeleteAttribute(attribute.typeId)">X</button>
+        </div>
+      }
+      @for (connection of (extraSearch | async).connectionsToLower; track connection; let i = $index) {
+        <div class="filter-item">
+          {{getConnectionToLowerContent(connection) | async}}
+          @switch (connection.count) {
+            @case ('1+') {
+              <span> > 0</span>
+            }
+            @case ('2+') {
+              <span> > 1</span>
+            }
+            @default {
+              <span>
+                = {{connection.count}}
+              </span>
+            }
+          }
+          <button type="button" class="selectable" (click)="onDeleteConnectionToLower(i)">X</button>
+        </div>
+      }
+      @for (connection of (extraSearch | async).connectionsToUpper; track connection; let i = $index) {
+        <div class="filter-item">
+          {{getConnectionToUpperContent(connection) | async}}
+          @switch (connection.count) {
+            @case ('1+') {
+              <span> > 0</span>
+            }
+            @case ('2+') {
+              <span> > 1</span>
+            }
+            @default {
+              <span>
+                = {{connection.count}}
+              </span>
+            }
+          }
+          <button type="button" class="selectable" (click)="onDeleteConnectionToUpper(i)">X</button>
+        </div>
+      }
+      @if ((extraSearch | async).changedBefore) {
+        <div class="filter-item">
+          <ng-container i18n="Changed before">
                     ge&auml;ndert vor: 
                 </ng-container>
-                {{(extraSearch | async).changedBefore | date}}
-                <button type="button" class="selectable" (click)="onDeleteChangedBefore()">X</button>
-            </div>
-            <div class="filter-item" *ngIf="(extraSearch | async).changedAfter">
-                <ng-container i18n="Changed after">
+          {{(extraSearch | async).changedBefore | date}}
+          <button type="button" class="selectable" (click)="onDeleteChangedBefore()">X</button>
+        </div>
+      }
+      @if ((extraSearch | async).changedAfter) {
+        <div class="filter-item">
+          <ng-container i18n="Changed after">
                     ge&auml;ndert nach: 
                 </ng-container>
-                {{(extraSearch | async).changedAfter | date}}
-                <button type="button" class="selectable" (click)="onDeleteChangedAfter()">X</button>
-            </div>
-            <div class="filter-item" *ngIf="(extraSearch | async).responsibleToken === (userName | async)">
-                <ng-container i18n="Responsible">
+          {{(extraSearch | async).changedAfter | date}}
+          <button type="button" class="selectable" (click)="onDeleteChangedAfter()">X</button>
+        </div>
+      }
+      @if ((extraSearch | async).responsibleToken === (userName | async)) {
+        <div class="filter-item">
+          <ng-container i18n="Responsible">
                     verantwortlich: 
                 </ng-container>
-                {{userName | async}}
-                <button type="button" class="selectable" (click)="onDeleteResponsibility()">X</button>
-            </div>
+          {{userName | async}}
+          <button type="button" class="selectable" (click)="onDeleteResponsibility()">X</button>
         </div>
+      }
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th appClickOpen *ngIf="(userRole | async) > 0">
-                    <app-multi-selector [items]="resultListFull | async"></app-multi-selector>
-                </th>
-                <th i18n="Item name">Item-Name</th>
-                <th i18n="Item type">Item-Typ</th>
-                <th i18n="Last change">Letzte &Auml;nderung</th>
-                <ng-container *ngIf="(searchItemType | async)">
-                    <th *ngFor="let attributeType of (displayedAttributeTypesList | async)">
-                        {{attributeType.name}}
-                    </th>
-                    <th *ngFor="let connectionType of displayedConnectionTypesList">
-                        {{connectionType.name}}
-                    </th>
-                </ng-container>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of (resultList | async)">
-                <td *ngIf="(userRole | async) > 0">
-                    <app-item-selector [itemId]="item.item.id"></app-item-selector>
-                </td>
-                <td>
-                    <a [routerLink]="['/display', 'configuration-item', item.item.id]">
-                        {{item.item.name}}
-                    </a>
-                </td>
-                <td>
-                    {{item.item.type}}
-                </td>
-                <td>
-                    {{item.item.lastChange | date:'short'}}
-                </td>
-                <ng-container *ngIf="(searchItemType | async)">
-                    <td *ngFor="let attributeType of (displayedAttributeTypesList | async)">
-                        {{getAttributeValue(item.item, attributeType.id)}}
-                    </td>
-                    <td *ngFor="let connectionType of displayedConnectionTypesList">
-                        {{connectionType.name}}
-                    </td>
-                </ng-container>
-            </tr>
-        </tbody>
-    </table>
-    <div class="error" *ngIf="(resultList | async).length === 0" i18n="No items found that match the search criteria">
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        @if ((userRole | async) > 0) {
+          <th appClickOpen>
+            <app-multi-selector [items]="resultListFull | async"></app-multi-selector>
+          </th>
+        }
+        <th i18n="Item name">Item-Name</th>
+        <th i18n="Item type">Item-Typ</th>
+        <th i18n="Last change">Letzte &Auml;nderung</th>
+        @if ((searchItemType | async)) {
+          @for (attributeType of (displayedAttributeTypesList | async); track attributeType) {
+            <th>
+              {{attributeType.name}}
+            </th>
+          }
+          @for (connectionType of displayedConnectionTypesList; track connectionType) {
+            <th>
+              {{connectionType.name}}
+            </th>
+          }
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of (resultList | async); track item) {
+        <tr>
+          @if ((userRole | async) > 0) {
+            <td>
+              <app-item-selector [itemId]="item.item.id"></app-item-selector>
+            </td>
+          }
+          <td>
+            <a [routerLink]="['/display', 'configuration-item', item.item.id]">
+              {{item.item.name}}
+            </a>
+          </td>
+          <td>
+            {{item.item.type}}
+          </td>
+          <td>
+            {{item.item.lastChange | date:'short'}}
+          </td>
+          @if ((searchItemType | async)) {
+            @for (attributeType of (displayedAttributeTypesList | async); track attributeType) {
+              <td>
+                {{getAttributeValue(item.item, attributeType.id)}}
+              </td>
+            }
+            @for (connectionType of displayedConnectionTypesList; track connectionType) {
+              <td>
+                {{connectionType.name}}
+              </td>
+            }
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+  @if ((resultList | async).length === 0) {
+    <div class="error" i18n="No items found that match the search criteria">
         Keine Items gefunden, die den Suchkriterien entsprechen.
     </div>
-    </div>
+  }
+</div>
+}

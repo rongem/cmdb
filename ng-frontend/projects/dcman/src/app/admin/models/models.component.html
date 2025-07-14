@@ -1,32 +1,38 @@
 <div class="list-container flex-column">
-    <div class="list">
-        <div *ngIf="(getModelsByItemType('') | async).length > 0" class="list-item error">
-            <div class="headline">
-                <h1 i18n>Models without target item type</h1>
-            </div>
-            <div class="list flex-row flex-wrap">
-                <ng-container *ngFor="let model of (getModelsByItemType('') | async)">
-                    <app-model-item [model]="model"></app-model-item>
-                </ng-container>
-            </div>
+  <div class="list">
+    @if ((getModelsByItemType('') | async).length > 0) {
+      <div class="list-item error">
+        <div class="headline">
+          <h1 i18n>Models without target item type</h1>
         </div>
-        <div *ngFor="let itemType of (itemTypes | async)" class="list-item" [ngClass]="{error: (getModelsByItemType(itemType.name) | async).length === 0}">
-            <div class="headline flex space-between">
-                <h1>{{itemType.name}}</h1>
-                <div>
-                    <button role="button" (click)="itemTypeId = itemType.id">
-                        Add model
-                    </button>
-                </div>
-                <app-form-popup *ngIf="itemTypeId === itemType.id" (click)="itemTypeId = ''">
-                    <app-model-form [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
-                </app-form-popup>
-            </div>
-            <div class="list flex-row flex-wrap">
-                <ng-container *ngFor="let model of (getModelsByItemType(itemType.name) | async)">
-                    <app-model-item [model]="model" [itemType]="itemType"></app-model-item>
-                </ng-container>
-            </div>
+        <div class="list flex-row flex-wrap">
+          @for (model of (getModelsByItemType('') | async); track model) {
+            <app-model-item [model]="model"></app-model-item>
+          }
         </div>
-    </div>
+      </div>
+    }
+    @for (itemType of (itemTypes | async); track itemType) {
+      <div class="list-item" [ngClass]="{error: (getModelsByItemType(itemType.name) | async).length === 0}">
+        <div class="headline flex space-between">
+          <h1>{{itemType.name}}</h1>
+          <div>
+            <button role="button" (click)="itemTypeId = itemType.id">
+              Add model
+            </button>
+          </div>
+          @if (itemTypeId === itemType.id) {
+            <app-form-popup (click)="itemTypeId = ''">
+              <app-model-form [itemType]="itemType" (submitted)="onSubmit($event)"></app-model-form>
+            </app-form-popup>
+          }
+        </div>
+        <div class="list flex-row flex-wrap">
+          @for (model of (getModelsByItemType(itemType.name) | async); track model) {
+            <app-model-item [model]="model" [itemType]="itemType"></app-model-item>
+          }
+        </div>
+      </div>
+    }
+  </div>
 </div>

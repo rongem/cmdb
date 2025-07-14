@@ -1,25 +1,27 @@
-<app-header *ngIf="!loginRequired"></app-header>
+@if (!loginRequired) {
+  <app-header></app-header>
+}
 <router-outlet></router-outlet>
-<ng-container *ngIf="displayError">
-    <div class="overlay error">
-        <h3>
-            <span class="wait">&mdash;</span>
-            <ng-container i18n>Error</ng-container>
-            <span class="wait">&mdash;</span>
-        </h3>
-        <p i18n>
+@if (displayError) {
+  <div class="overlay error">
+    <h3>
+      <span class="wait">&mdash;</span>
+      <ng-container i18n>Error</ng-container>
+      <span class="wait">&mdash;</span>
+    </h3>
+    <p i18n>
             An error occured in an operation:
         </p>
-        <p>
-            {{displayError}}
-        </p>
-        <button type="button" (click)="clearError()" i18n>Acknowledge</button>
-    </div>
-    <div class="backdrop" (click)="clearError()"></div>
-</ng-container>
+    <p>
+      {{displayError}}
+    </p>
+    <button type="button" (click)="clearError()" i18n>Acknowledge</button>
+  </div>
+  <div class="backdrop" (click)="clearError()"></div>
+}
 
-<ng-container *ngIf="loginRequired">
-    <app-form-popup>
-        <app-login-form></app-login-form>
-    </app-form-popup>
-</ng-container>
+@if (loginRequired) {
+  <app-form-popup>
+    <app-login-form></app-login-form>
+  </app-form-popup>
+}

@@ -1,31 +1,43 @@
-<form [formGroup]="form" *ngIf="form" (submit)="submit()">
+@if (form) {
+  <form [formGroup]="form" (submit)="submit()">
     <label for="name" i18n>Name:</label>
     <input type="text" id="name" formControlName="name" />
     <label for="model">{{configurationItemTypeNames.Model}}:</label>
-    <select *ngIf="!rack.model" id="model" formControlName="modelId">
-        <option [value]="model.id" *ngFor="let model of (models | async)">
+    @if (!rack.model) {
+      <select id="model" formControlName="modelId">
+        @for (model of (models | async); track model) {
+          <option [value]="model.id">
             {{model.name}}
-        </option>
-    </select>
-    <span class="readonly-box" *ngIf="rack.model">{{rack.model.name}}</span>
+          </option>
+        }
+      </select>
+    }
+    @if (rack.model) {
+      <span class="readonly-box">{{rack.model.name}}</span>
+    }
     <label for="heightUnits">
-        {{attributeTypeNames.HeightUnits}} 
-        (<ng-container i18n>from</ng-container>
-        {{configurationItemTypeNames.Model}}):
+      {{attributeTypeNames.HeightUnits}}
+      (<ng-container i18n>from</ng-container>
+      {{configurationItemTypeNames.Model}}):
     </label>
     <span class="readonly-box">{{rack.heightUnits}}</span>
     <label for="serialNumber">{{attributeTypeNames.SerialNumber}}:</label>
     <input type="text" id="serialNumber" formControlName="serialNumber" />
     <label for="status">{{attributeTypeNames.Status}}:</label>
     <select id="status" formControlName="status">
-        <option [value]="status.code" *ngFor="let status of statusCodes">{{status.name}}</option>
+      @for (status of statusCodes; track status) {
+        <option [value]="status.code">{{status.name}}</option>
+      }
     </select>
     <label for="room">{{configurationItemTypeNames.Room}}:</label>
     <select id="room" formControlName="roomId">
-        <option [value]="room.id" *ngFor="let room of (rooms | async)">{{room.name}}</option>
+      @for (room of (rooms | async); track room) {
+        <option [value]="room.id">{{room.name}}</option>
+      }
     </select>
     <div class="flex space-between">
-        <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
+      <button type="submit" i18n [disabled]="form.invalid || !form.dirty">Save changes</button>
     </div>
-</form>
+  </form>
+}
 

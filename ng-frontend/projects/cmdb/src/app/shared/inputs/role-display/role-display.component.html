@@ -1,6 +1,14 @@
 <span i18n="Role">Rolle: </span>
-<b [ngSwitch]="role">
-    <span *ngSwitchCase="2" i18n="Administrator">Administrator</span>
-    <span *ngSwitchCase="1" i18n="Editor">Editor</span>
-    <span *ngSwitchDefault i18n="Reader">Leser</span>
+<b>
+  @switch (role) {
+    @case (2) {
+      <span i18n="Administrator">Administrator</span>
+    }
+    @case (1) {
+      <span i18n="Editor">Editor</span>
+    }
+    @default {
+      <span i18n="Reader">Leser</span>
+    }
+  }
 </b>
