@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-role-display',
@@ -6,15 +6,14 @@ import { Component, OnInit, Input } from '@angular/core';
     styleUrls: ['./role-display.component.scss'],
     standalone: false
 })
-export class RoleDisplayComponent implements OnInit {
+export class RoleDisplayComponent {
   @Input() role: number;
 
-  constructor() { }
-
-  ngOnInit() {
+  get realRole() {
     if (this.role < 0 || this.role > 2) {
-      this.role = 0;
+      return 0;
     }
+    return this.role;
   }
 
 }
