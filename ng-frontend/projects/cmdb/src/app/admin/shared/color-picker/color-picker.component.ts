@@ -1,6 +1,19 @@
 import { Component, OnInit, forwardRef, Output, EventEmitter, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+function validateColor(color: string): string {
+    if (!color)
+      return undefined;
+    color = color.toUpperCase();
+    if (color.match('^#[A-F0-9]{3}$')) {
+      color = color[0] + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+    }
+    if (color.match('^#[A-F0-9]{6}$')) {
+      return color;
+    }
+    return undefined;
+}
+
 @Component({
     selector: 'app-color-picker',
     templateUrl: './color-picker.component.html',
@@ -28,20 +41,7 @@ export class ColorPickerComponent implements OnInit, ControlValueAccessor {
     return this.color && this.color.match('^#[A-F0-9]{6}$');
   }
 
-  get color() { return this.color$; }
-  @Input() set color(color: string) {
-    if (!color) {
-      this.color$ = undefined;
-      return;
-    }
-    color = color.toUpperCase();
-    if (color.match('^#[A-F0-9]{3}$')) {
-      color = color[0] + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
-    }
-    if (color.match('^#[A-F0-9]{6}$')) {
-      this.color$ = color;
-    }
-  }
+  @Input({transform: validateColor}) color: string;
 
   propagateChange = (_: any) => {};
   propagateTouched = () => {};

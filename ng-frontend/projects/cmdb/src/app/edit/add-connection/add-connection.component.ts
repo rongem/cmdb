@@ -11,8 +11,8 @@ import { ItemSelectors } from '../../shared/store/store.api';
     standalone: false
 })
 export class AddConnectionComponent implements OnInit {
-  @Input() rule: ConnectionRule;
-  @Input() itemId: string;
+  @Input({required: true}) rule: ConnectionRule;
+  @Input({required: true}) itemId: string;
   @Output() connectionSaved = new EventEmitter<Connection>();
   connection = new Connection();
   configurationItems: ConfigurationItem[] = [];

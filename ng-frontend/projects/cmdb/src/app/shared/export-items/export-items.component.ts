@@ -19,8 +19,8 @@ interface ExportElement {
     standalone: false
 })
 export class ExportItemsComponent implements OnInit {
-  @Input() items: FullConfigurationItem[];
-  @Input() searchItemType: ItemType;
+  @Input({required: true}) items: FullConfigurationItem[];
+  @Input({required: true}) searchItemType: ItemType;
   @Output() exported = new EventEmitter();
   @ViewChild('table') tableElement: ElementRef<HTMLTableElement>;
   exportType = 'clipboard';

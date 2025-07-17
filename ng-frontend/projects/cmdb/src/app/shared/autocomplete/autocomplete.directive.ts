@@ -20,7 +20,7 @@ const overlayClickOutside = (overlayRef: OverlayRef, origin: HTMLElement) => fro
     standalone: false
 })
 export class AutocompleteDirective implements OnInit, OnDestroy {
-    @Input() appAutocomplete: AutocompleteComponent;
+    @Input({required: true}) appAutocomplete: AutocompleteComponent;
     private overlayRef: OverlayRef;
     private subscription: Subscription;
 

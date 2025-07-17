@@ -19,7 +19,7 @@ import { AssetStatus } from '../../shared/objects/asset/asset-status.enum';
     standalone: false
 })
 export class AssetFormComponent implements OnInit {
-  @Input() asset: Asset;
+  @Input({required: true}) asset: Asset;
   @Output() submitted = new EventEmitter<AssetValue>();
   form: UntypedFormGroup;
   private models$: Model[];

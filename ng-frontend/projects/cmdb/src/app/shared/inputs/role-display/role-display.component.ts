@@ -1,4 +1,11 @@
 import { Component, Input } from '@angular/core';
+function realRole(role: number) {
+  if (role < 0 || role > 2) {
+    return 0;
+  }
+  return role;
+}
+
 
 @Component({
     selector: 'app-role-display',
@@ -7,13 +14,6 @@ import { Component, Input } from '@angular/core';
     standalone: false
 })
 export class RoleDisplayComponent {
-  @Input() role: number;
-
-  get realRole() {
-    if (this.role < 0 || this.role > 2) {
-      return 0;
-    }
-    return this.role;
-  }
+  @Input({required: true, transform: realRole}) role: 0 | 1 | 2;
 
 }

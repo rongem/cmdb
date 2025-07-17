@@ -26,7 +26,7 @@ import { GraphItem } from '../../shared/objects/graph-item.model';
     standalone: false
 })
 export class GraphItemComponent implements OnInit {
-  @Input() item: GraphItem;
+  @Input({required: true}) item: GraphItem;
   @Input() expand = true;
 
   constructor(private store: Store) { }

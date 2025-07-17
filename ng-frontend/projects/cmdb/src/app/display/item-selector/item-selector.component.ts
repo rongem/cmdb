@@ -11,7 +11,7 @@ import { MultiEditActions, MultiEditSelectors } from '../../shared/store/store.a
     standalone: false
 })
 export class ItemSelectorComponent implements OnInit {
-  @Input() itemId: string;
+  @Input({required: true}) itemId: string;
 
   constructor(private store: Store) { }
 
