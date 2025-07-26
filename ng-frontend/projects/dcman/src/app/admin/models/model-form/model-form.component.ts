@@ -7,8 +7,8 @@ import { ItemType, EditFunctions, ValidatorService } from 'backend-access';
 import { Model } from '../../../shared/objects/model.model';
 import { ExtendedAppConfigService } from '../../../shared/app-config.service';
 import { Mappings } from '../../../shared/objects/appsettings/mappings.model';
-import { noAction } from '../../../shared/store/basics/basics.actions';
 import { llc, llcc } from '../../../shared/store/functions';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-model-form',
@@ -54,7 +54,7 @@ export class ModelFormComponent implements OnInit {
       }
     } else {
       if (this.model.item && this.model.item.userIsResponsible === false) {
-        EditFunctions.takeResponsibility(this.http, this.store, this.model.id).toPromise();
+        firstValueFrom(EditFunctions.takeResponsibility(this.http, this.store, this.model.id));
       }
     }
     this.enclosureMountable = Mappings.enclosureMountables.includes(llc(this.itemType.name));

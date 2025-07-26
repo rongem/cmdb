@@ -5,6 +5,7 @@ import { AppObjectModel } from './objects/appsettings/app-object.model';
 import { StatusCodes } from './objects/appsettings/status-codes.model';
 import { AppConfigService } from 'backend-access';
 import { AssetStatus } from './objects/asset/asset-status.enum';
+import { lastValueFrom } from 'rxjs';
 
 interface AppSettings {
     ObjectModel: AppObjectModel;
@@ -148,7 +149,7 @@ export class ExtendedAppConfigService extends AppConfigService {
     private loadLanguageSettings() {
         const jsonFile = 'assets/config/settings.json';
         return new Promise<void>((resolve, reject) => {
-            this.http.get<AppSettings>(jsonFile).toPromise().then((response: AppSettings) => {
+            lastValueFrom(this.http.get<AppSettings>(jsonFile)).then((response: AppSettings) => {
                 const missingValues: string[] = [];
                 Object.keys(objectModel).forEach(key => {
                     Object.keys(objectModel[key]).forEach(subkey => {

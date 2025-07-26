@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, iif, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { catchError, concatMap, iif, firstValueFrom, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem } from 'backend-access';
@@ -31,7 +31,7 @@ export class ProvisionableEffects {
     // remove provisioned item and change status of asset that provisioned the item
     removeProvisionedSystem$ = createEffect(() => this.actions$.pipe(
         ofType(ProvisionableActions.removeProvisionedSystem),
-        tap(action => EditFunctions.deleteConfigurationItem(this.http, this.store, action.provisionedSystem.id).toPromise()),
+        tap(action => firstValueFrom(EditFunctions.deleteConfigurationItem(this.http, this.store, action.provisionedSystem.id))),
         map(action => AssetActions.updateAsset({currentAsset: action.asset, updatedAsset: createAssetValue(action.asset, action.status)}))
     ));
 

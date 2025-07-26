@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { catchError, of } from 'rxjs';
+import { catchError, lastValueFrom, of } from 'rxjs';
 import { AppConfig } from './app-config.model';
 import * as ErrorActions from '../store/error-handling/error.actions';
 import { EnvService } from './env.service';
@@ -57,13 +57,13 @@ export class AppConfigService {
             url = url.substring(0, url.length - 5);
         }
         url += 'login';
-        this.initProcess = this.http.get<string>(url).pipe(
+        this.initProcess = lastValueFrom(this.http.get<string>(url).pipe(
             catchError((error: HttpErrorResponse) => {
                 const message = error.message ? 'error: ' + error.message : 'error: ' + JSON.stringify(error);
                 this.store.dispatch(ErrorActions.error({error, fatal: true}));
                 return of(message);
             }),
-        ).toPromise().then(result => {
+        )).then(result => {
             if (result.startsWith('error:')) {
                 AppConfigService.hasError = true;
                 const error = new Error(result);

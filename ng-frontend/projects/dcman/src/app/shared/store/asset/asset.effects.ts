@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, concatMap, forkJoin, iif, map, mergeMap, of, Observable, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, concatMap, forkJoin, iif, map, mergeMap, of, Observable, switchMap, withLatestFrom, lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { MetaDataSelectors, ReadFunctions, EditFunctions, FullConfigurationItem, ItemType, ConfigurationItem,
@@ -105,7 +105,7 @@ export class AssetEffects {
                 action.updatedRack.modelId, '');
             if (result) { results.push(result); }
             if (results.length > 0) {
-                forkJoin(results).toPromise();
+                lastValueFrom(forkJoin(results));
             }
             return of(AssetActions.readRack({rackId: action.currentRack.id}));
         })
