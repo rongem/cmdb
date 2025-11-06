@@ -18,5 +18,5 @@ beforeEach(() => {
 
 afterAll(() => {
     // stop & disconnect database here
-    return mongoose.disconnect();
+    // return mongoose.disconnect();
 });
