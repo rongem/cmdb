@@ -1,6 +1,6 @@
 {
   "name": "njs-backend",
-  "version": "1.0.172",
+  "version": "1.0.173",
   "description": "CMDB backend on NodeJS",
   "main": "./dist/indext.ts",
   "scripts": {
@@ -18,7 +18,8 @@
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
       "./src/test/setup.ts"
-    ]
+    ],
+    "globalTeardown": "./src/test/teardown.ts"
   },
   "keywords": [
     "CMDB",
