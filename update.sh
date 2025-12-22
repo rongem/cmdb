@@ -9,6 +9,7 @@ npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
 npm update
 npm audit fix
 npm prune
+npm version patch
 npm outdated
 ng build backend-access
 ng build cmdb
@@ -19,6 +20,7 @@ echo Updating backend
 npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
 npm update
 npm prune
+npm version patch
 tsc --declaration && npm run test
 npm outdate
 echo Done!
