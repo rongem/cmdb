@@ -8,7 +8,6 @@ echo Updating other libraries
 npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
 npm update
 npm audit fix
-grunt bump
 npm prune
 npm outdated
 ng build backend-access
@@ -19,7 +18,6 @@ cd ../njs-backend/
 echo Updating backend
 npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
 npm update
-grunt bump
 npm prune
 tsc --declaration && npm run test
 npm outdate
