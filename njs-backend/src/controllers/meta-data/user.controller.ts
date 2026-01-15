@@ -98,7 +98,7 @@ export const updateUserPassword = (req: Request, res: Response, next: NextFuncti
 
 // Delete
 export const deleteUser = (req: Request, res: Response, next: NextFunction) => {
-    const name = req.params[domainField] ? req.params[domainField] + '\\' + req.params[accountNameField] : req.params[accountNameField];
+    const name = req.params[domainField] as string ? req.params[domainField] as string + '\\' + req.params[accountNameField] as string : req.params[accountNameField] as string;
     const withResponsibilities = +req.params[withResponsibilitiesField] > 0;
     userModelDelete(name, withResponsibilities)
         .then((result) => {

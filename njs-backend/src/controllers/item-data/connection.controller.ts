@@ -42,25 +42,25 @@ export const getConnections = async (req: Request, res: Response, next: NextFunc
 }
 
 export const getConnectionsForUpperItem = (req: Request, res: Response, next: NextFunction) => {
-    connectionModelFind({upperItem: req.params[idField]})
+    connectionModelFind({upperItem: req.params[idField] as string})
         .then((connections: Connection[]) => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getConnectionsForLowerItem = (req: Request, res: Response, next: NextFunction) => {
-    connectionModelFind({lowerItem: req.params[idField]})
+    connectionModelFind({lowerItem: req.params[idField] as string})
         .then(connections => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getConnectionsForItem = (req: Request, res: Response, next: NextFunction) => {
-    connectionModelFind({$or: [{lowerItem: new Types.ObjectId(req.params[idField])}, {upperItem: new Types.ObjectId(req.params[idField])}]})
+    connectionModelFind({$or: [{lowerItem: new Types.ObjectId(req.params[idField] as string)}, {upperItem: new Types.ObjectId(req.params[idField] as string)}]})
         .then(connections => res.json(connections))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getConnection = (req: Request, res: Response, next: NextFunction) => {
-    connectionModelFindSingle(req.params[idField])
+    connectionModelFindSingle(req.params[idField] as string)
         .then((connection: Connection) => res.json(connection))
         .catch((error: any) => serverError(next, error));
 }
@@ -95,7 +95,7 @@ export const createConnection = (req: Request, res: Response, next: NextFunction
 
 // Update
 export const updateConnection = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     const description = req.body[descriptionField] as string;
     connectionModelUpdate(id, description, req.authentication)
         .then((connection) => {
@@ -116,7 +116,7 @@ export const updateConnection = (req: Request, res: Response, next: NextFunction
 
 // Delete
 export const deleteConnection = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     connectionModelDelete(id, req.authentication)
         .then((connection: Connection) => {
             if (connection) {

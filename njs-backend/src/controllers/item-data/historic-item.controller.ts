@@ -6,7 +6,7 @@ import { serverError } from '../error.controller';
 import { historicCiModelFindById } from '../../models/abstraction-layer/item-data/historic-item.al';
 
 export const getItemHistory = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     historicCiModelFindById(id)
         .then(result => res.json(result))
         .catch((error: any) => serverError(next, error));

@@ -35,19 +35,19 @@ export const getConnectionRules = (req: Request, res: Response, next: NextFuncti
 }
 
 export const getConnectionRulesForItemType = (req: Request, res: Response, next: NextFunction) => {
-    connectionRuleModelFind({ $or: [{ upperItemType: req.params[idField] }, { lowerItemType: req.params[idField] }] })
+    connectionRuleModelFind({ $or: [{ upperItemType: req.params[idField] as string }, { lowerItemType: req.params[idField] as string }] })
         .then((connectionRules) => res.json(connectionRules))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getConnectionRulesForUpperItemType = (req: Request, res: Response, next: NextFunction) => {
-    connectionRuleModelFind({ upperItemType: req.params[idField] })
+    connectionRuleModelFind({ upperItemType: req.params[idField] as string })
         .then((connectionRules) => res.json(connectionRules))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getConnectionRulesForLowerItemType = (req: Request, res: Response, next: NextFunction) => {
-    connectionRuleModelFind({ lowerItemType: req.params[idField] })
+    connectionRuleModelFind({ lowerItemType: req.params[idField] as string })
         .then((connectionRules) => res.json(connectionRules))
         .catch((error: any) => serverError(next, error));
 }
@@ -59,7 +59,7 @@ export const getConnectionRulesForUpperAndLowerItemType = (req: Request, res: Re
 }
 
 export const getConnectionRule = (req: Request, res: Response, next: NextFunction) => {
-    connectionRuleModelFindSingle(req.params[idField])
+    connectionRuleModelFindSingle(req.params[idField] as string)
         .then((connectionRule) => res.json(connectionRule))
         .catch((error: any) => serverError(next, error));
 }
@@ -75,7 +75,7 @@ export const getConnectionRuleByContent = (req: Request, res: Response, next: Ne
 }
 
 export const getConnectionsCountForConnectionRule = (req: Request, res: Response, next: NextFunction) => {
-    connectionsCountByFilter({ connectionRule: req.params[idField] })
+    connectionsCountByFilter({ connectionRule: req.params[idField] as string })
         .then((docs) => res.json(docs))
         .catch((error: any) => serverError(next, error));
 }
@@ -98,7 +98,7 @@ export const createConnectionRule = (req: Request, res: Response, next: NextFunc
 
 // update
 export const updateConnectionRule = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     const upperItemTypeId = req.body[upperItemTypeIdField] as string;
     const lowerItemTypeId = req.body[lowerItemTypeIdField] as string;
     const connectionTypeId = req.body[connectionTypeIdField] as string;
@@ -124,7 +124,7 @@ export const updateConnectionRule = (req: Request, res: Response, next: NextFunc
 
 // delete
 export const deleteConnectionRule = (req: Request, res: Response, next: NextFunction) => {
-    connectionRuleModelDelete(req.params[idField])
+    connectionRuleModelDelete(req.params[idField] as string)
         .then((connectionRule) => {
             if (connectionRule) {
                 socket.emit(deleteAction, connectionRuleCtx, connectionRule);
@@ -135,7 +135,7 @@ export const deleteConnectionRule = (req: Request, res: Response, next: NextFunc
 }
 
 export const canDeleteConnectionRule = (req: Request, res: Response, next: NextFunction) => {
-    connectionRuleModelCanDelete(req.params[idField])
+    connectionRuleModelCanDelete(req.params[idField] as string)
         .then(canDelete => {
             res.json(canDelete);
         })

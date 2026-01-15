@@ -33,30 +33,30 @@ export const getItemTypes = (req: Request, res: Response, next: NextFunction) =>
 }
 
 export const getItemTypesForUpperItemTypeAndConnection = (req: Request, res: Response, next: NextFunction) => {
-    const itemId = req.params[idField];
-    const connectionTypeId = req.params[connectionTypeField];
+    const itemId = req.params[idField] as string;
+    const connectionTypeId = req.params[connectionTypeField] as string;
     itemTypeModelGetItemTypesForUpperItemTypeAndConnection(itemId, connectionTypeId)
         .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getItemTypesForLowerItemTypeAndConnection = (req: Request, res: Response, next: NextFunction) => {
-    const itemId = req.params[idField];
-    const connectionTypeId = req.params[connectionTypeField];
+    const itemId = req.params[idField] as string;
+    const connectionTypeId = req.params[connectionTypeField] as string;
     itemTypeModelGetItemTypesForLowerItemTypeAndConnection(itemId, connectionTypeId)
         .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getItemTypesByAllowedAttributeType = (req: Request, res: Response, next: NextFunction) => {
-    const attributeTypeId = req.params[idField];
+    const attributeTypeId = req.params[idField] as string;
     itemTypeModelGetItemTypesByAllowedAttributeType(attributeTypeId)
         .then(itemTypes => res.json(itemTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getItemType = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     itemTypeModelFindSingle(id)
         .then((itemType: ItemType) => res.json(itemType))
         .catch((error: any) => serverError(next, error));
@@ -64,7 +64,7 @@ export const getItemType = (req: Request, res: Response, next: NextFunction) => 
 
 export const countAttributesForItemTypeAttributeMapping = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const count = await itemTypeModelCountAttributesForMapping(req.params[idField], req.itemType.id);
+        const count = await itemTypeModelCountAttributesForMapping(req.params[idField] as string, req.itemType.id);
         res.json(count);
     }
     catch (error) {
@@ -85,7 +85,7 @@ export const createItemType = (req: Request, res: Response, next: NextFunction) 
 
 // Update
 export const updateItemType = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField] as string;
+    const id = req.params[idField] as string as string;
     const name = req.body[nameField] as string;
     const color = req.body[colorField] as string;
     const attributeGroups = (req.body[attributeGroupsField] as {[idField]: string}[] ?? []).map(a => a[idField]);
@@ -107,7 +107,7 @@ export const updateItemType = (req: Request, res: Response, next: NextFunction) 
 
 // Delete
 export const deleteItemType = (req: Request, res: Response, next: NextFunction) => {
-    const itemId = req.params[idField] as string;
+    const itemId = req.params[idField] as string as string;
     itemTypeModelDelete(itemId)
         .then((itemType: ItemType) => {
             socket.emit(updateAction, itemTypeCtx, itemType);
@@ -117,7 +117,7 @@ export const deleteItemType = (req: Request, res: Response, next: NextFunction) 
 }
 
 export const canDeleteItemType = (req: Request, res: Response, next: NextFunction) => {
-    const itemId = req.params[idField] as string;
+    const itemId = req.params[idField] as string as string;
     itemTypeModelCanDelete(itemId).then(candelete => {
         res.json(candelete);
     }).catch(error => serverError(next, error));

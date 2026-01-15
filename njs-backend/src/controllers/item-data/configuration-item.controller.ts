@@ -98,7 +98,7 @@ export const getConfigurationItemsByTypes = (req: Request, res: Response, next: 
 }
 
 export const getConfigurationItemByTypeAndName = (req: Request, res: Response, next: NextFunction) => {
-  configurationItemModelFindOne(req.params[nameField], req.params[typeIdField])
+  configurationItemModelFindOne(req.params[nameField] as string, req.params[typeIdField] as string)
     .then(item => {
       res.json(item);
     })
@@ -117,7 +117,7 @@ export const getConfigurationItemsByTypeWithConnections = (req: Request, res: Re
 // find all items that are not connected due to the given rule or whose connection count doesn't exceed the allowed range
 export const getAvailableItemsForConnectionRuleAndCount = (req: Request, res: Response, next: NextFunction) => {
   const itemsCountToConnect = +req.params[countField];
-  const connectionRule = req.params[connectionRuleField];
+  const connectionRule = req.params[connectionRuleField] as string;
   modelAvailableItemsForConnectionRuleAndCount(connectionRule, itemsCountToConnect)
     .then((items) => res.json(items))
     .catch((error: any) => serverError(next, error));
@@ -125,15 +125,15 @@ export const getAvailableItemsForConnectionRuleAndCount = (req: Request, res: Re
 
 // find all items that have free connections to upper item type left
 export const getConnectableAsLowerItemForRule = (req: Request, res: Response, next: NextFunction) => {
-  modelGetAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField])
+  modelGetAllowedLowerConfigurationItemsForRule(req.params[connectionRuleField] as string)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
 }
 
 // find all items that have free connections to upper item type left and are not connected to current item
 export const getConnectableAsLowerItem = (req: Request, res: Response, next: NextFunction) => {
-  const connectionRuleId = req.params[connectionRuleField];
-  const itemId = req.params[idField];
+  const connectionRuleId = req.params[connectionRuleField] as string;
+  const itemId = req.params[idField] as string;
   modelGetAllowedLowerConfigurationItemsForRule(connectionRuleId, itemId)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
@@ -141,8 +141,8 @@ export const getConnectableAsLowerItem = (req: Request, res: Response, next: Nex
 
 // find all items that have free connections to lower item type left and are not connected to current item
 export const  getConnectableAsUpperItem = (req: Request, res: Response, next: NextFunction) => {
-  const connectionRuleId = req.params[connectionRuleField];
-  const itemId = req.params[idField];
+  const connectionRuleId = req.params[connectionRuleField] as string;
+  const itemId = req.params[idField] as string;
   modelGetAllowedUpperConfigurationItemsForRule(connectionRuleId, itemId)
     .then(items => res.json(items))
     .catch((error: any) => serverError(next, error));
@@ -150,7 +150,7 @@ export const  getConnectableAsUpperItem = (req: Request, res: Response, next: Ne
 
 // find a maximum number of recently modified items, then get full data from them
 export const getRecentlyModifiedItems = (req: Request, res: Response, next: NextFunction) => {
-  const listCount = parseInt(req.params[listCountField]);
+  const listCount = parseInt(req.params[listCountField] as string);
   configurationItemsRecentlyModified(listCount)
     .then(items => {
       const itemIds = items.map(item => item.id);
@@ -203,7 +203,7 @@ export const searchNeighbors = (req: Request, res: Response, next: NextFunction)
     itemTypeId: req.body[itemTypeIdField],
     maxLevels: +req.body[maxLevelsField],
     searchDirection,
-    sourceItem: req.params[idField],
+    sourceItem: req.params[idField] as string,
   };
   if (req.body[extraSearchField]) {
     search.extraSearch = getSearchContent(req.body[extraSearchField]);
@@ -214,23 +214,23 @@ export const searchNeighbors = (req: Request, res: Response, next: NextFunction)
 }
 
 export const getConfigurationItem = (req: Request, res: Response, next: NextFunction) => {
-  configurationItemModelFindSingle(req.params[idField])
+  configurationItemModelFindSingle(req.params[idField] as string)
     .then((item: ConfigurationItem) => item ? res.json(item) : null)
     .catch((error: any) => serverError(next, error));
 }
 
 export const getConfigurationItemWithConnections = (req: Request, res: Response, next: NextFunction) => {
-  configurationItemModelFindSingle(req.params[idField])
+  configurationItemModelFindSingle(req.params[idField] as string)
     .then(async (item: FullConfigurationItem) => {
-      item.connectionsToUpper = await modelFindAndReturnConnectionsToUpper(req.params[idField]);
-      item.connectionsToLower = await modelFindAndReturnConnectionsToLower(req.params[idField]);
+      item.connectionsToUpper = await modelFindAndReturnConnectionsToUpper(req.params[idField] as string);
+      item.connectionsToLower = await modelFindAndReturnConnectionsToLower(req.params[idField] as string);
       res.json(item);
     })
     .catch((error: any) => serverError(next, error));
 }
 
 export const getTextProposals = (req: Request, res: Response, next: NextFunction) => {
-  const text = req.params[textField];
+  const text = req.params[textField] as string;
   const items = true;
   const attributes = true;
   configurationItemModelGetProposals(text, items, attributes)
@@ -299,7 +299,7 @@ export const updateConfigurationItem = async (req: Request, res: Response, next:
 }
 
 export const takeResponsibilityForItem = (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params[idField];
+  const id = req.params[idField] as string;
   configurationItemModelTakeResponsibility(id, req.authentication)
     .then(item => res.json(item))
     .catch((error: HttpError) => {
@@ -313,7 +313,7 @@ export const takeResponsibilityForItem = (req: Request, res: Response, next: Nex
 
 // Delete
 export const deleteConfigurationItem = (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params[idField];
+  const id = req.params[idField] as string;
   configurationItemModelDelete(id, req.authentication)
     .then(result => {
       if (result.connections && result.connections.length > 0) {
@@ -330,7 +330,7 @@ export const deleteConfigurationItem = (req: Request, res: Response, next: NextF
 }
 
 export const abandonResponsibilityForItem = (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params[idField];
+  const id = req.params[idField] as string;
   configurationItemModelAbandonResponsibility(id, req.authentication)
     .then(item => res.json(item))
     .catch((error: HttpError) => {

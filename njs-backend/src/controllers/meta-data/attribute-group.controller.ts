@@ -25,19 +25,19 @@ export const getAttributeGroups = (req: Request, res: Response, next: NextFuncti
 }
 
 export const getAttributeGroupsInItemType = (req: Request, res: Response, next: NextFunction) => {
-    attributeGroupsModelGetAttributeGroupsInItemType(req.params[idField])
+    attributeGroupsModelGetAttributeGroupsInItemType(req.params[idField] as string)
         .then(attributeGroups => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getAttributeGroupsNotInItemType = (req: Request, res: Response, next: NextFunction) => {
-    attributeGroupsModelGetAttributeGroupsNotInItemType(req.params[idField])
+    attributeGroupsModelGetAttributeGroupsNotInItemType(req.params[idField] as string)
         .then(attributeGroups => res.json(attributeGroups))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
-    attributeGroupModelFindSingle(req.params[idField])
+    attributeGroupModelFindSingle(req.params[idField] as string)
         .then((attributeGroup: AttributeGroup) => res.json(attributeGroup))
         .catch((error: any) => serverError(next, error));
 }
@@ -55,8 +55,8 @@ export const createAttributeGroup = (req: Request, res: Response, next: NextFunc
 
 // update
 export const updateAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
-    const name = req.body[nameField];
+    const id = req.params[idField] as string;
+    const name = req.body[nameField] as string;
     attributeGroupModelUpdate(id, name)
         .then((attributeGroup: AttributeGroup) => {
             if (attributeGroup) {
@@ -76,7 +76,7 @@ export const updateAttributeGroup = (req: Request, res: Response, next: NextFunc
 // delete
 export const deleteAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[idField];
-    attributeGroupModelDelete(id)
+    attributeGroupModelDelete(id as string)
         .then((attributeGroup) => {
             if (attributeGroup) {
                 socket.emit(deleteAction, attributeGroupCtx, attributeGroup);
@@ -87,7 +87,7 @@ export const deleteAttributeGroup = (req: Request, res: Response, next: NextFunc
 }
 
 export const canDeleteAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
-    attributeGroupModelCanDelete(req.params[idField])
+    attributeGroupModelCanDelete(req.params[idField] as string)
         .then(result => res.json(result))
         .catch((error: any) => serverError(next, error));
 }

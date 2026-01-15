@@ -18,9 +18,9 @@ import { aboveValue } from '../../util/values.constants';
 
 export const convertAttributeTypeToItemType = (req: Request, res: Response, next: NextFunction) => {
     const newItemTypeName = req.body[newItemTypeNameField] as string;
-    const id = req.params[idField];
-    const color = req.body[colorField];
-    const connectionTypeId = req.body[connectionTypeIdField];
+    const id = req.params[idField] as string;
+    const color = req.body[colorField] as string;
+    const connectionTypeId = req.body[connectionTypeIdField] as string;
     const attributeType = req.attributeType;
     const attributeTypes = req.attributeTypes ?? [];
     const newItemIsUpperType = req.body[positionField] === aboveValue;

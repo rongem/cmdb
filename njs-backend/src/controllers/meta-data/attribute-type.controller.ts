@@ -29,27 +29,27 @@ export const getAttributeTypes = (req: Request, res: Response, next: NextFunctio
 }
 
 export const getAttributeTypesForAttributeGroup = (req: Request, res: Response, next: NextFunction) => {
-    const attributeGroup = req.params[idField];
+    const attributeGroup = req.params[idField] as string;
     attributeTypeModelFind({attributeGroup})
         .then((attributeTypes: AttributeType[]) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getAttributeTypesForItemType = (req: Request, res: Response, next: NextFunction) => {
-    attributeTypeModelGetAttributeTypesForItemType(req.params[idField])
+    attributeTypeModelGetAttributeTypesForItemType(req.params[idField] as string)
         .then((attributeTypes: AttributeType[]) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getCorrespondingAttributeTypes = (req: Request, res: Response, next: NextFunction) => {
-    const attributeType = req.params[idField];
+    const attributeType = req.params[idField] as string;
     modelGetCorrespondingValuesOfType(attributeType)
         .then((attributeTypes) => res.json(attributeTypes))
         .catch((error: any) => serverError(next, error));
 }
 
 export const getAttributeType = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     attributeTypeModelFindSingle(id)
         .then((attributeType: AttributeType) => {
             res.json(attributeType);
@@ -58,7 +58,7 @@ export const getAttributeType = (req: Request, res: Response, next: NextFunction
 }
 
 export const countAttributesForAttributeType = (req: Request, res: Response, next: NextFunction) => {
-    attributeTypeModelCountAttributes(req.params[idField])
+    attributeTypeModelCountAttributes(req.params[idField] as string)
         .then(count => res.json(count))
         .catch((error: any) => serverError(next, error));
 }
@@ -78,7 +78,7 @@ export const createAttributeType = (req: Request, res: Response, next: NextFunct
 
 // update
 export const updateAttributeType = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     const name = req.body[nameField] as string;
     const attributeGroupId = req.body[attributeGroupIdField] as string;
     const validationExpression = req.body[validationExpressionField] as string;
@@ -100,7 +100,7 @@ export const updateAttributeType = (req: Request, res: Response, next: NextFunct
 
 // delete
 export const deleteAttributeType = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     attributeTypeModelDelete(id)
         .then((attributeType: AttributeType) => {
             if (attributeType) {
@@ -112,7 +112,7 @@ export const deleteAttributeType = (req: Request, res: Response, next: NextFunct
 }
 
 export const canDeleteAttributeType = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params[idField];
+    const id = req.params[idField] as string;
     attributeTypeModelCanDelete(id)
         .then((canDelete) => res.json(canDelete))
         .catch((error: any) => serverError(next, error));
