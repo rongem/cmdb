@@ -104,21 +104,9 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "projects/cmdb/src/test.ts",
-            "polyfills": "projects/cmdb/src/polyfills.ts",
-            "tsConfig": "projects/cmdb/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/cmdb/src/favicon.ico",
-              "projects/cmdb/src/assets",
-              "projects/cmdb/src/env.js"
-            ],
-            "styles": [
-              "projects/cmdb/src/styles.scss"
-            ],
-            "scripts": []
+            "tsConfig": "projects/cmdb/tsconfig.spec.json"
           }
         },
         "lint": {
@@ -277,31 +265,15 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "projects/backend-access/src/test.ts",
             "tsConfig": "projects/backend-access/tsconfig.spec.json"
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/backend-access/**/*.ts",
-              "projects/backend-access/**/*.html"
-            ]
           }
         }
       }
     }
   },
   "schematics": {
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
-    },
     "@schematics/angular:component": {
       "type": "component"
     },
