@@ -1,6 +1,6 @@
 {
   "name": "njs-backend",
-  "version": "1.0.186",
+  "version": "1.0.187",
   "description": "CMDB backend on NodeJS",
   "main": "./dist/indext.ts",
   "scripts": {
@@ -57,6 +57,6 @@
     "swagger-ui-express": "^5.0.0",
     "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.0.2"
+    "typescript": "^6.0.2"
   }
 }
