@@ -1,3 +1,5 @@
+# 20260501 no longer supported
+
 # CMDB
 
 CDMB a.k.a. DC CMDB is a native configuration management system that can be used for ITIL.
