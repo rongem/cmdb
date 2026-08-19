@@ -1,0 +1,1 @@
+You can reach administration via the tools button in the upper right corner. Every administration page holds its own help text.

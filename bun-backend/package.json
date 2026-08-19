@@ -1,0 +1,24 @@
+{
+  "name": "dc-cmdb-bun-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "db:bootstrap": "bun run src/db/bootstrap.ts",
+    "db:reset": "bun run src/db/reset.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "mssql": "^10.0.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/mssql": "^12.3.0",
+    "@types/node": "^22.10.2",
+    "bun-types": "^1.1.42",
+    "typescript": "^5.7.2"
+  }
+}

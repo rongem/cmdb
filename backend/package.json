@@ -1,0 +1,35 @@
+{
+  "name": "cmdb-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "test": "node --require ts-node/register --test test/**/*.test.ts",
+    "db:up": "docker compose -f docker-compose.sql.yml up -d",
+    "db:down": "docker compose -f docker-compose.sql.yml down -v",
+    "db:bootstrap": "node --require ts-node/register scripts/bootstrap-db.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.0",
+    "mssql": "^12.7.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.5",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@types/mssql": "^12.3.0",
+    "@types/node": "^22.10.2",
+    "@types/supertest": "^6.0.0",
+    "supertest": "^7.0.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

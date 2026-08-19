@@ -1,0 +1,11 @@
+# Adding asset types to programm code
+The data model is easily configurable and expandable, since it is mostly generic. The names and color codes are stored in the `/src/assets/config`/settings.json. Just change any name or color as it suits your needs. The names are used within the application whenever possible, so translation of these will take place immediately. A translation of the other text in the application UI is easily possible with the [Angular i18n](https://angular.io/guide/i18n) modules. Every text is already tagged i18n inside the project.
+
+If you want to add your own item types or attributes, you also need to change the following files in the folder `/src/app/shared/objects/appsettings`:
+* `app-object.model.ts` contains alle the names that are expected to be presend in the setting.json.
+* `mappings.model.ts` contains all the basic mappings of objects and attributes to categories:
+  * rackMountable, enclosureMountables and enclosureBacksideMountables are categories for asset types. Any new type must be placed in exactly one of these categories. The category asset embraces racks, rackmountables and enclosure mountables.
+  * installableSystems contains server hardware, but could not be used in every place the project due to typescript restrictions, so adding a new server hardware type is not as easy as the rest.
+  * the attributes section contains mappings from attributes to item types. Every new attribute must be added into exactly one of these categories. The asset categories are used where possible to avoid redundant code.
+  * special regex patterns for attributes can be added in the `getValidationExpressionForAttributeType` function
+ * `rule-settings.model.ts` tells the program, how configuration item types will be connected. They provide the upper and lower item type, the connection type and the maximum numbers of connections allowed for each item type. Most of the category collections form the mappings table are used, so you only will have to take care of this if you want to add something comprehensive like racks, rooms or models.

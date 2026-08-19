@@ -1,0 +1,5 @@
+node_modules
+bun.lock
+.env
+coverage
+.DS_Store
