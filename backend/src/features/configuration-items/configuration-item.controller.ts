@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { ConfigurationItemService } from './configuration-item.service';
+import type { NextFunction, Request, Response } from 'express';
+import { ConfigurationItemService } from './configuration-item.service.js';
 
 const service = new ConfigurationItemService();
 

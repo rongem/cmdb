@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import jwt from 'jsonwebtoken';
 import supertest from 'supertest';
-import { createApp } from '../src/app';
-import { env } from '../src/config/env';
+import { createApp } from '../src/app.js';
+import { env } from '../src/config/env.js';
 
 const app = createApp();
 const token = jwt.sign(

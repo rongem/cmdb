@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { createConfigurationItemSchema, updateConfigurationItemSchema } from './configuration-item.schema';
-import { configurationItemRepository } from './configuration-item.repository';
-import { ConfigurationItem, CreateConfigurationItemInput, UpdateConfigurationItemInput } from './configuration-item.types';
+import { createConfigurationItemSchema, updateConfigurationItemSchema } from './configuration-item.schema.js';
+import { configurationItemRepository } from './configuration-item.repository.js';
+import type { ConfigurationItem, CreateConfigurationItemInput, UpdateConfigurationItemInput } from './configuration-item.types.js';
 
 export class ConfigurationItemService {
   async list(): Promise<ConfigurationItem[]> {
@@ -23,18 +23,7 @@ export class ConfigurationItemService {
   }
 
   async delete(id: string): Promise<boolean> {
-    if (!id || id.trim().length === 0) {
-      throw new z.ZodError([
-        {
-          code: 'invalid_type',
-          expected: 'string',
-          received: typeof id,
-          path: ['id'],
-          message: 'id is required',
-        },
-      ]);
-    }
-
+    z.string().trim().min(1).parse(id);
     return configurationItemRepository.delete(id);
   }
 }

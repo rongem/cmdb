@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ConfigurationItemController } from '../features/configuration-items/configuration-item.controller';
+import { ConfigurationItemController } from '../features/configuration-items/configuration-item.controller.js';
 
 const router = Router();
 const controller = new ConfigurationItemController();

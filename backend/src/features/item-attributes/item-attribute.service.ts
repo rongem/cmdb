@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { createItemAttributeSchema, updateItemAttributeSchema } from './item-attribute.schema';
-import { itemAttributeRepository } from './item-attribute.repository';
-import { CreateItemAttributeInput, ItemAttribute, UpdateItemAttributeInput } from './item-attribute.types';
+import { createItemAttributeSchema, updateItemAttributeSchema } from './item-attribute.schema.js';
+import { itemAttributeRepository } from './item-attribute.repository.js';
+import type { CreateItemAttributeInput, ItemAttribute, UpdateItemAttributeInput } from './item-attribute.types.js';
 
 export class ItemAttributeService {
   async listByItemId(itemId: string): Promise<ItemAttribute[]> {
@@ -23,18 +23,7 @@ export class ItemAttributeService {
   }
 
   async delete(id: string): Promise<boolean> {
-    if (!id || id.trim().length === 0) {
-      throw new z.ZodError([
-        {
-          code: 'invalid_type',
-          expected: 'string',
-          received: typeof id,
-          path: ['id'],
-          message: 'id is required',
-        },
-      ]);
-    }
-
+    z.string().trim().min(1).parse(id);
     return itemAttributeRepository.delete(id);
   }
 }

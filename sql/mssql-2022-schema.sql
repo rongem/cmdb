@@ -79,7 +79,7 @@ CREATE TABLE dbo.AttributeEnumValues (
     CONSTRAINT UQ_AttributeEnumValues_Group_Code UNIQUE (EnumGroupId, Code),
     CONSTRAINT FK_AttributeEnumValues_EnumGroups FOREIGN KEY (EnumGroupId)
         REFERENCES dbo.AttributeEnumGroups (EnumGroupId)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 GO
 
@@ -99,10 +99,10 @@ CREATE TABLE dbo.AttributeTypes (
     CONSTRAINT CK_AttributeTypes_DataType CHECK (DataType IN ('string', 'int', 'decimal', 'datetime', 'bool', 'enum')),
     CONSTRAINT FK_AttributeTypes_AttributeGroups FOREIGN KEY (AttributeGroupId)
         REFERENCES dbo.AttributeGroups (AttributeGroupId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT FK_AttributeTypes_EnumGroups FOREIGN KEY (EnumGroupId)
         REFERENCES dbo.AttributeEnumGroups (EnumGroupId)
-        ON DELETE NO ACTION ON UPDATE CASCADE
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 GO
 
@@ -158,13 +158,13 @@ CREATE TABLE dbo.ConnectionRules (
     CONSTRAINT CK_ConnectionRules_MaxConnectionsToLower CHECK (MaxConnectionsToLower >= 1),
     CONSTRAINT FK_ConnectionRules_ConnectionTypes FOREIGN KEY (ConnectionTypeId)
         REFERENCES dbo.ConnectionTypes (ConnectionTypeId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT FK_ConnectionRules_UpperItemTypes FOREIGN KEY (UpperItemTypeId)
         REFERENCES dbo.ItemTypes (ItemTypeId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT FK_ConnectionRules_LowerItemTypes FOREIGN KEY (LowerItemTypeId)
         REFERENCES dbo.ItemTypes (ItemTypeId)
-        ON DELETE NO ACTION ON UPDATE CASCADE
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 GO
 
@@ -180,7 +180,7 @@ CREATE TABLE dbo.ConfigurationItems (
     CONSTRAINT UQ_ConfigurationItems_NameAndType UNIQUE (Name, ItemTypeId),
     CONSTRAINT FK_ConfigurationItems_ItemTypes FOREIGN KEY (ItemTypeId)
         REFERENCES dbo.ItemTypes (ItemTypeId)
-        ON DELETE NO ACTION ON UPDATE CASCADE
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 GO
 
@@ -199,13 +199,13 @@ CREATE TABLE dbo.ConfigurationItemAttributes (
     CONSTRAINT PK_ConfigurationItemAttributes PRIMARY KEY (ConfigurationItemId, AttributeTypeId),
     CONSTRAINT FK_ConfigurationItemAttributes_ConfigurationItems FOREIGN KEY (ConfigurationItemId)
         REFERENCES dbo.ConfigurationItems (ConfigurationItemId)
-        ON DELETE CASCADE ON UPDATE CASCADE,
+        ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT FK_ConfigurationItemAttributes_AttributeTypes FOREIGN KEY (AttributeTypeId)
         REFERENCES dbo.AttributeTypes (AttributeTypeId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT FK_ConfigurationItemAttributes_EnumValues FOREIGN KEY (ValueEnumId)
         REFERENCES dbo.AttributeEnumValues (EnumValueId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT CK_ConfigurationItemAttributes_ExactlyOneValue CHECK (
         (
             ValueString IS NOT NULL AND ValueInt IS NULL AND ValueDecimal IS NULL AND ValueDateTime IS NULL AND ValueBoolean IS NULL AND ValueEnumId IS NULL
@@ -268,13 +268,13 @@ CREATE TABLE dbo.Connections (
     CONSTRAINT UQ_Connections_RuleUpperLower UNIQUE (ConnectionRuleId, UpperItemId, LowerItemId),
     CONSTRAINT FK_Connections_ConnectionRules FOREIGN KEY (ConnectionRuleId)
         REFERENCES dbo.ConnectionRules (ConnectionRuleId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT FK_Connections_UpperItems FOREIGN KEY (UpperItemId)
         REFERENCES dbo.ConfigurationItems (ConfigurationItemId)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT FK_Connections_LowerItems FOREIGN KEY (LowerItemId)
         REFERENCES dbo.ConfigurationItems (ConfigurationItemId)
-        ON DELETE NO ACTION ON UPDATE CASCADE
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 GO
 
@@ -289,7 +289,7 @@ CREATE TABLE dbo.HistoricConfigurationItems (
     CONSTRAINT PK_HistoricConfigurationItems PRIMARY KEY (HistoricConfigurationItemId),
     CONSTRAINT FK_HistoricConfigurationItems_ConfigurationItems FOREIGN KEY (ConfigurationItemId)
         REFERENCES dbo.ConfigurationItems (ConfigurationItemId)
-        ON DELETE SET NULL ON UPDATE CASCADE
+        ON DELETE SET NULL ON UPDATE NO ACTION
 );
 GO
 
@@ -305,7 +305,7 @@ CREATE TABLE dbo.HistoricConfigurationItemVersions (
     CONSTRAINT PK_HistoricConfigurationItemVersions PRIMARY KEY (HistoricConfigurationItemVersionId),
     CONSTRAINT FK_HistoricConfigurationItemVersions_HistoricConfigurationItems FOREIGN KEY (HistoricConfigurationItemId)
         REFERENCES dbo.HistoricConfigurationItems (HistoricConfigurationItemId)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 GO
 
@@ -318,7 +318,7 @@ CREATE TABLE dbo.HistoricConfigurationItemVersionAttributes (
     CONSTRAINT PK_HistoricConfigurationItemVersionAttributes PRIMARY KEY (HistoricConfigurationItemVersionId, TypeId),
     CONSTRAINT FK_HistoricConfigurationItemVersionAttributes_Versions FOREIGN KEY (HistoricConfigurationItemVersionId)
         REFERENCES dbo.HistoricConfigurationItemVersions (HistoricConfigurationItemVersionId)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 GO
 
@@ -331,7 +331,7 @@ CREATE TABLE dbo.HistoricConfigurationItemVersionLinks (
     CONSTRAINT PK_HistoricConfigurationItemVersionLinks PRIMARY KEY (HistoricConfigurationItemVersionLinkId),
     CONSTRAINT FK_HistoricConfigurationItemVersionLinks_Versions FOREIGN KEY (HistoricConfigurationItemVersionId)
         REFERENCES dbo.HistoricConfigurationItemVersions (HistoricConfigurationItemVersionId)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 GO
 
@@ -342,7 +342,7 @@ CREATE TABLE dbo.HistoricConfigurationItemVersionResponsibleUsers (
     CONSTRAINT PK_HistoricConfigurationItemVersionResponsibleUsers PRIMARY KEY (HistoricConfigurationItemVersionId, Name),
     CONSTRAINT FK_HistoricConfigurationItemVersionResponsibleUsers_Versions FOREIGN KEY (HistoricConfigurationItemVersionId)
         REFERENCES dbo.HistoricConfigurationItemVersions (HistoricConfigurationItemVersionId)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 GO
 
@@ -360,7 +360,7 @@ CREATE TABLE dbo.HistoricConnections (
     CONSTRAINT PK_HistoricConnections PRIMARY KEY (HistoricConnectionId),
     CONSTRAINT FK_HistoricConnections_ConnectionRules FOREIGN KEY (ConnectionRuleId)
         REFERENCES dbo.ConnectionRules (ConnectionRuleId)
-        ON DELETE NO ACTION ON UPDATE CASCADE
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 GO
 
@@ -372,7 +372,7 @@ CREATE TABLE dbo.HistoricConnectionDescriptions (
     CONSTRAINT PK_HistoricConnectionDescriptions PRIMARY KEY (HistoricConnectionDescriptionId),
     CONSTRAINT FK_HistoricConnectionDescriptions_HistoricConnections FOREIGN KEY (HistoricConnectionId)
         REFERENCES dbo.HistoricConnections (HistoricConnectionId)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 GO
 

@@ -1,11 +1,11 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, { type Express, type NextFunction, type Request, type Response } from 'express';
 import cors from 'cors';
 import { z } from 'zod';
-import { env } from './config/env';
-import { requestContextMiddleware } from './middleware/request-context';
-import { authMiddleware } from './middleware/auth';
-import configurationItemsRoute from './routes/configuration-items.route';
-import itemAttributesRoute from './routes/item-attributes.route';
+import { env } from './config/env.js';
+import { requestContextMiddleware } from './middleware/request-context.js';
+import { authMiddleware } from './middleware/auth.js';
+import configurationItemsRoute from './routes/configuration-items.route.js';
+import itemAttributesRoute from './routes/item-attributes.route.js';
 
 export function createApp(): Express {
   const app = express();

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ItemAttributeController } from '../features/item-attributes/item-attribute.controller';
+import { ItemAttributeController } from '../features/item-attributes/item-attribute.controller.js';
 
 const router = Router();
 const controller = new ItemAttributeController();

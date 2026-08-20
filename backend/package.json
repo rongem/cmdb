@@ -2,34 +2,43 @@
   "name": "cmdb-backend",
   "version": "0.1.0",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/index.js",
-    "test": "node --require ts-node/register --test test/**/*.test.ts",
-    "db:up": "docker compose -f docker-compose.sql.yml up -d",
-    "db:down": "docker compose -f docker-compose.sql.yml down -v",
-    "db:bootstrap": "node --require ts-node/register scripts/bootstrap-db.ts"
+    "test": "tsx --test test/**/*.test.ts",
+    "db:start": "docker compose -f docker-compose.sql.yml up -d",
+    "db:up": "npm run db:start",
+    "db:stop": "docker compose -f docker-compose.sql.yml down",
+    "db:down": "npm run db:stop",
+    "db:reset": "docker compose -f docker-compose.sql.yml down -v && docker compose -f docker-compose.sql.yml up -d",
+    "db:bootstrap": "tsx scripts/bootstrap-db.ts",
+    "db:seed": "docker cp ./scripts/seed-demo-data.sql dc-cmdb-sql:/tmp/seed-demo-data.sql && docker exec -i dc-cmdb-sql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -C -d cmdb_dev -i /tmp/seed-demo-data.sql",
+    "db:validate": "docker cp ./scripts/check-schema.sql dc-cmdb-sql:/tmp/check-schema.sql && docker exec -i dc-cmdb-sql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -C -d cmdb_dev -i /tmp/check-schema.sql",
+    "db:prepare": "npm run db:start && npm run db:bootstrap && npm run db:seed"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.2",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "jsonwebtoken": "^9.0.0",
     "mssql": "^12.7.0",
-    "zod": "^3.23.8"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.5",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.0",
     "@types/mssql": "^12.3.0",
-    "@types/node": "^22.10.2",
-    "@types/supertest": "^6.0.0",
+    "@types/node": "^26.2.0",
+    "@types/supertest": "^7.2.1",
     "supertest": "^7.0.0",
-    "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

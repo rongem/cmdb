@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { createRequestId } from '../utils/request-id';
+import type { NextFunction, Request, Response } from 'express';
+import { createRequestId } from '../utils/request-id.js';
 
 export function requestContextMiddleware(
   req: Request,

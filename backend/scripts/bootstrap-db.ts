@@ -1,7 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sql from 'mssql';
-import { env } from '../src/config/env';
+import { env } from '../src/config/env.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function bootstrapDatabase() {
   const pool = new sql.ConnectionPool(env.DATABASE_URL);

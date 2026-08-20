@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { getSqlPool } from '../../db/sql';
-import { ConfigurationItem, CreateConfigurationItemInput, UpdateConfigurationItemInput } from './configuration-item.types';
+import { getSqlPool } from '../../db/sql.js';
+import type { ConfigurationItem, CreateConfigurationItemInput, UpdateConfigurationItemInput } from './configuration-item.types.js';
 
 type ConfigurationItemRow = {
   ConfigurationItemId: number;

@@ -1,5 +1,5 @@
 import sql from 'mssql';
-import { env } from '../config/env';
+import { env } from '../config/env.js';
 
 let pool: sql.ConnectionPool | null = null;
 

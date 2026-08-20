@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { ItemAttributeService } from './item-attribute.service';
+import type { NextFunction, Request, Response } from 'express';
+import { ItemAttributeService } from './item-attribute.service.js';
 
 const service = new ItemAttributeService();
 
